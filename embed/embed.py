@@ -25,8 +25,15 @@ OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 PINECONE_API_KEY = os.environ["PINECONE_API_KEY"]
 PINECONE_ENVIRONMENT = os.environ["PINECONE_ENVIRONMENT"]
 
+
 class TextProcessor:
-    def __init__(self, docs_path: str, checksum_file: str, index_name: str, batch_limit: int = 100):
+    def __init__(
+        self,
+        docs_path: str,
+        checksum_file: str,
+        index_name: str,
+        batch_limit: int = 100,
+    ):
         self.docs_path = docs_path
         self.checksum_file = checksum_file
         self.index_name = index_name
@@ -40,7 +47,7 @@ class TextProcessor:
         self.metadatas = []
         self.checksum_dict = self.load_checksums()
 
-        logging.info('Initializing embeddings...')
+        logging.info("Initializing embeddings...")
         self.embed = OpenAIEmbeddings(
             model=EMBEDDING_MODEL,
             openai_api_key=OPENAI_API_KEY,
@@ -67,23 +74,25 @@ class TextProcessor:
 
     def load_checksums(self) -> Dict[str, str]:
         if os.path.exists(self.checksum_file):
-            with open(self.checksum_file, 'r') as f:
+            with open(self.checksum_file, "r") as f:
                 try:
                     return json.load(f)
                 except json.decoder.JSONDecodeError:
-                    logging.warning("Checksum file is empty. Creating a new checksum dictionary.")
+                    logging.warning(
+                        "Checksum file is empty. Creating a new checksum dictionary."
+                    )
                     return {}
         else:
             return {}
 
     def pinecone_init(self) -> None:
-        logging.info('Initializing Pinecone...')
+        logging.info("Initializing Pinecone...")
         pinecone.init(
             api_key=PINECONE_API_KEY,
             environment=PINECONE_ENVIRONMENT,
         )
         if self.index_name not in pinecone.list_indexes():
-            logging.info('Creating index...')
+            logging.info("Creating index...")
             pinecone.create_index(
                 name=self.index_name,
                 pod_type=self.pod_type,
@@ -93,7 +102,7 @@ class TextProcessor:
         self.index = pinecone.Index(index_name=self.index_name)
 
     def process(self) -> None:
-        logging.info('Loading data...')
+        logging.info("Loading data...")
         loader = DirectoryLoader(self.docs_path, glob="**/*.md")
         data = loader.load()
         self.text_splitter.split_documents(data)
@@ -105,13 +114,13 @@ class TextProcessor:
             self.upload_batch()
 
         self.save_checksums()
-        logging.info('Index statistics: \n{}'.format(self.index.describe_index_stats()))
+        logging.info("Index statistics: \n{}".format(self.index.describe_index_stats()))
 
     def process_record(self, record) -> None:
         checksum = self.create_checksum(record.page_content)
         filename = record.metadata["source"]
         if checksum != self.checksum_dict.get(filename, None):
-            logging.info(f'Processing record {filename}...')
+            logging.info(f"Processing record {filename}...")
             self.checksum_dict[filename] = checksum
             metadata = record.metadata
             recorded_text = self.text_splitter.split_text(record.page_content)
@@ -127,17 +136,19 @@ class TextProcessor:
                 self.metadatas = []
 
     def upload_batch(self) -> None:
-        logging.info('Uploading batch...')
+        logging.info("Uploading batch...")
         ids = [str(uuid4()) for _ in range(len(self.texts))]
         embeds = self.embed.embed_documents(self.texts)
-        self.index.upsert(vectors=zip(ids, embeds, self.metadatas), namespace=self.name_space)
+        self.index.upsert(
+            vectors=zip(ids, embeds, self.metadatas), namespace=self.name_space
+        )
 
     def save_checksums(self) -> None:
-        logging.info('Saving checksums...')
+        logging.info("Saving checksums...")
         with open(self.checksum_file, "w") as f:
             json.dump(self.checksum_dict, f)
 
 
 if __name__ == "__main__":
-   processor = TextProcessor("docs/", "checksums.json", "snowbrain-v1")
-   processor.process()
+    processor = TextProcessor("docs/", "checksums.json", "snowbrain-v1")
+    processor.process()
