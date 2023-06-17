@@ -47,6 +47,12 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/uuid": "^9.0.2",
     "ai": "^2.0.0",
-    "dotenv": "^16.1.4"
+    "dotenv": "^16.1.4",
+    "eslint": "^8.31.0",
+    "eslint-config-next": "13.4.7-canary.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-tailwindcss": "^3.12.0",
+    "postcss": "^8.4.21",
+    "prettier": "^2.7.1"
   }
 }

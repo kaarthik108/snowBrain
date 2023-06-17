@@ -21,6 +21,7 @@ const Page = () => {
   const [chatActive, setChatActive] = useState<Chat>();
   const [image, setImage] = useState<string | null>(null);
 
+
   useEffect(() => {
     setChatActive(chatList.find(item => item.id === chatActiveId));
 
@@ -50,6 +51,7 @@ const Page = () => {
       let question = chat.messages[chat.messages.length - 1].content;
       // Store the history array in chatHistories with the chat id as the key
       chatHistories[chat.id] = history;
+      console.log("chatHistories--", chatHistories);
       const response = await fetch('/api/sql', {
         method: 'POST',
         body: JSON.stringify({ prompt: question, history: chatHistories[chat.id] }),

@@ -2,16 +2,25 @@ import { ConversationalRetrievalQAChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { OpenAI } from "langchain/llms/openai";
-import { BufferMemory } from "langchain/memory";
+import { PromptTemplate } from "langchain/prompts";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { pinecone } from "../utils/pinecone-client";
 
 const PINECONE_INDEX_NAME = "test-index";
 
-const QA_PROMPT = ` You're an AI assistant who can guide people to make data analysis easier. You are a helpful data analyst specialized in snowflake database. Answer user queries and be interactive and chill. Also if you write any code ased on the following question give a one or two sentences about how did you arrive at that code. (do not assume anything if the column is not available, do not make up code). ALSO if you are asked to FIX the sql code, then look what was the error and try to fix that by searching the schema definition.
-If you don't know the answer, just say "Hmm, I'm not sure. Please try again." Don't try to make up an answer.
-ALWAYS answer in Markdown format.
+const CONDENSE_QUESTION_PROMPT = `Given the following chat history and a follow up question, rephrase the follow up input question to be a standalone question.
+Or end the conversation if it seems like it's done.
+Chat History:\"""
+{chat_history}
+\"""
+Follow Up Input: \"""
+{question}
+\"""
+Standalone question:`;
 
+const prompt = PromptTemplate.fromTemplate(CONDENSE_QUESTION_PROMPT);
+
+const QA_PROMPT = ` You're an AI assistant who can guide people based on their questions about sql
 {chat_history}
 
 Question: {question}
@@ -19,6 +28,8 @@ Question: {question}
 
 Answer:
  `;
+
+const q_prompt = PromptTemplate.fromTemplate(QA_PROMPT);
 
 const index = pinecone.Index(PINECONE_INDEX_NAME);
 const vectorStore = await PineconeStore.fromExistingIndex(
@@ -55,31 +66,29 @@ export const Chain = async (question: string, history: []) => {
       },
     ],
   });
-  const fasterModel = new ChatOpenAI({
+  const fasterModel = new OpenAI({
     modelName: "gpt-3.5-turbo",
   });
-  const memory = new BufferMemory({
-    memoryKey: "chat_history",
-    inputKey: "question",
-    outputKey: "text",
-    returnMessages: true,
-  });
+
   const chain = ConversationalRetrievalQAChain.fromLLM(
     model,
     vectorStore.asRetriever(),
     {
       qaTemplate: QA_PROMPT,
-      memory: memory,
-      returnSourceDocuments: true, //The number of source documents returned is 4 by default
+      // memory: memory,
+      // returnSourceDocuments: true, //The number of source documents returned is 4 by default
       questionGeneratorChainOptions: {
         llm: fasterModel,
+        template: CONDENSE_QUESTION_PROMPT,
       },
     }
   );
 
+  const c_history = question + history;
+
   chain.call({
     question: question,
-    chat_history: history ?? [],
+    chat_history: c_history,
   });
   return stream.readable;
 };
