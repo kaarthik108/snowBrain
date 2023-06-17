@@ -7,7 +7,7 @@ import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import useLocalStorage from "../../hooks/use-local-storage";
+import { useLocalStorage } from "../../hooks/use-local-storage";
 import { Header } from "../components/Header";
 import { Sidebar } from "../components/Sidebar";
 import { appendUserMessage, createNewChat, deleteChat, editChat } from './../../utils/chatHelpers';
@@ -15,8 +15,9 @@ import { appendUserMessage, createNewChat, deleteChat, editChat } from './../../
 const Page = () => {
   const [sidebarOpened, setSidebarOpened] = useState(false);
   const [Loading, setLoading] = useState(false);
+  // const [chatList, setChatList] = useState<Chat[]>([]);
   const [chatList, setChatList] = useLocalStorage<Chat[]>('chatList', []);
-  const [chatActiveId, setChatActiveId] = useLocalStorage<string>('chatActiveId', '');
+  const [chatActiveId, setChatActiveId] = useState<string>("");
   const [chatActive, setChatActive] = useState<Chat>();
   const [image, setImage] = useState<string | null>(null);
 
