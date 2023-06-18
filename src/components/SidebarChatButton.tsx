@@ -38,7 +38,7 @@ export const SidebarChatButton = ({ chatItem, active, onClick, onDelete, onEdit 
     }
 
     return (
-        <div onClick={handleClickButton} className={`flex items-center rounded-md p-3 text-sm cursor-pointer hover:bg-gray-500/10 ${active ? 'bg-gray-500/20' : 'bg-transparent'}`}>
+        <div onClick={handleClickButton} className={`flex items-center rounded-md p-3 text-sm cursor-pointer hover:bg-gray-500/10 border-black/20 ${active ? 'bg-gray-500/20' : 'bg-transparent'}`}>
 
             <div className='mr-3'>
 
@@ -49,7 +49,7 @@ export const SidebarChatButton = ({ chatItem, active, onClick, onDelete, onEdit 
             <div className='flex-1 text-sm overflow-x-hidden'>
                 {editing &&
                     <input
-                        className='w-full bg-transparent outline-none text-sm border border-blue-500'
+                        className='w-full bg-transparent outline-none text-sm border border-black dark:border-gray-500'
                         value={titleInput}
                         onChange={(e) => setTitleInput(e.target.value)}
                     />

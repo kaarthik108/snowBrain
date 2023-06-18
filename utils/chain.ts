@@ -6,7 +6,8 @@ import { PromptTemplate } from "langchain/prompts";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { pinecone } from "../utils/pinecone-client";
 
-const PINECONE_INDEX_NAME = "test-index";
+const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME ?? "";
+const PINECONE_NAME_SPACE = process.env.PINECONE_NAME_SPACE ?? "";
 
 const CONDENSE_QUESTION_PROMPT = `Given the following chat history and a follow up question, rephrase the follow up input question to be a standalone question.
 Or end the conversation if it seems like it's done.
@@ -39,7 +40,7 @@ const vectorStore = await PineconeStore.fromExistingIndex(
   {
     pineconeIndex: index,
     textKey: "text",
-    // namespace: PINECONE_NAME_SPACE, //namespace comes from your config folder
+    namespace: PINECONE_NAME_SPACE, //namespace comes from your config folder
   }
 );
 

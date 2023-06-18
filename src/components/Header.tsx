@@ -17,7 +17,7 @@ export const Header = ({ openSidebarClick, title, newChatClick }: Props) => {
                 <Menu width={24} height={24} />
             </div>
 
-            <div className='mx-2 truncate'>{title}</div>
+            <div className='mx-2 truncate '>{title}</div>
             <div onClick={newChatClick}>
                 <Plus width={24} height={24} />
             </div>

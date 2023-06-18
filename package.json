@@ -44,6 +44,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@nem035/gpt-3-encoder": "^1.1.7",
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/uuid": "^9.0.2",
     "ai": "^2.0.0",

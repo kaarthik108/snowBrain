@@ -3,9 +3,10 @@
 import { ChatArea } from "@/components/ChatArea";
 import { Footer } from "@/components/Footer";
 import { SidebarChatButton } from "@/components/SidebarChatButton";
+import { TokenCountContext } from "@/components/token";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { useLocalStorage } from "../../hooks/use-local-storage";
 import { Header } from "../components/Header";
@@ -20,7 +21,7 @@ const Page = () => {
   const [chatActiveId, setChatActiveId] = useState<string>("");
   const [chatActive, setChatActive] = useState<Chat>();
   const [image, setImage] = useState<string | null>(null);
-
+  const { setCurrentMessageToken } = useContext(TokenCountContext); // use context
 
   useEffect(() => {
     setChatActive(chatList.find(item => item.id === chatActiveId));
@@ -115,6 +116,7 @@ const Page = () => {
       let updatedChatList = appendUserMessage([...chatList], chatActiveId, message);
       setChatList(updatedChatList);
     }
+    setCurrentMessageToken(0); // Reset token count
     setLoading(true);
   }
 
@@ -187,6 +189,7 @@ const Page = () => {
 
         {/* Display the image if it's loaded */}
         {image && <img src={image} alt="Plot" />}        {/* {streamedData} */}
+
         <Footer
           onSendMessage={handleSendMessage}
           disabled={Loading}

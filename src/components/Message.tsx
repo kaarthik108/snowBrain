@@ -1,19 +1,28 @@
 import { ChatMessage } from '@/types/ChatMessage';
 import { Clipboard } from "lucide-react";
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
-import { useCopyToClipboard } from '../../hooks/use-copy-to-clipboard';
+// import { useCopyToClipboard } from '../../hooks/use-copy-to-clipboard';
+import { TokenCountContext } from './token';
 
 type Props = {
     item: ChatMessage;
 }
 
 export const Message = ({ item }: Props) => {
-    const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
+    const { setCurrentMessageToken } = useContext(TokenCountContext);
+
+    // Use an effect to update the token count
+    useEffect(() => {
+        // Split the content on whitespace and punctuation to approximate tokens
+        const approxTokens = item.content.split(/[\s,.!?]+/).length;
+        setCurrentMessageToken(approxTokens);
+    }, [item.content, setCurrentMessageToken]);
+
     const codeRef = useRef<HTMLElement>(null);
     return (
         <div className={`py-5 flex px-6 md:px-48 ${item.author === 'user' && 'dark:bg-neutral-950/60 bg-neutral-100/50'}`}>
@@ -35,10 +44,8 @@ export const Message = ({ item }: Props) => {
                                 );
                             return (
                                 <div className="w-full my-6 overflow-hidden rounded-md dark:bg-neutral-950/60">
-                                    {/* Code Title */}
                                     <div className="dark:bg-[#1e283880] bg-neutral-50 py-2 px-3 text-xs flex items-center justify-between">
                                         <div>{language ?? "sql"}</div>
-                                        {/* Copy code to the clipboard */}
                                         <CopyToClipboard
                                             text={codeRef?.current?.innerText as string}
                                         >
@@ -51,7 +58,6 @@ export const Message = ({ item }: Props) => {
                                             </div>
                                         </CopyToClipboard>
                                     </div>
-                                    {/* Code Block */}
                                     <code
                                         ref={codeRef}
                                         className={
