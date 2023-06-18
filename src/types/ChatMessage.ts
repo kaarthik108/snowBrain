@@ -1,5 +1,5 @@
-export type ChatMessage = {
+export interface ChatMessage {
   id: string;
   author: "user" | "assistant";
   content: string;
-};
+}

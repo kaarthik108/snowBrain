@@ -1,7 +1,7 @@
 import { ChatMessage } from "./ChatMessage";
 
-export type Chat = {
+export interface Chat {
   id: string;
   title: string;
   messages: ChatMessage[];
-};
+}

@@ -1,17 +1,19 @@
 "use client";
 
+import { useLocalStorage } from "@/../hooks/use-local-storage";
+import { appendUserMessage, createNewChat, deleteChat, editChat } from '@/../utils/chatHelpers';
 import { ChatArea } from "@/components/ChatArea";
+import CustomToast from '@/components/CustomToast';
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Sidebar } from "@/components/Sidebar";
 import { SidebarChatButton } from "@/components/SidebarChatButton";
 import { TokenCountContext } from "@/components/token";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { useContext, useEffect, useState } from "react";
+import { toast } from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
-import { useLocalStorage } from "../../hooks/use-local-storage";
-import { Header } from "../components/Header";
-import { Sidebar } from "../components/Sidebar";
-import { appendUserMessage, createNewChat, deleteChat, editChat } from './../../utils/chatHelpers';
 
 const Page = () => {
   const [sidebarOpened, setSidebarOpened] = useState(false);
@@ -22,10 +24,15 @@ const Page = () => {
   const [chatActive, setChatActive] = useState<Chat>();
   const [image, setImage] = useState<string | null>(null);
   const { setCurrentMessageToken } = useContext(TokenCountContext); // use context
+  const [activeChatMessagesCount, setActiveChatMessagesCount] = useState(0);
 
   useEffect(() => {
-    setChatActive(chatList.find(item => item.id === chatActiveId));
+    const activeChat = chatList.find(item => item.id === chatActiveId);
+    setChatActive(activeChat);
 
+    if (activeChat) {
+      setActiveChatMessagesCount(activeChat.messages.length);
+    }
   }, [chatActiveId, chatList])
 
   useEffect(() => {
@@ -108,6 +115,13 @@ const Page = () => {
   }
 
   const handleSendMessage = (message: string) => {
+    if (activeChatMessagesCount >= 8) {
+      toast((t) => <CustomToast message='You have reached the maximum number of messages for this chat' />, {
+        duration: 4000,
+        position: 'top-center',
+      });
+      return;
+    }
     if (!chatActiveId) {
       let newChat = createNewChat(message);
       setChatList([newChat, ...chatList]);
@@ -115,6 +129,9 @@ const Page = () => {
     } else {
       let updatedChatList = appendUserMessage([...chatList], chatActiveId, message);
       setChatList(updatedChatList);
+
+      // Update the message count for the active chat
+      setActiveChatMessagesCount(prev => prev + 1);
     }
     setCurrentMessageToken(0); // Reset token count
     setLoading(true);
@@ -192,7 +209,7 @@ const Page = () => {
 
         <Footer
           onSendMessage={handleSendMessage}
-          disabled={Loading}
+          disabled={Loading || activeChatMessagesCount >= 10}
         />
 
       </section>

@@ -1,6 +1,6 @@
+import { rateLimiter } from "@/../lib/rate-limiter";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { rateLimiter } from "./../lib/rate-limiter";
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(req: NextRequest) {

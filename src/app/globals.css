@@ -43,3 +43,15 @@ body {
 ::-webkit-scrollbar-track {
   background-color: transparent;
 }
+
+@media (min-width: 640px) {
+  .toast-message {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .toast-message {
+    white-space: normal;
+  }
+}
