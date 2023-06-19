@@ -1,5 +1,5 @@
-import { Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import IconSend from './ui/IconSend';
 import { Textarea } from './ui/textarea';
 
 type Props = {
@@ -59,7 +59,7 @@ export const MessageInput = ({ disabled, onSend }: Props) => {
             </Textarea>
 
             <div onClick={handleSendMessage} className={`self-end p-2 mr-2 cursor-pointer rounded ${text.length ? 'opacity-100 ' : 'opacity-20'}`}>
-                <Send width={18} height={18} />
+                <IconSend width={18} height={18} />
             </div>
 
         </div>

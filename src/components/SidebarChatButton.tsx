@@ -1,6 +1,10 @@
 import { Chat } from '@/types/Chat';
-import { Check, Edit3, MessageSquare, Trash2, X } from 'lucide-react';
 import React, { useState } from 'react';
+import IconCheck from './ui/IconCheck';
+import IconEdit from './ui/IconEdit';
+import IconMessageSquare from './ui/IconMessageSquare';
+import IconTrash2 from './ui/IconTrash2';
+import IconX from './ui/IconX';
 
 type Props = {
     chatItem: Chat;
@@ -42,8 +46,8 @@ export const SidebarChatButton = ({ chatItem, active, onClick, onDelete, onEdit 
 
             <div className='mr-3'>
 
-                {!deleting && <MessageSquare width={16} height={16} />}
-                {deleting && <Trash2 width={16} height={16} />}
+                {!deleting && <IconMessageSquare width={16} height={16} />}
+                {deleting && <IconTrash2 width={16} height={16} />}
             </div>
 
             <div className='flex-1 text-sm overflow-x-hidden'>
@@ -66,12 +70,12 @@ export const SidebarChatButton = ({ chatItem, active, onClick, onDelete, onEdit 
                     <div className='cursor-pointer mx-1 opacity-60 hover:opacity-100'
                         onClick={() => setEditing(true)}
                     >
-                        <Edit3 width={16} height={16} />
+                        <IconEdit width={16} height={16} />
                     </div>
                     <div className='cursor-pointer mx-1 opacity-60 hover:opacity-100'
                         onClick={() => setDeleting(true)}
                     >
-                        <Trash2 width={16} height={16} />
+                        <IconTrash2 width={16} height={16} />
                     </div>
                 </div>
 
@@ -81,12 +85,12 @@ export const SidebarChatButton = ({ chatItem, active, onClick, onDelete, onEdit 
                     <div className='cursor-pointer mx-1 opacity-60 hover:opacity-100'
                         onClick={handleConfirmButton}
                     >
-                        <Check width={16} height={16} />
+                        <IconCheck width={16} height={16} />
                     </div>
                     <div className='cursor-pointer mx-1 opacity-60 hover:opacity-100'
                         onClick={handleCancelButton}
                     >
-                        <X width={16} height={16} />
+                        <IconX width={16} height={16} />
                     </div>
                 </div>
             }

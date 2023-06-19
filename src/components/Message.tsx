@@ -1,5 +1,4 @@
 import { ChatMessage } from '@/types/ChatMessage';
-import { Clipboard } from "lucide-react";
 import Image from 'next/image';
 import { useContext, useEffect, useRef } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -8,6 +7,7 @@ import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 // import { useCopyToClipboard } from '../../hooks/use-copy-to-clipboard';
 import { TokenCountContext } from './token';
+import IconClipboard from './ui/IconClipboard';
 
 type Props = {
     item: ChatMessage;
@@ -51,7 +51,7 @@ export const Message = ({ item }: Props) => {
                                         >
                                             <div className="relative">
                                                 <button className="flex items-center gap-1">
-                                                    <Clipboard size="14" />
+                                                    <IconClipboard width={10} />
                                                     Copy
                                                     <span className="sr-only">Copied</span>
                                                 </button>

@@ -1,5 +1,6 @@
-import { Menu, Plus } from 'lucide-react';
 import React from 'react';
+import IconMenu from './ui/IconMenu';
+import IconPlus from './ui/IconPlus';
 
 type Props = {
     openSidebarClick: () => void;
@@ -14,12 +15,12 @@ export const Header = ({ openSidebarClick, title, newChatClick }: Props) => {
 
             <div onClick={openSidebarClick}>
 
-                <Menu width={24} height={24} />
+                <IconMenu width={24} height={24} />
             </div>
 
             <div className='mx-2 truncate '>{title}</div>
             <div onClick={newChatClick}>
-                <Plus width={24} height={24} />
+                <IconPlus width={24} height={24} />
             </div>
 
         </header>

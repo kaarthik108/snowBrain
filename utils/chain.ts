@@ -21,11 +21,16 @@ Standalone question:`;
 
 const prompt = PromptTemplate.fromTemplate(CONDENSE_QUESTION_PROMPT);
 
-const QA_PROMPT = ` You're an AI assistant who can guide people based on their questions about sql
+const QA_PROMPT = ` You're an AI assistant who can guide people based on their questions about sql and snowflake by looking at the context.
+
+ONLY if USER asks about data analysis or visualization then write a python script (assuming the data is already stored as a dataframe object as df do not re initialize and do not try to connect to snowflake) ELSE DO NOT WRITE a python script.
+
+ALWAYS answer in Markdown format.
+
 {chat_history}
 
 Question: {question}
-{context}
+context: {context}
 
 Answer:
  `;
@@ -51,7 +56,7 @@ export const Chain = async (question: string, history: []) => {
   const writer = stream.writable.getWriter();
   const model = new ChatOpenAI({
     temperature: 0, // increase temepreature to get more creative answers
-    modelName: "gpt-3.5-turbo", //change this to gpt-4 if you have access
+    modelName: "gpt-3.5-turbo-16k", //change this to gpt-4 if you have access
     openAIApiKey: process.env.OPENAI_API_KEY ?? "",
     streaming: true,
     callbacks: [
