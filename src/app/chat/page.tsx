@@ -122,7 +122,7 @@ const Page = () => {
       console.log("Question", question)
 
       let endpoint = "/api/sql";
-      let fetchBody = { prompt: question, history: history };
+      // let fetchBody = { prompt: question, history: history };
 
       // Store the history array in chatHistories with the chat id as the key
       if (question.toLowerCase().includes("data analysis") || question.toLowerCase().includes("visualization")) {
@@ -190,13 +190,6 @@ const Page = () => {
   const openSidebar = () => setSidebarOpened(true);
   const closeSidebar = () => setSidebarOpened(false);
 
-  const handleClearConversations = () => {
-    if (Loading) return;
-    setChatList([]);
-    setChatActiveId('');
-    // location.reload();
-  }
-
   const handleNewChat = () => {
     if (Loading) return;
     setChatActiveId('')
@@ -249,28 +242,11 @@ const Page = () => {
     }
   }
 
-  const handleTestOpenAI = async () => {
-    const response = await fetch('/api/py');
-    const data = await response.json();
-
-    console.log(data); // Add this line to check the data
-
-
-    let image = new Image();
-    image.src = 'data:image/png;base64,' + data.base64String;
-    console.log(image);
-    console.log("image--", image.src);
-    document.body.appendChild(image);
-    setImage(image.src);
-
-  }
-
   return (
     <main className="flex min-h-screen dark:bg-neutral-900 bg-neutral-200/40">
       <Sidebar
         open={sidebarOpened}
         onClose={closeSidebar}
-        onClear={handleClearConversations}
         onNewChat={handleNewChat}
       >
         {chatList.map(item => (
@@ -293,11 +269,6 @@ const Page = () => {
         />
 
         <ChatArea chat={chatActive} loading={Loading} />
-
-        {/* <button onClick={handleTestOpenAI}>Test AI</button> */}
-
-        {/* Display the image if it's loaded */}
-        {image && <img src={image} alt="Plot" />}        {/* {streamedData} */}
 
         <Footer
           onSendMessage={handleSendMessage}

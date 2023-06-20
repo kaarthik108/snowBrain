@@ -8,7 +8,7 @@ type LogoIconProps = {
     className?: string,
 }
 
-const LogoIcon: React.FC<LogoIconProps> = ({ color = 'var(--geist-foreground)', width = '24px', height = '24px', className }) => {
+const LogoIcon: React.FC<LogoIconProps> = ({ color = '#999', width = '24px', height = '24px', className }) => {
     return (
         <svg
             className={cn("with-icon_icon__aLCKg", className)}

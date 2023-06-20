@@ -9,7 +9,7 @@ type Props = {
 }
 
 export const Footer = ({ disabled, onSendMessage }: Props) => {
-    const { currentMessageToken, setCurrentMessageToken } = useContext(TokenCountContext); // use context
+    const { currentMessageToken } = useContext(TokenCountContext);
 
     return (
         <footer className='w-full p-2 bg-gradient-to-b from-transparent dark:via-neutral-950/60 dark:to-neutral-950/90 via-neutral-50/60 to-neutral-50/90'>
@@ -26,9 +26,8 @@ export const Footer = ({ disabled, onSendMessage }: Props) => {
                     disabled={disabled}
                     onSend={onSendMessage}
                 />
-                <div className='pt-3 text-center text-xs text-zinc-700 dark:text-zinc-400 mb-2'>
+                <div className='pt-3 text-center text-xs text-zinc-700 dark:text-[#999] mb-2'>
                     Powered by GPT3.5
-
                 </div>
             </div>
 
