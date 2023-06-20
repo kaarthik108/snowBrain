@@ -33,7 +33,7 @@ export const Message = ({ item }: Props) => {
                 {item.author === 'user' && <Image src='/snow.svg' width={32} height={32} className='rounded-full' alt='' />}
                 {item.author === 'assistant' && <Image src='/google-bard-seeklogo.com.svg' width={32} height={32} className='rounded-full' alt='shining bard' />}
             </div>
-            <div className='flex-1 break-words markdown ml-2 mt-1 text-sm items-center justify-center'>
+            <div className='flex-1 break-words markdown ml-2 mt-1 text-sm items-center justify-center text-[#eaeaea]'>
                 <ReactMarkdown
                     className="break-words markdown mt-1"
                     components={{

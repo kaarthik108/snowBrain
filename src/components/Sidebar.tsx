@@ -5,7 +5,6 @@ import IconPlus from './ui/IconPlus';
 import IconSeparator from './ui/IconSeparator';
 import IconTwitter from './ui/IconTwitter';
 import { default as LogoIcon } from './ui/LogoIcon';
-import SnowLogo from './ui/SnowLogo';
 
 type Props = {
     children: React.ReactNode;
@@ -17,7 +16,7 @@ type Props = {
 
 export const Sidebar = ({ open, onClose, onNewChat, children }: Props) => {
     return (
-        <section className={`fixed left-0 top-0 bottom-0 dark:text-white  text-zinc-700 ${open ? 'w-screen' : 'w-0'} md:w-64 md:static`} >
+        <section className={`fixed left-0 top-0 bottom-0 dark:text-[#eaeaea]  text-zinc-700 ${open ? 'w-screen' : 'w-0'} md:w-64 md:static`} >
             <div className={`transition-all duration-200 flex h-screen ${open ? 'ml-0 ' : '-ml-96'} md:ml-0`}>
                 <div className="flex flex-col w-64 p-2 shadow-md md:translate-x-0 dark:border-neutral-800 border-neutral-200 bg-white dark:bg-neutral-950 dark:text-neutral-50 ">
                     <div className='flex items-center mb-6 mt-3 pl-2 justify-start'>
