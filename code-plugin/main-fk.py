@@ -1,16 +1,20 @@
+from __future__ import annotations
+
+from fastapi.responses import FileResponse
+
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
 from pydantic import BaseModel
-from typing import List
 import subprocess
 import sys
 import base64
-from fastapi.middleware.cors import CORSMiddleware
 
 
 class Script(BaseModel):
     script: str
-    packages: List[str]
     sql: str
+
 
 app = FastAPI()
 
@@ -22,18 +26,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/execute/")
+
+@app.post("/execute")
 async def execute(script: Script):
     try:
         # Install the packages
-        for package in script.packages:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        # for package in script.packages:
+        #     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
         # Prepare the script for getting data from Snowflake
-        snowflake_script = f'''
+        snowflake_script = (
+            '''
 import os
 import snowflake.connector
 import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 conn = snowflake.connector.connect(
     user=os.environ["USER_NAME"],
@@ -48,31 +58,44 @@ conn = snowflake.connector.connect(
 cur = conn.cursor()
 cur.execute('USE DATABASE ' + os.environ["DATABASE"])
 cur.execute('USE SCHEMA ' + os.environ["SCHEMA"])
-cur.execute("""{script.sql}""")
+cur.execute("'''
+            + script.sql
+            + """")
 all_rows = cur.fetchall()
 field_names = [i[0] for i in cur.description]
 df = pd.DataFrame(all_rows)
 df.columns = field_names
-'''
-
+"""
+        )
         # Combine the Snowflake script and the user's script into one Python file
-        combined_script = snowflake_script + "\n" + script.script
+        combined_script = (
+            snowflake_script + "\n" + script.script + '\nplt.savefig("output.png")'
+        )
 
         # Write the combined script to a temporary Python file
-        with open('temp.py', 'w') as file:
+        with open("temp.py", "w") as file:
             file.write(combined_script)
 
         # Execute the script and capture the output
-        proc = subprocess.run([sys.executable, 'temp.py'], capture_output=True, text=True)
+        proc = subprocess.run(
+            [sys.executable, "temp.py"], capture_output=True, text=True
+        )
 
-        # If the script was successful, return the output as a base64 string
+        # If the script was successful, convert the output image to base64 and return it
         if proc.returncode == 0:
-            output = base64.b64encode(proc.stdout.encode()).decode()
-            return {"base64String": output}
+            try:
+                with open("output.png", "rb") as img_file:
+                    base64.b64encode(img_file.read()).decode()
+                return FileResponse("output.png")
+            except Exception as e:
+                raise HTTPException(
+                    status_code=500, detail=f"Failed to encode image: {str(e)}"
+                )
 
         # If the script failed, return the error
         else:
             raise HTTPException(status_code=400, detail=proc.stderr)
 
     except Exception as e:
+        print(e, file=sys.stderr)
         raise HTTPException(status_code=500, detail=str(e))

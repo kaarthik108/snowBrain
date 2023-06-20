@@ -21,9 +21,8 @@ Standalone question:`;
 
 const prompt = PromptTemplate.fromTemplate(CONDENSE_QUESTION_PROMPT);
 
-const QA_PROMPT = ` You're an AI assistant who can guide people based on their questions about sql and snowflake by looking at the context.
-
-ONLY if USER asks about data analysis or visualization then write a python script (assuming the data is already stored as a dataframe object as df do not re initialize and do not try to connect to snowflake) ELSE DO NOT WRITE a python script.
+const QA_PROMPT = ` You're an AI assistant who is specialized in snowflake database and can guide people based on their questions about sql and snowflake.
+Assume the tables are in snowflake already.
 
 ALWAYS answer in Markdown format.
 
@@ -37,6 +36,24 @@ Answer:
 
 const q_prompt = PromptTemplate.fromTemplate(QA_PROMPT);
 
+const CODE_PROMPT = ` 
+As an AI assistant who specializes in data analysis with Python, your task is to manipulate and analyze the data. Assume the data is already stored in df.
+
+Use seaborn or matplotlib to create your plots.
+
+Only reply in Python code for data visualization.
+
+Your responses should always be formatted in Markdown.
+
+{chat_history}
+
+Question: {question}
+Context: {context}
+
+Answer:
+
+`;
+
 const index = pinecone.Index(PINECONE_INDEX_NAME);
 const vectorStore = await PineconeStore.fromExistingIndex(
   new OpenAIEmbeddings({
@@ -45,7 +62,7 @@ const vectorStore = await PineconeStore.fromExistingIndex(
   {
     pineconeIndex: index,
     textKey: "text",
-    namespace: PINECONE_NAME_SPACE, //namespace comes from your config folder
+    namespace: PINECONE_NAME_SPACE,
   }
 );
 
@@ -55,8 +72,8 @@ export const Chain = async (question: string, history: []) => {
   const stream = new TransformStream();
   const writer = stream.writable.getWriter();
   const model = new ChatOpenAI({
-    temperature: 0, // increase temepreature to get more creative answers
-    modelName: "gpt-3.5-turbo-16k", //change this to gpt-4 if you have access
+    temperature: 0.2,
+    modelName: "gpt-3.5-turbo",
     openAIApiKey: process.env.OPENAI_API_KEY ?? "",
     streaming: true,
     callbacks: [
@@ -72,7 +89,7 @@ export const Chain = async (question: string, history: []) => {
       },
     ],
   });
-  const fasterModel = new OpenAI({
+  const qamodel = new OpenAI({
     modelName: "gpt-3.5-turbo",
   });
 
@@ -81,10 +98,8 @@ export const Chain = async (question: string, history: []) => {
     vectorStore.asRetriever(),
     {
       qaTemplate: QA_PROMPT,
-      // memory: memory,
-      // returnSourceDocuments: true, //The number of source documents returned is 4 by default
       questionGeneratorChainOptions: {
-        llm: fasterModel,
+        llm: qamodel,
         template: CONDENSE_QUESTION_PROMPT,
       },
     }
@@ -92,6 +107,54 @@ export const Chain = async (question: string, history: []) => {
 
   const c_history = question + history;
 
+  chain.call({
+    question: question,
+    chat_history: c_history,
+  });
+  return stream.readable;
+};
+
+export const pyChain = async (question: string, history: []) => {
+  const encoder = new TextEncoder();
+
+  const stream = new TransformStream();
+  const writer = stream.writable.getWriter();
+  const model = new ChatOpenAI({
+    temperature: 0.1,
+    modelName: "gpt-3.5-turbo-16k",
+    openAIApiKey: process.env.OPENAI_API_KEY ?? "",
+    streaming: true,
+    callbacks: [
+      {
+        async handleLLMNewToken(token) {
+          await writer.ready;
+          await writer.write(encoder.encode(`${token}`));
+        },
+        async handleLLMEnd() {
+          await writer.ready;
+          await writer.close();
+        },
+      },
+    ],
+  });
+  const qamodel = new OpenAI({
+    modelName: "gpt-3.5-turbo-16k",
+  });
+
+  const chain = ConversationalRetrievalQAChain.fromLLM(
+    model,
+    vectorStore.asRetriever(),
+    {
+      qaTemplate: CODE_PROMPT,
+      questionGeneratorChainOptions: {
+        llm: qamodel,
+        template: CONDENSE_QUESTION_PROMPT,
+      },
+    }
+  );
+
+  const c_history = question + history;
+  // console.log(c_history);
   chain.call({
     question: question,
     chat_history: c_history,

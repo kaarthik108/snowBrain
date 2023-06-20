@@ -12,7 +12,6 @@ import IconClipboard from './ui/IconClipboard';
 type Props = {
     item: ChatMessage;
 }
-
 export const Message = ({ item }: Props) => {
     const { setCurrentMessageToken } = useContext(TokenCountContext);
 
@@ -24,6 +23,10 @@ export const Message = ({ item }: Props) => {
     }, [item.content, setCurrentMessageToken]);
 
     const codeRef = useRef<HTMLElement>(null);
+    const isImageMessage = item.content.startsWith('blob');
+    console.log(isImageMessage);
+
+    console.log(`${item.content}`)
     return (
         <div className={`py-5 flex px-6 md:px-48 ${item.author === 'user' && 'dark:bg-neutral-950/60 bg-neutral-100/50'}`}>
             <div className={`w-10 h-10 flex md:ml-0 rounded ${item.author === 'assistant' ? '' : ''}`}>
@@ -74,7 +77,8 @@ export const Message = ({ item }: Props) => {
                     rehypePlugins={[rehypeHighlight]}
                     remarkPlugins={[remarkGfm]}
                 >
-                    {item.content ?? ""}
+                    {item.content.startsWith("blob:") ? `![Plot Image](${item.content})` : item.content ?? ""}
+
                 </ReactMarkdown>
             </div>
         </div>

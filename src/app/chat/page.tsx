@@ -11,10 +11,12 @@ import { SidebarChatButton } from "@/components/SidebarChatButton";
 import { TokenCountContext } from "@/components/token";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
+import { extractSqlFromMessages } from "lib/extractSqlFromMessages";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
+
 
 const Page = () => {
   const [sidebarOpened, setSidebarOpened] = useState(false);
@@ -45,6 +47,63 @@ const Page = () => {
   const [pythonCode, setPythonCode] = useState("");
   const [sqlCode, setSqlCode] = useState("");
 
+  const sendToFastAPI = async (pythonCode: string) => {
+    if (pythonCode) {
+      // Fetch the SQL code from the latest messages in the chat
+      let fullChat = [...chatList];
+      let chatIndex = fullChat.findIndex(item => item.id === chatActiveId);
+
+      const messages: ChatMessage[] = fullChat[chatIndex].messages;
+      console.log(messages)
+      const sqlCode = extractSqlFromMessages(messages);
+      console.log(sqlCode);
+
+      if (!sqlCode) {
+        // Handle case where no SQL code is found in the latest messages
+        console.log("No SQL code found");
+        return;
+      }
+      console.log("Python Code", pythonCode)
+      console.log("SQL Code", sqlCode)
+      const response = await fetch('http://127.0.0.1:8000/execute', {
+        method: 'POST',
+        body: JSON.stringify({
+          script: pythonCode,
+          sql: sqlCode
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+
+      if (!response.ok) {
+        // Handle any errors here
+        console.log("Error", response)
+        return;
+      }
+      console.log("Response", response)
+      // Assuming the response is base64 encoded image
+      const imageData = await response.blob();
+
+      console.log("Response Data", imageData)
+      // const base64Image = responseData.base64String;  // Here's the change
+      // console.log("Base64 Image", base64Image)
+      const imageUrl = URL.createObjectURL(imageData);
+
+      console.log("Image URL", imageUrl)
+      // Add new chat message with the image
+      let newMessage: ChatMessage = {
+        id: uuidv4(),
+        author: 'assistant',
+        content: imageUrl // Convert base64 to markdown image
+      };
+
+      fullChat[chatIndex].messages = [...fullChat[chatIndex].messages, newMessage];
+      setChatList([...fullChat]);
+    }
+  }
+
+
   const fetchResponse = async () => {
     const decoder = new TextDecoder('utf-8');
     let fullChat = [...chatList];
@@ -60,8 +119,16 @@ const Page = () => {
         history.push(question, answer);
       }
       let question = chat.messages[chat.messages.length - 1].content;
+      console.log("Question", question)
+
+      let endpoint = "/api/sql";
+      let fetchBody = { prompt: question, history: history };
+
       // Store the history array in chatHistories with the chat id as the key
-      const response = await fetch('/api/sql', {
+      if (question.toLowerCase().includes("data analysis") || question.toLowerCase().includes("visualization")) {
+        endpoint = "/api/py";
+      }
+      const response = await fetch(endpoint, {
         method: 'POST',
         body: JSON.stringify({ prompt: question, history: history }),
         headers: {
@@ -91,10 +158,12 @@ const Page = () => {
           while ((sqlCodeMatch = sqlCodeRegex.exec(messageObject.content)) !== null) {
             sqlCode = sqlCodeMatch[1].trim();
           }
+
           setPythonCode(pythonCode);
           setSqlCode(sqlCode);
-          // Remove the Python code from the displayed message
-          // messageObject.content = messageObject.content.replace(pythonCodeRegex, '');
+
+          // Call the new function here
+          sendToFastAPI(pythonCode);
           fullChat[ChatIndex].messages[fullChat[ChatIndex].messages.length - 1] = messageObject;
           setChatList([...fullChat]);
           break;
@@ -104,13 +173,12 @@ const Page = () => {
         messageObject.content += text;
         // Update the last message with updated message
         fullChat[ChatIndex].messages[fullChat[ChatIndex].messages.length - 1] = messageObject;
-        console.log("Message Object", messageObject)
-        console.log("Full Chat", fullChat)
+
         setChatList([...fullChat]);
       }
     }
-    console.log("Python   ", pythonCode)
-    console.log("SQL   ", sqlCode)
+    // console.log("Python   ", pythonCode)
+    // console.log("SQL   ", sqlCode)
     setLoading(false);
   }
 

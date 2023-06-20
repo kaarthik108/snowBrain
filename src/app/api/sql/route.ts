@@ -1,4 +1,4 @@
-import { Chain } from "../../../../utils/chain";
+import { Chain } from "@/../utils/chain";
 
 // export const runtime = "edge";
 
