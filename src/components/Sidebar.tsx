@@ -37,7 +37,7 @@ export const Sidebar = ({ open, onClose, onNewChat, children }: Props) => {
                             <IconSeparator color='gray' width="32px" height="32px" />
                         </div>
                         <div className='flex  '>
-                            <span className='text-xl text-[#999]'>S n o w b r a i n</span>
+                            <span className='text-xl text-[#999] font-semibold'>S n o w b r a i n</span>
                         </div>
                     </div>
                     <div onClick={onNewChat} className='flex items-center p-3 rounded-md text-sm cursor-pointer border border-black/20 dark:border-white/20 dark:hover:bg-gray-500/20 hover:bg-gray-500/20'>
@@ -47,11 +47,11 @@ export const Sidebar = ({ open, onClose, onNewChat, children }: Props) => {
                     <nav className='flex-1 pt-2 overflow-y-auto '>
                         {children}
                     </nav>
-                    <div className='flex items-center justify-center gap-2 mb-6 border border-black/20 dark:border-white/20 dark:hover:bg-gray-500/20 hover:bg-gray-500/20'>
+                    <div className='flex items-center justify-center gap-2 mb-6 rounded-md border border-black/20 dark:border-white/20 dark:hover:bg-gray-500/20 hover:bg-gray-500/20'>
                         {session?.user ? (
                             <UserMenu user={session.user} />
                         ) : (
-                            <LoginButton showGoogleIcon={false} text='Login' className='' />
+                            <LoginButton showGoogleIcon={false} text='Login' className='my-1' />
                         )}
                     </div>
                     <div className='border-t dark:border-gray-700 border-black/20 pt-2'>

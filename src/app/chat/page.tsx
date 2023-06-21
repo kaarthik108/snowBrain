@@ -17,13 +17,34 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from 'react-hot-toast';
 import { v4 as uuidv4 } from 'uuid';
 
+const initialChatId = 'Initial Chat'; // Add this line
+
+const defaultChat: Chat = {
+  id: initialChatId, // or any other method you use to generate IDs
+  title: 'Initial Chat',
+  messages: [
+    {
+      id: uuidv4(),
+      author: 'user',
+      content: 'Welcome to the chat! Feel free to ask me anything.'
+    },
+    {
+      id: uuidv4(),
+      author: 'assistant',
+      content: 'Welcome to the chat! Feel free to ask me anything.'
+    }
+  ]
+}
+
+
 
 const Page = () => {
   const [sidebarOpened, setSidebarOpened] = useState(false);
   const [Loading, setLoading] = useState(false);
-  const [chatList, setChatList] = useLocalStorage<Chat[]>('chatList', []);
-  const [chatActiveId, setChatActiveId] = useState<string>("");
-  const [chatActive, setChatActive] = useState<Chat>();
+  const [chatList, setChatList] = useLocalStorage<Chat[]>('chatList', [defaultChat]);
+  const [chatActiveId, setChatActiveId] = useState<string>(defaultChat.id);
+  // const [chatActive, setChatActive] = useState<Chat>();
+  const [chatActive, setChatActive] = useState<Chat | undefined>(defaultChat);
   const [pythonCode, setPythonCode] = useState("");
   const { setCurrentMessageToken } = useContext(TokenCountContext); // use context
   const [activeChatMessagesCount, setActiveChatMessagesCount] = useState(0);
@@ -185,6 +206,13 @@ const Page = () => {
   }
 
   const handleSendMessage = (message: string) => {
+    if (chatActiveId === initialChatId) {
+      toast((t) => <CustomToast message='You cannot add new messages to the initial chat. Please create a new chat.' />, {
+        duration: 4000,
+        position: 'top-center',
+      });
+      return;
+    }
     if (activeChatMessagesCount >= 10) {
       toast((t) => <CustomToast message='You have reached the maximum number of messages for this chat' />, {
         duration: 4000,

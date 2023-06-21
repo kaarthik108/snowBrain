@@ -8,6 +8,8 @@ import remarkGfm from "remark-gfm";
 // import { useCopyToClipboard } from '../../hooks/use-copy-to-clipboard';
 import { TokenCountContext } from './token';
 import IconClipboard from './ui/IconClipboard';
+import IconOpenAI from './ui/IconOpenAI';
+import IconSnow from './ui/IconSnow';
 
 type Props = {
     item: ChatMessage;
@@ -29,11 +31,11 @@ export const Message = ({ item }: Props) => {
     console.log(`${item.content}`)
     return (
         <div className={`py-5 flex px-6 md:px-48 ${item.author === 'user' && 'dark:bg-neutral-950/60 bg-neutral-100/50'}`}>
-            <div className={`w-10 h-10 flex md:ml-0 rounded ${item.author === 'assistant' ? '' : ''}`}>
-                {item.author === 'user' && <Image src='/snow.svg' width={32} height={32} className='rounded-full' alt='' />}
-                {item.author === 'assistant' && <Image src='/google-bard-seeklogo.com.svg' width={32} height={32} className='rounded-full' alt='shining bard' />}
+            <div className={`w-10 h-10 flex md:ml-0 rounded items-center justify-center ${item.author === 'assistant' ? '' : ''}`}>
+                {item.author === 'user' && <IconSnow className='rounded-full' width='32' height='32' />}
+                {item.author === 'assistant' && <IconOpenAI className='rounded-full' />}
             </div>
-            <div className='flex-1 break-words markdown ml-2 mt-1 text-sm items-center justify-center text-[#eaeaea]'>
+            <div className='flex-1 break-words markdown ml-2 mt-1 text-sm items-center justify-center dark:text-[#eaeaea] text-[#111]'>
                 <ReactMarkdown
                     className="break-words markdown mt-1"
                     components={{

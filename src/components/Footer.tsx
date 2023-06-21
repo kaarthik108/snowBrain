@@ -27,7 +27,7 @@ export const Footer = ({ disabled, onSendMessage }: Props) => {
                     onSend={onSendMessage}
                 />
                 <div className='pt-3 text-center text-xs text-zinc-700 dark:text-[#999] mb-2'>
-                    Powered by GPT3.5
+                    Powered by ChatGPT API
                 </div>
             </div>
 
