@@ -1,3 +1,8 @@
+"use client";
+
+import { useSession } from 'next-auth/react';
+import { LoginButton } from './LoginButton';
+import { UserMenu } from './UserMenu';
 import IconGithub from './ui/IconGithub';
 import IconLinkedIn from './ui/IconLinkedIn';
 import IconMinimize2 from './ui/IconMinimize2';
@@ -15,11 +20,14 @@ type Props = {
 
 
 export const Sidebar = ({ open, onClose, onNewChat, children }: Props) => {
+
+    const { data: session } = useSession();
+    console.log(session);
     return (
         <section className={`fixed left-0 top-0 bottom-0 dark:text-[#eaeaea]  text-zinc-700 ${open ? 'w-screen' : 'w-0'} md:w-64 md:static`} >
             <div className={`transition-all duration-200 flex h-screen ${open ? 'ml-0 ' : '-ml-96'} md:ml-0`}>
                 <div className="flex flex-col w-64 p-2 shadow-md md:translate-x-0 dark:border-neutral-800 border-neutral-200 bg-white dark:bg-neutral-950 dark:text-neutral-50 ">
-                    <div className='flex items-center mb-6 mt-3 pl-2 justify-start'>
+                    <div className='flex items-center mb-6 mt-3 pl-0 justify-center'>
                         <div className='flex justify-between items-center'>
                             <LogoIcon color="" width="24px" height="24px" className='text-[#999]' />
 
@@ -39,6 +47,13 @@ export const Sidebar = ({ open, onClose, onNewChat, children }: Props) => {
                     <nav className='flex-1 pt-2 overflow-y-auto '>
                         {children}
                     </nav>
+                    <div className='flex items-center justify-center gap-2 mb-6 border border-black/20 dark:border-white/20 dark:hover:bg-gray-500/20 hover:bg-gray-500/20'>
+                        {session?.user ? (
+                            <UserMenu user={session.user} />
+                        ) : (
+                            <LoginButton showGoogleIcon={false} text='Login' className='' />
+                        )}
+                    </div>
                     <div className='border-t dark:border-gray-700 border-black/20 pt-2'>
                         <div className='flex justify-center gap-4 mb-2'>
                             <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">

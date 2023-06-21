@@ -12,6 +12,7 @@ import { TokenCountContext } from "@/components/token";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { extractSqlFromMessages } from "lib/extractSqlFromMessages";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from 'react-hot-toast';
@@ -29,6 +30,9 @@ const Page = () => {
   const { setCurrentMessageToken } = useContext(TokenCountContext); // use context
   const [activeChatMessagesCount, setActiveChatMessagesCount] = useState(0);
   const router = useRouter();
+  const session = useSession();
+
+  console.log(session);
 
   useEffect(() => {
     const activeChat = chatList.find(item => item.id === chatActiveId);

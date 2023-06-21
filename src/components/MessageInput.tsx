@@ -1,4 +1,9 @@
+"use client";
+
+import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import CustomToast from './CustomToast';
 import IconSend from './ui/IconSend';
 import { Textarea } from './ui/textarea';
 
@@ -9,7 +14,7 @@ type Props = {
 
 
 export const MessageInput = ({ disabled, onSend }: Props) => {
-
+    const { data: session } = useSession();
     const [text, setText] = useState('')
     const textEl = useRef<HTMLTextAreaElement>(null)
 
@@ -25,10 +30,16 @@ export const MessageInput = ({ disabled, onSend }: Props) => {
 
 
     const handleSendMessage = () => {
-
-        if (!disabled && text.trim() !== '') {
-            onSend(text)
-            setText('')
+        if (session) { // check if session exists
+            if (!disabled && text.trim() !== '') {
+                onSend(text)
+                setText('')
+            }
+        } else { // if session does not exist, display a toast message
+            toast((t) => <CustomToast message='Please login to send messages' />, {
+                duration: 4000,
+                position: 'top-center',
+            });
         }
     }
 

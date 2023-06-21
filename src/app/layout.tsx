@@ -1,3 +1,4 @@
+import AuthProvider from '@/components/Providers';
 import { TokenCountProvider } from '@/components/token';
 import { Metadata } from "next";
 import { Inter } from 'next/font/google';
@@ -35,9 +36,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <TokenCountProvider>
-        <body className={inter.className}><Toaster />{children}</body>
-      </TokenCountProvider>
+      <body className={inter.className}>
+        <AuthProvider>
+          <TokenCountProvider>
+            <Toaster />
+            {children}
+          </TokenCountProvider>
+        </AuthProvider>
+      </body>
     </html>
   )
 }
