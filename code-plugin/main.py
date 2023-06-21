@@ -37,37 +37,37 @@ def fastapi_app():
 
             # Prepare the script for getting data from Snowflake
             snowflake_script = (
-                '''
-    import os
-    import snowflake.connector
-    import pandas as pd
-    import matplotlib
-    matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
-    import seaborn as sns
+    f'''
+import os
+import snowflake.connector
+import pandas as pd
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-    conn = snowflake.connector.connect(
-        user=os.environ["USER_NAME"],
-        password=os.environ["PASSWORD"],
-        account=os.environ["ACCOUNT"],
-        warehouse=os.environ["WAREHOUSE"],
-        role=os.environ["ROLE"],
-        database=os.environ["DATABASE"],
-        schema=os.environ["SCHEMA"],
-    )
+conn = snowflake.connector.connect(
+    user=os.environ["USER_NAME"],
+    password=os.environ["PASSWORD"],
+    account=os.environ["ACCOUNT"],
+    warehouse=os.environ["WAREHOUSE"],
+    role=os.environ["ROLE"],
+    database=os.environ["DATABASE"],
+    schema=os.environ["SCHEMA"],
+)
 
-    cur = conn.cursor()
-    cur.execute('USE DATABASE ' + os.environ["DATABASE"])
-    cur.execute('USE SCHEMA ' + os.environ["SCHEMA"])
-    cur.execute("'''
-                + script.sql
-                + """")
-    all_rows = cur.fetchall()
-    field_names = [i[0] for i in cur.description]
-    df = pd.DataFrame(all_rows)
-    df.columns = field_names
-    """
-            )
+cur = conn.cursor()
+cur.execute('USE DATABASE ' + os.environ["DATABASE"])
+cur.execute('USE SCHEMA ' + os.environ["SCHEMA"])
+cur.execute(f\"\"\"
+{script.sql}
+\"\"\")
+all_rows = cur.fetchall()
+field_names = [i[0] for i in cur.description]
+df = pd.DataFrame(all_rows)
+df.columns = field_names
+'''
+)
             # Combine the Snowflake script and the user's script into one Python file
             combined_script = (
                 snowflake_script + "\n" + script.script + '\nplt.savefig("output.png")'

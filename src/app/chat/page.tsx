@@ -12,7 +12,6 @@ import { TokenCountContext } from "@/components/token";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { extractSqlFromMessages } from "lib/extractSqlFromMessages";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from 'react-hot-toast';
@@ -22,17 +21,13 @@ import { v4 as uuidv4 } from 'uuid';
 const Page = () => {
   const [sidebarOpened, setSidebarOpened] = useState(false);
   const [Loading, setLoading] = useState(false);
-  // const [chatList, setChatList] = useState<Chat[]>([]);
   const [chatList, setChatList] = useLocalStorage<Chat[]>('chatList', []);
   const [chatActiveId, setChatActiveId] = useState<string>("");
   const [chatActive, setChatActive] = useState<Chat>();
-  const [image, setImage] = useState<string | null>(null);
+  const [pythonCode, setPythonCode] = useState("");
   const { setCurrentMessageToken } = useContext(TokenCountContext); // use context
   const [activeChatMessagesCount, setActiveChatMessagesCount] = useState(0);
   const router = useRouter();
-  const session = useSession();
-
-  console.log(session);
 
   useEffect(() => {
     const activeChat = chatList.find(item => item.id === chatActiveId);
@@ -47,9 +42,6 @@ const Page = () => {
     if (Loading) fetchResponse();
   }, [Loading]);
 
-  // Add the state variables at the start of your component.
-  const [pythonCode, setPythonCode] = useState("");
-  const [sqlCode, setSqlCode] = useState("");
 
   const sendToFastAPI = async (pythonCode: string) => {
     if (pythonCode) {
@@ -90,11 +82,10 @@ const Page = () => {
       const imageData = await response.blob();
 
       console.log("Response Data", imageData)
-      // const base64Image = responseData.base64String;  // Here's the change
-      // console.log("Base64 Image", base64Image)
       const imageUrl = URL.createObjectURL(imageData);
 
       console.log("Image URL", imageUrl)
+
       // Add new chat message with the image
       let newMessage: ChatMessage = {
         id: uuidv4(),
@@ -104,6 +95,7 @@ const Page = () => {
 
       fullChat[chatIndex].messages = [...fullChat[chatIndex].messages, newMessage];
       setChatList([...fullChat]);
+      console.log("fullChat List", fullChat)
     }
   }
 
@@ -153,18 +145,12 @@ const Page = () => {
         if (done) {
           // Once streaming is done, we handle the message content
           const pythonCodeRegex = /```python([\s\S]*?)```/g;
-          const sqlCodeRegex = /```sql([\s\S]*?)```/g;
-          let pythonCodeMatch, sqlCodeMatch;
-          let pythonCode = '', sqlCode = '';
+          let pythonCodeMatch;
+          let pythonCode = '';
           while ((pythonCodeMatch = pythonCodeRegex.exec(messageObject.content)) !== null) {
             pythonCode = pythonCodeMatch[1].trim();
           }
-          while ((sqlCodeMatch = sqlCodeRegex.exec(messageObject.content)) !== null) {
-            sqlCode = sqlCodeMatch[1].trim();
-          }
-
           setPythonCode(pythonCode);
-          setSqlCode(sqlCode);
 
           // Call the new function here
           sendToFastAPI(pythonCode);
@@ -181,13 +167,10 @@ const Page = () => {
         setChatList([...fullChat]);
       }
     }
-    // console.log("Python   ", pythonCode)
-    // console.log("SQL   ", sqlCode)
     setLoading(false);
   }
 
   console.log("Python   ", pythonCode)
-  console.log("SQL   ", sqlCode)
   console.log("Chat List", chatList)
 
 
@@ -202,7 +185,7 @@ const Page = () => {
   }
 
   const handleSendMessage = (message: string) => {
-    if (activeChatMessagesCount >= 8) {
+    if (activeChatMessagesCount >= 10) {
       toast((t) => <CustomToast message='You have reached the maximum number of messages for this chat' />, {
         duration: 4000,
         position: 'top-center',
@@ -276,7 +259,7 @@ const Page = () => {
 
         <Footer
           onSendMessage={handleSendMessage}
-          disabled={Loading || activeChatMessagesCount >= 10}
+          disabled={Loading || activeChatMessagesCount >= 12}
         />
 
       </section>
