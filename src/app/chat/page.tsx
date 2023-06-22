@@ -16,27 +16,8 @@ import uploadToCloudinary from "lib/uploadToCloudinary";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from 'react-hot-toast';
+import { defaultChat, initialChatId } from "utils/initialChat";
 import { v4 as uuidv4 } from 'uuid';
-
-const initialChatId = 'Initial Chat'; // Add this line
-
-const defaultChat: Chat = {
-  id: initialChatId, // or any other method you use to generate IDs
-  title: 'Initial Chat',
-  messages: [
-    {
-      id: uuidv4(),
-      author: 'user',
-      content: 'Welcome to the chat! Feel free to ask me anything.'
-    },
-    {
-      id: uuidv4(),
-      author: 'assistant',
-      content: 'Welcome to the chat! Feel free to ask me anything.'
-    }
-  ]
-}
-
 
 
 const Page = () => {
@@ -44,10 +25,9 @@ const Page = () => {
   const [Loading, setLoading] = useState(false);
   const [chatList, setChatList] = useLocalStorage<Chat[]>('chatList', [defaultChat]);
   const [chatActiveId, setChatActiveId] = useState<string>(defaultChat.id);
-  // const [chatActive, setChatActive] = useState<Chat>();
   const [chatActive, setChatActive] = useState<Chat | undefined>(defaultChat);
   const [pythonCode, setPythonCode] = useState("");
-  const { setCurrentMessageToken } = useContext(TokenCountContext); // use context
+  const { setCurrentMessageToken } = useContext(TokenCountContext);
   const [activeChatMessagesCount, setActiveChatMessagesCount] = useState(0);
   const router = useRouter();
 
@@ -141,9 +121,10 @@ const Page = () => {
 
       let endpoint = "/api/sql";
       // let fetchBody = { prompt: question, history: history };
+      let keywords = ["data analysis", "visualization", "datanalysis", "visualisation", "vizualisation", "charts", "graphs", "analysis", "plots", "matplot", "seaborn", "plotly"];
 
       // Store the history array in chatHistories with the chat id as the key
-      if (question.toLowerCase().includes("data analysis") || question.toLowerCase().includes("visualization")) {
+      if (keywords.some(keyword => question.toLowerCase().includes(keyword))) {
         endpoint = "/api/py";
       }
       const response = await fetch(endpoint, {
@@ -201,10 +182,17 @@ const Page = () => {
 
   const handleNewChat = () => {
     if (Loading) return;
+    if (chatList.length >= 4) {
+      toast((t) => <CustomToast message='You have reached the maximum number of chats' />, {
+        duration: 4000,
+        position: 'top-center',
+      });
+      return;
+    }
     setChatActiveId('')
     closeSidebar();
-
   }
+
 
   const handleSendMessage = (message: string) => {
     if (chatActiveId === initialChatId) {

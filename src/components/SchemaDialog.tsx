@@ -29,8 +29,8 @@ export default function SchemaDialog() {
             handler={handleClose}
             className="m-auto absolute inset-0 bg-[#888] max-w-2xl mx-auto rounded-lg scrollbar-thin shadow max-h-[60vh] flex flex-col overflow-y-scroll space-y-1 "
           >
-            <DialogHeader className="py-4 text-black">Database Schema</DialogHeader>
-            <DialogBody divider className=" overflow-y-auto py-4 my-4 text-black scrollbar-thin overflow-x-auto text-sm">
+            <DialogHeader className="py-4 text-black mx-4">Database Schema</DialogHeader>
+            <DialogBody divider className=" overflow-y-auto py-4 my-4 text-black scrollbar-thin overflow-x-auto text-sm mx-4">
               <DatabaseSchema tables={tables} />
             </DialogBody>
           </Dialog>

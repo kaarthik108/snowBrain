@@ -58,7 +58,7 @@ export const Sidebar = ({ open, onClose, onNewChat, children }: Props) => {
                         {session?.user ? (
                             <UserMenu user={session.user} />
                         ) : (
-                            <LoginButton showGoogleIcon={false} text='Login' className='my-1' />
+                            <LoginButton showGoogleIcon={false} text='Login' className='my-1 text-[#999]' />
                         )}
                     </div>
                     <div className='border-t border-gray-700  pt-2'>
