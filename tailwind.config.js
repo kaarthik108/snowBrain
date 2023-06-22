@@ -9,15 +9,17 @@ module.exports = {
   ],
   theme: {
     extend: {
-      // backgroundImage: {
-      //   'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-      //   'gradient-conic':
-      //     'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      // },
-      // colors: {
-      //   'gpt-gray': '#343541',
-      //   'gpt-lightgray': '#40414F',
-      // },
+      backdropBlur: {
+        'none': '0',
+        'blur': 'blur(20px)',
+      },
+      backdropOpacity: {
+        '0': '0',
+        '25': '0.25',
+        '50': '0.5',
+        '75': '0.75',
+        '100': '1',
+      },
       keyframes: {
         blink: {
           '0%': { opacity: 0 },
@@ -32,6 +34,11 @@ module.exports = {
       },
  
     },
+  },
+   variants: {
+    extend: {
+      backdropFilter: ['responsive'], // this line is optional
+    }
   },
  plugins: [],
 }

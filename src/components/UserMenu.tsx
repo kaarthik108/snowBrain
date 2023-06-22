@@ -40,7 +40,7 @@ function IconExternalLink({
 }
 export function UserMenu({ user }: UserMenuProps) {
     return (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between py-2">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="pl-0">

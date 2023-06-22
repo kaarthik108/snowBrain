@@ -4,7 +4,6 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
-// import { useCopyToClipboard } from '../../hooks/use-copy-to-clipboard';
 import { TokenCountContext } from './token';
 import IconClipboard from './ui/IconClipboard';
 import IconOpenAI from './ui/IconOpenAI';
@@ -19,13 +18,16 @@ export const Message = ({ item }: Props) => {
 
     // Use an effect to update the token count
     useEffect(() => {
-        // Split the content on whitespace and punctuation to approximate tokens
-        const approxTokens = item.content.split(/[\s,.!?]+/).length;
-        setCurrentMessageToken(approxTokens);
+        // Check if item.content is defined before calling split
+        if (item.content) {
+            // Split the content on whitespace and punctuation to approximate tokens
+            const approxTokens = item.content.split(/[\s,.!?]+/).length;
+            setCurrentMessageToken(approxTokens);
+        }
     }, [item.content, setCurrentMessageToken]);
 
     const codeRef = useRef<HTMLElement>(null);
-    const isImageMessage = item.content.startsWith('https://res.cloudinary.com/');
+    const isImageMessage = item?.content?.startsWith && item.content.startsWith('https://res.cloudinary.com/');
     console.log(isImageMessage);
 
     return (
@@ -47,8 +49,8 @@ export const Message = ({ item }: Props) => {
                                     </span>
                                 );
                             return (
-                                <div className="w-full my-6 overflow-hidden rounded-md dark:bg-neutral-950/60">
-                                    <div className="dark:bg-[#1e283880] bg-neutral-50 py-2 px-3 text-xs flex items-center justify-between">
+                                <div className="w-full my-6 overflow-hidden rounded-md dark:bg-neutral-950/60 bg-gray-800 text-white">
+                                    <div className="bg-[#1e283880]  py-2 px-3 text-xs flex items-center justify-between">
                                         <div>{language ?? "sql"}</div>
                                         <CopyToClipboard text={codeRef?.current?.innerText as string} onCopy={() => { setCopied(true); setTimeout(() => setCopied(false), 3000) }}>
                                             <button className="flex items-center gap-1">
@@ -61,7 +63,7 @@ export const Message = ({ item }: Props) => {
                                         ref={codeRef}
                                         className={
                                             (className ?? "hljs language-javascript ") +
-                                            " dark:bg-[#1e283880] bg-neutral-50 block p-3 overflow-auto border-t border-t-gray-300/40"
+                                            " dark:bg-[#1e283880] text-[#eaeaea] block p-3 overflow-auto border-t border-t-gray-300/40"
                                         }
                                     >
                                         {children}
