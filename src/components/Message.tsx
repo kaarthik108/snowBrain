@@ -1,6 +1,5 @@
 import { ChatMessage } from '@/types/ChatMessage';
-import Image from 'next/image';
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from "rehype-highlight";
@@ -16,6 +15,7 @@ type Props = {
 }
 export const Message = ({ item }: Props) => {
     const { setCurrentMessageToken } = useContext(TokenCountContext);
+    const [copied, setCopied] = useState(false);
 
     // Use an effect to update the token count
     useEffect(() => {
@@ -25,10 +25,9 @@ export const Message = ({ item }: Props) => {
     }, [item.content, setCurrentMessageToken]);
 
     const codeRef = useRef<HTMLElement>(null);
-    const isImageMessage = item.content.startsWith('blob');
+    const isImageMessage = item.content.startsWith('https://res.cloudinary.com/');
     console.log(isImageMessage);
 
-    console.log(`${item.content}`)
     return (
         <div className={`py-5 flex px-6 md:px-48 ${item.author === 'user' && 'dark:bg-neutral-950/60 bg-neutral-100/50'}`}>
             <div className={`w-10 h-10 flex md:ml-0 rounded items-center justify-center ${item.author === 'assistant' ? '' : ''}`}>
@@ -51,16 +50,11 @@ export const Message = ({ item }: Props) => {
                                 <div className="w-full my-6 overflow-hidden rounded-md dark:bg-neutral-950/60">
                                     <div className="dark:bg-[#1e283880] bg-neutral-50 py-2 px-3 text-xs flex items-center justify-between">
                                         <div>{language ?? "sql"}</div>
-                                        <CopyToClipboard
-                                            text={codeRef?.current?.innerText as string}
-                                        >
-                                            <div className="relative">
-                                                <button className="flex items-center gap-1">
-                                                    <IconClipboard width={10} />
-                                                    Copy
-                                                    <span className="sr-only">Copied</span>
-                                                </button>
-                                            </div>
+                                        <CopyToClipboard text={codeRef?.current?.innerText as string} onCopy={() => { setCopied(true); setTimeout(() => setCopied(false), 3000) }}>
+                                            <button className="flex items-center gap-1">
+                                                <IconClipboard width={10} />
+                                                {copied ? 'Copied!' : 'Copy'}
+                                            </button>
                                         </CopyToClipboard>
                                     </div>
                                     <code
@@ -79,7 +73,7 @@ export const Message = ({ item }: Props) => {
                     rehypePlugins={[rehypeHighlight]}
                     remarkPlugins={[remarkGfm]}
                 >
-                    {item.content.startsWith("blob:") ? `![Plot Image](${item.content})` : item.content ?? ""}
+                    {isImageMessage ? `![matplot graph](${item.content})` : item.content ?? ""}
 
                 </ReactMarkdown>
             </div>

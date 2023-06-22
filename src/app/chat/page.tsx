@@ -12,6 +12,7 @@ import { TokenCountContext } from "@/components/token";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { extractSqlFromMessages } from "lib/extractSqlFromMessages";
+import uploadToCloudinary from "lib/uploadToCloudinary";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from 'react-hot-toast';
@@ -103,7 +104,7 @@ const Page = () => {
       const imageData = await response.blob();
 
       console.log("Response Data", imageData)
-      const imageUrl = URL.createObjectURL(imageData);
+      const imageUrl = await uploadToCloudinary(imageData)
 
       console.log("Image URL", imageUrl)
 
@@ -111,7 +112,7 @@ const Page = () => {
       let newMessage: ChatMessage = {
         id: uuidv4(),
         author: 'assistant',
-        content: imageUrl // Convert base64 to markdown image
+        content: imageUrl
       };
 
       fullChat[chatIndex].messages = [...fullChat[chatIndex].messages, newMessage];

@@ -8,7 +8,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import subprocess
 import sys
-import base64
 
 
 class Script(BaseModel):
@@ -35,8 +34,7 @@ async def execute(script: Script):
         #     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
         # Prepare the script for getting data from Snowflake
-        snowflake_script = (
-    f'''
+        snowflake_script = f"""
 import os
 import snowflake.connector
 import pandas as pd
@@ -65,12 +63,12 @@ all_rows = cur.fetchall()
 field_names = [i[0] for i in cur.description]
 df = pd.DataFrame(all_rows)
 df.columns = field_names
-'''
-        )
-            
+"""
+
         # Combine the Snowflake script and the user's script into one Python file
-        combined_script = snowflake_script + "\n" + script.script + '\nplt.savefig("output.png")'
-        
+        combined_script = (
+            snowflake_script + "\n" + script.script + '\nplt.savefig("output.png")'
+        )
 
         # Write the combined script to a temporary Python file
         with open("temp.py", "w") as file:
@@ -84,8 +82,6 @@ df.columns = field_names
         # If the script was successful, convert the output image to base64 and return it
         if proc.returncode == 0:
             try:
-                with open("output.png", "rb") as img_file:
-                    base64.b64encode(img_file.read()).decode()
                 return FileResponse("output.png")
             except Exception as e:
                 raise HTTPException(
