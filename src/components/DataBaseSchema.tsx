@@ -2,7 +2,7 @@ import { DatabaseSchemaProps } from "@/types/schema";
 import ReactMarkdown from 'react-markdown';
 
 export const DatabaseSchema: React.FC<DatabaseSchemaProps> = ({ tables }) => (
-    <div className="space-y-6">
+    <div className="space-y-4">
         {tables.map((table, i) => (
             <div key={i}>
                 <ReactMarkdown className="markdown break-words">

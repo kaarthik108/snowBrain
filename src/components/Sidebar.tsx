@@ -12,7 +12,7 @@ import IconSeparator from './ui/IconSeparator';
 import IconTwitter from './ui/IconTwitter';
 import { default as LogoIcon } from './ui/LogoIcon';
 
-type Props = {
+type SidebarProps = {
     children: React.ReactNode;
     open: boolean;
     onClose: () => void;
@@ -20,10 +20,11 @@ type Props = {
 }
 
 
-export const Sidebar = ({ open, onClose, onNewChat, children }: Props) => {
-
+export const Sidebar = ({ open, onClose, onNewChat, children }: SidebarProps) => {
     const { data: session } = useSession();
+
     console.log(session);
+
     return (
         <section className={`fixed left-0 top-0 bottom-0 dark:text-[#eaeaea]  text-zinc-700 ${open ? 'w-screen' : 'w-0'} md:w-64 md:static`} >
             <div className={`transition-all duration-200 flex h-screen ${open ? 'ml-0 ' : '-ml-96'} md:ml-0`}>
@@ -44,7 +45,6 @@ export const Sidebar = ({ open, onClose, onNewChat, children }: Props) => {
                     <div className='flex  items-center justify-center py-6'>
 
                         <SchemaDialog />
-
 
                     </div>
                     <div onClick={onNewChat} className='flex items-center p-3 rounded-md text-sm cursor-pointer border border-white/20 hover:bg-gray-500/20 '>

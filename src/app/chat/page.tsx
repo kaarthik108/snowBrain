@@ -336,6 +336,7 @@ const Page = () => {
       </section>
     </main>
   );
+
 }
 
 export default Page;

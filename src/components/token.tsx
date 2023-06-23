@@ -1,9 +1,7 @@
 "use client";
 
-"use client";
-
 import { encode } from "@nem035/gpt-3-encoder";
-import React, { createContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 // Update context type definition
 interface TokenCountContextProps {

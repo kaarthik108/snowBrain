@@ -34,11 +34,11 @@ body {
 
 ::-webkit-scrollbar {
   width: 0.5rem;
-  height: 1rem;
+  height: 0.5rem;
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(217, 217, 227, 0.8);
-  border-radius: 1rem;
+  /* border-radius: 1rem; */
 }
 ::-webkit-scrollbar-track {
   background-color: transparent;
