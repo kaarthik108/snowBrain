@@ -22,26 +22,26 @@ Standalone question:`;
 const prompt = PromptTemplate.fromTemplate(CONDENSE_QUESTION_PROMPT);
 
 const QA_PROMPT = ` You're an AI assistant who is specialized in snowflake database and can guide people based on their questions about sql and snowflake.
-Assume the tables are in snowflake already.
 
-ALWAYS answer in Markdown format.
+Every response of yours should have an sql code.
+
+Your responses should always be formatted in Markdown.
 
 {chat_history}
 
 Question: {question}
 context: {context}
 
-Answer:
- `;
+Answer in Markdown:
+`;
 
 const q_prompt = PromptTemplate.fromTemplate(QA_PROMPT);
 
 const CODE_PROMPT = ` 
 As an AI assistant who specializes in data analysis with Python, your task is to manipulate and analyze the data. Assume the data is already stored in df.
 
-Use seaborn or matplotlib to create your plots.
-
-Only reply in Python code for data visualization.
+Use seaborn or matplotlib to create your plots, make one plot per question. NEVER use plt.show() in the script because it will break the test.
+and do not use pandas built-in functionality to plots. Only use seaborn or matplotlib.
 
 Your responses should always be formatted in Markdown.
 
@@ -50,8 +50,7 @@ Your responses should always be formatted in Markdown.
 Question: {question}
 Context: {context}
 
-Answer:
-
+Answer in Markdown:
 `;
 
 const index = pinecone.Index(PINECONE_INDEX_NAME);
@@ -72,8 +71,8 @@ export const Chain = async (question: string, history: []) => {
   const stream = new TransformStream();
   const writer = stream.writable.getWriter();
   const model = new ChatOpenAI({
-    temperature: 0.2,
-    modelName: "gpt-3.5-turbo",
+    temperature: 0,
+    modelName: "gpt-3.5-turbo-16k",
     openAIApiKey: process.env.OPENAI_API_KEY ?? "",
     streaming: true,
     callbacks: [
@@ -89,8 +88,8 @@ export const Chain = async (question: string, history: []) => {
       },
     ],
   });
-  const qamodel = new OpenAI({
-    modelName: "gpt-3.5-turbo",
+  const qamodel = new ChatOpenAI({
+    modelName: "gpt-3.5-turbo-16k",
   });
 
   const chain = ConversationalRetrievalQAChain.fromLLM(
@@ -120,7 +119,7 @@ export const pyChain = async (question: string, history: []) => {
   const stream = new TransformStream();
   const writer = stream.writable.getWriter();
   const model = new ChatOpenAI({
-    temperature: 0.1,
+    temperature: 0,
     modelName: "gpt-3.5-turbo-16k",
     openAIApiKey: process.env.OPENAI_API_KEY ?? "",
     streaming: true,

@@ -1,38 +1,55 @@
-import { ChatMessage } from "@/types/ChatMessage"; // Assume ChatMessage type is defined here
+// import { ChatMessage } from "@/types/ChatMessage";
 
-export const extractSqlFromMessages = (
-  messages: ChatMessage[]
-): string | null => {
-  // Define SQL starting keywords
-  const sqlKeywords = ["SELECT", "WITH", "UPDATE", "DELETE", "INSERT"];
+// export const extractSqlFromMessages = async (
+//   messages: ChatMessage[]
+// ): Promise<string | null> => {
+//   console.log(messages);
+//   for (const message of messages) {
+//     console.log(message);
+//     if (message.author === "assistant") {
+//       const sqlPrompt = {
+//         messages: [
+//           {
+//             role: "user",
+//             content: message.content,
+//           },
+//         ],
+//       };
+//       // console.log(sqlPrompt);
+//       const response = await fetch("/api/chat", {
+//         method: "POST",
+//         body: JSON.stringify(sqlPrompt),
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       });
+//       // console.log(response);
+//       if (!response.ok) {
+//         console.log("Error", response);
+//         return null;
+//       }
 
-  for (const message of messages) {
-    if (message.author === "assistant") {
-      // Split the content by newlines and trim each line
-      const lines = message.content.split("\n").map((line) => line.trim());
-      console.log(lines);
-      // Find the start and end of the code block
-      const codeStartIndex = lines.findIndex((line) => line.startsWith("```"));
-      const codeEndIndex = lines.lastIndexOf("```");
+//       const responseData = await response.json();
+//       console.log(responseData);
+//       if (!responseData.content) {
+//         console.error("Unexpected response data", responseData);
+//         return null;
+//       }
 
-      // If a code block is found
-      if (codeStartIndex >= 0 && codeEndIndex > codeStartIndex) {
-        // Extract the code block
-        const codeBlock = lines
-          .slice(codeStartIndex + 1, codeEndIndex)
-          .join("\n");
+//       const sqlCode = responseData.content;
+//       // Adjusting the regular expression to match the SQL code from the message content
+//       // const sqlRegex = /((?:SELECT|WITH)[\s\S]*?;)/g;
+//       const sqlRegex = /```sql\n([\s\S]*?)\n```/g;
+//       const match = sqlRegex.exec(sqlCode);
+//       console.log(match);
+//       if (match && match[1]) {
+//         // The actual SQL code is the first capture group
+//         console.log(match[1]);
+//         return match[1].trim();
+//       }
+//     }
+//   }
 
-        console.log(codeBlock);
-        // If the code block starts with any SQL keyword, assume it's SQL
-        if (
-          sqlKeywords.some((keyword) => codeBlock.trim().startsWith(keyword))
-        ) {
-          return codeBlock;
-        }
-      }
-    }
-  }
-  console.log(messages);
-  // Return null if no SQL code was found
-  return null;
-};
+//   // Return null if no SQL code was found
+//   return null;
+// };

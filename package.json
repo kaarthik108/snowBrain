@@ -35,6 +35,7 @@
     "next": "13.4.5",
     "next-auth": "^4.22.1",
     "openai": "^3.3.0",
+    "openai-edge": "^1.1.0",
     "postcss": "8.4.24",
     "react": "18.2.0",
     "react-copy-to-clipboard": "^5.1.0",

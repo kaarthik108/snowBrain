@@ -11,7 +11,8 @@ import { SidebarChatButton } from "@/components/SidebarChatButton";
 import { TokenCountContext } from "@/components/token";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
-import { extractSqlFromMessages } from "lib/extractSqlFromMessages";
+import { extractSQL } from "lib/extractSQL";
+// import { extractSqlFromMessages } from "lib/extractSqlFromMessages";
 import uploadToCloudinary from "lib/uploadToCloudinary";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -40,69 +41,119 @@ const Page = () => {
     }
   }, [chatActiveId, chatList])
 
+  const [triggerFetch, setTriggerFetch] = useState(false);
+
   useEffect(() => {
-    if (Loading) fetchResponse();
-  }, [Loading]);
+    if (triggerFetch) {
+      fetchResponse();
+      setTriggerFetch(false);
+    }
+  }, [triggerFetch]);
+
 
 
   const sendToFastAPI = async (pythonCode: string) => {
-    if (pythonCode) {
-      // Fetch the SQL code from the latest messages in the chat
-      let fullChat = [...chatList];
-      let chatIndex = fullChat.findIndex(item => item.id === chatActiveId);
+    setLoading(true);
+    if (!pythonCode) {
+      console.log("No python code found");
+      setLoading(false);
+      return;
+    }
+    // Fetch the SQL code from the latest messages in the chat
+    let fullChat = [...chatList];
+    let chatIndex = fullChat.findIndex(item => item.id === chatActiveId);
 
-      const messages: ChatMessage[] = fullChat[chatIndex].messages;
-      console.log(messages)
-      const sqlCode = extractSqlFromMessages(messages);
-      console.log(sqlCode);
+    const messages: ChatMessage[] = fullChat[chatIndex].messages;
+    console.log(messages)
+    let sql = await extractSQL(messages);
+    // if (sql) setsqlCode(sql);
+    console.log(sql);
 
-      if (!sqlCode) {
-        // Handle case where no SQL code is found in the latest messages
-        console.log("No SQL code found");
-        return;
-      }
-      console.log("Python Code", pythonCode)
-      console.log("SQL Code", sqlCode)
-      const response = await fetch('http://127.0.0.1:8000/execute', {
+    if (!sql) {
+      // Handle case where no SQL code is found in the latest messages
+      console.log("No SQL code found");
+      let combined_prompt = "Give me the DQL Data Query Language sql code to create as a dataframe first so I could run this python code (Always only give SQL code)" + pythonCode;
+      const response = await fetch('/api/sql', {
         method: 'POST',
-        body: JSON.stringify({
-          script: pythonCode,
-          sql: sqlCode
-        }),
+        body: JSON.stringify({ prompt: combined_prompt }),  // Assuming pythonCode is the prompt
         headers: {
           'Content-Type': 'application/json'
         },
-      });
+      })
 
-      if (!response.ok) {
-        // Handle any errors here
+      if (!response.body) {
         console.log("Error", response)
+        setLoading(false);
         return;
       }
-      console.log("Response", response)
-      // Assuming the response is base64 encoded image
-      const imageData = await response.blob();
 
-      console.log("Response Data", imageData)
-      const imageUrl = await uploadToCloudinary(imageData)
+      const reader = response.body.getReader();
+      setLoading(false);
+      const decoder = new TextDecoder('utf-8');
+      let responseBody = '';
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
+        responseBody += decoder.decode(value);
+      }
 
-      console.log("Image URL", imageUrl)
+      let sqlCodeResponse: ChatMessage[] = [{ id: uuidv4(), author: 'assistant', content: responseBody }]
+      console.log("SQL Code Response", sqlCodeResponse)
+      sql = await extractSQL(sqlCodeResponse);
+      console.log("SQL Code", sql)
+      if (!sql) {
+        console.log("Failed to get SQL code from /api/sql");
+        return;
+      }
+      setLoading(true);
 
-      // Add new chat message with the image
-      let newMessage: ChatMessage = {
-        id: uuidv4(),
-        author: 'assistant',
-        content: imageUrl
-      };
-
-      fullChat[chatIndex].messages = [...fullChat[chatIndex].messages, newMessage];
-      setChatList([...fullChat]);
-      console.log("fullChat List", fullChat)
     }
+    console.log("Python Code", pythonCode)
+    console.log("SQL Code", sql)
+    const response = await fetch('http://127.0.0.1:8000/execute', {
+      method: 'POST',
+      body: JSON.stringify({
+        script: pythonCode,
+        sql: sql
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!response.ok) {
+      // Handle any errors here
+      console.log("Error", response)
+      setLoading(false);
+      return;
+    }
+    console.log("Response", response)
+    // Assuming the response is base64 encoded image
+    const imageData = await response.blob();
+
+    console.log("Response Data", imageData)
+    const imageUrl = await uploadToCloudinary(imageData)
+
+    console.log("Image URL", imageUrl)
+
+    // Add new chat message with the image
+    let newMessage: ChatMessage = {
+      id: uuidv4(),
+      author: 'assistant',
+      content: imageUrl
+    };
+    setLoading(false);
+    fullChat[chatIndex].messages = [...fullChat[chatIndex].messages, newMessage];
+    setChatList([...fullChat]);
+    console.log("fullChat List", fullChat)
+
   }
 
 
   const fetchResponse = async () => {
+    setLoading(true);
     const decoder = new TextDecoder('utf-8');
     let fullChat = [...chatList];
     let ChatIndex = fullChat.findIndex(item => item.id === chatActiveId);
@@ -121,7 +172,7 @@ const Page = () => {
 
       let endpoint = "/api/sql";
       // let fetchBody = { prompt: question, history: history };
-      let keywords = ["data analysis", "visualization", "datanalysis", "visualisation", "vizualisation", "charts", "graphs", "analysis", "plots", "matplot", "seaborn", "plotly"];
+      let keywords = ["data analysis", "visualization", "datanalysis", "visualisation", "vizualisation", "charts", "graphs", "analysis", "plots", "matplot", "seaborn", "plotly", "visual"];
 
       // Store the history array in chatHistories with the chat id as the key
       if (keywords.some(keyword => question.toLowerCase().includes(keyword))) {
@@ -135,10 +186,12 @@ const Page = () => {
         },
       })
       if (!response.body) {
+        setLoading(false);
         return alert('Something went wrong');
       }
 
       const reader = response.body.getReader();
+      setLoading(false);
       let messageObject: ChatMessage = { id: uuidv4(), author: 'assistant', content: "" }; // Fixing author type issue
       // Add a new messageObject for the AI's response
       fullChat[ChatIndex].messages = [...fullChat[ChatIndex].messages, messageObject]; // Using spread operator instead of concat for array
@@ -170,7 +223,7 @@ const Page = () => {
         setChatList([...fullChat]);
       }
     }
-    setLoading(false);
+    setTriggerFetch(false);
   }
 
   console.log("Python   ", pythonCode)
@@ -221,7 +274,8 @@ const Page = () => {
       setActiveChatMessagesCount(prev => prev + 1);
     }
     setCurrentMessageToken(0); // Reset token count
-    setLoading(true);
+    // setLoading(true);
+    setTriggerFetch(true);
   }
 
 
