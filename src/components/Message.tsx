@@ -11,8 +11,9 @@ import IconSnow from './ui/IconSnow';
 
 type Props = {
     item: ChatMessage;
+    loading: boolean;
 }
-export const Message = ({ item }: Props) => {
+export const Message = ({ item, loading }: Props) => {
     const { setCurrentMessageToken } = useContext(TokenCountContext);
     const [copied, setCopied] = useState(false);
     // Use an effect to update the token count
@@ -30,12 +31,12 @@ export const Message = ({ item }: Props) => {
     console.log(isImageMessage);
 
     return (
-        <div className={`py-2 sm:py-5 flex sm:px-6 md:px-48 ${item.author === 'user' && 'dark:bg-neutral-950/60 bg-neutral-100/50'} md:justify-center`}>
-            <div className={`w-8 h-8 sm:w-10 sm:h-10 flex md:ml-0 rounded items-center justify-center ${item.author === 'assistant' ? '' : ''}`}>
+        <div className={`flex py-4 px-2 md:py-5 md:justify-center w-full max-w-full ${item.author === 'user' && 'dark:bg-neutral-950/60 bg-neutral-100/50'} `}>
+            <div className={`w-8 h-8 md:w-10 md:h-10 flex md:ml-0 rounded items-center justify-center ${item.author === 'assistant' ? '' : ''}`}>
                 {item.author === 'user' && <IconSnow className='rounded-full' width='28' height='28' />}
                 {item.author === 'assistant' && <IconOpenAI className='rounded-full' />}
             </div>
-            <div className='flex-1 break-words markdown ml-2 mt-1 text-xs sm:text-sm max-w-3xl items-center justify-center dark:text-[#eaeaea] text-[#111]'>
+            <div className='flex-1 break-words markdown ml-2 mt-1 text-xs sm:text-sm max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] '>
                 <div className="w-[calc(100%-50px)]">
                     <ReactMarkdown
                         className="break-words markdown mt-1"
@@ -78,6 +79,8 @@ export const Message = ({ item }: Props) => {
                         {isImageMessage ? `![matplot graph](${item.content})` : item.content ?? ""}
 
                     </ReactMarkdown>
+
+
                 </div>
             </div>
         </div>

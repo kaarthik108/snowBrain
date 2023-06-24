@@ -301,7 +301,7 @@ const Page = () => {
   }
 
   return (
-    <main className="flex min-h-screen dark:bg-neutral-900 bg-neutral-200/40">
+    <main className='flex min-h-screen dark:bg-neutral-900 bg-neutral-200/40'>
       <Sidebar
         open={sidebarOpened}
         onClose={closeSidebar}
@@ -317,9 +317,8 @@ const Page = () => {
             onEdit={handleEditChat}
           />
         ))}
-
       </Sidebar>
-      <section className="flex flex-col w-full">
+      <div className='flex flex-col w-full transition-all duration-200 overflow-x-hidden'>
         <Header
           openSidebarClick={openSidebar}
           title={chatActive ? chatActive.title : 'Chat'}
@@ -332,11 +331,9 @@ const Page = () => {
           onSendMessage={handleSendMessage}
           disabled={Loading || activeChatMessagesCount >= 12}
         />
-
-      </section>
+      </div>
     </main>
   );
-
 }
 
 export default Page;
