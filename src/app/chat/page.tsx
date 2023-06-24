@@ -12,7 +12,6 @@ import { TokenCountContext } from "@/components/token";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { extractSQL } from "lib/extractSQL";
-// import { extractSqlFromMessages } from "lib/extractSqlFromMessages";
 import uploadToCloudinary from "lib/uploadToCloudinary";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -50,6 +49,17 @@ const Page = () => {
     }
   }, [triggerFetch]);
 
+  const pythonCodeRegex = /```python([\s\S]*?)```/g;
+  const sqlRegex = /```(?:sql)?\s*([\s\S]*?SELECT[\s\S]*?FROM[\s\S]*?)```/g;
+
+  const extractCode = (message: string, regex: RegExp) => {
+    let codeMatch;
+    let code = '';
+    while ((codeMatch = regex.exec(message)) !== null) {
+      code = codeMatch[1].trim();
+    }
+    return code;
+  }
 
   const fetchData = async (url: string, method: string, data: any) => {
     const response = await fetch(url, {
@@ -132,81 +142,72 @@ const Page = () => {
 
 
   const fetchResponse = async () => {
-    setLoading(true);
-    const decoder = new TextDecoder('utf-8');
-    let fullChat = [...chatList];
-    let ChatIndex = fullChat.findIndex(item => item.id === chatActiveId);
-    if (ChatIndex > -1) {
-      let chat = fullChat[ChatIndex];
+    try {
+      setLoading(true);
+      const decoder = new TextDecoder('utf-8');
 
-      // Prepare the history array
-      let history: string[] = [];
-      for (let i = 0; i < chat.messages.length - 1; i += 2) {
-        let question = chat.messages[i].content;
-        let answer = chat.messages[i + 1]?.content || '';
-        history.push(question, answer);
-      }
-      let question = chat.messages[chat.messages.length - 1].content;
-      console.log("Question", question)
+      let chatIndex = chatList.findIndex(item => item.id === chatActiveId);
+      if (chatIndex > -1) {
+        let chat = chatList[chatIndex];
 
-      let endpoint = "/api/sql";
+        // Prepare the history array
+        let history: string[] = [];
+        for (let i = 0; i < chat.messages.length - 1; i += 2) {
+          let question = chat.messages[i].content;
+          let answer = chat.messages[i + 1]?.content || '';
+          history.push(question, answer);
+        }
+        let question = chat.messages[chat.messages.length - 1].content;
+        console.log("Question", question)
 
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        body: JSON.stringify({ prompt: question, history: history }),
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      })
-      if (!response.body) {
-        setLoading(false);
-        return alert('Something went wrong');
-      }
-
-      const reader = response.body.getReader();
-      setLoading(false);
-      let messageObject: ChatMessage = { id: uuidv4(), author: 'assistant', content: "" }; // Fixing author type issue
-
-      // Add a new messageObject for the AI's response
-      fullChat[ChatIndex].messages = [...fullChat[ChatIndex].messages, messageObject]; // Using spread operator instead of concat for array
-      while (true) {
-        const { done, value } = await reader.read();
-
-        if (done) {
-          // Once streaming is done, we handle the message content
-          const pythonCodeRegex = /```python([\s\S]*?)```/g;
-          let pythonCodeMatch;
-          let pythonCode = '';
-          while ((pythonCodeMatch = pythonCodeRegex.exec(messageObject.content)) !== null) {
-            pythonCode = pythonCodeMatch[1].trim();
-          }
-
-          const sqlRegex = /```(?:sql)?\s*([\s\S]*?SELECT[\s\S]*?FROM[\s\S]*?)```/g;
-          let sqlCodeMatch;
-          let initialSqlCode = '';
-          while ((sqlCodeMatch = sqlRegex.exec(messageObject.content)) !== null) {
-            initialSqlCode = sqlCodeMatch[1].trim();
-          }
-
-          setPythonCode(pythonCode);
-
-          // Call the new function here
-          sendToFastAPI(pythonCode, initialSqlCode);
-          fullChat[ChatIndex].messages[fullChat[ChatIndex].messages.length - 1] = messageObject;
-          setChatList([...fullChat]);
-          break;
+        const response = await fetch("/api/sql", {
+          method: 'POST',
+          body: JSON.stringify({ prompt: question, history: history }),
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        })
+        if (!response.body) {
+          setLoading(false);
+          return alert('Something went wrong');
         }
 
-        const text = decoder.decode(value);
-        messageObject.content += text;
+        const reader = response.body.getReader();
+        setLoading(false);
+        let messageObject: ChatMessage = { id: uuidv4(), author: 'assistant', content: "" }; // Fixing author type issue
 
-        // Update the last message with updated message
-        fullChat[ChatIndex].messages[fullChat[ChatIndex].messages.length - 1] = messageObject;
+        // Add a new messageObject for the AI's response
+        chatList[chatIndex].messages.push(messageObject);
+        while (true) {
+          const { done, value } = await reader.read();
 
-        setChatList([...fullChat]);
+          if (done) {
+            // Once streaming is done, we handle the message content
+            let pythonCode = extractCode(messageObject.content, pythonCodeRegex);
+            let initialSqlCode = extractCode(messageObject.content, sqlRegex);
+
+            setPythonCode(pythonCode);
+
+            // Call the new function here
+            sendToFastAPI(pythonCode, initialSqlCode);
+            setChatList([...chatList]);
+            break;
+          }
+
+          const text = decoder.decode(value);
+          messageObject.content += text;
+
+          // Update the last message with updated message
+          setChatList([...chatList]);
+        }
       }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      alert('An error occurred');
+    } finally {
+      setTriggerFetch(false);
     }
-    setTriggerFetch(false);
   }
 
 
@@ -302,7 +303,7 @@ const Page = () => {
           />
         ))}
       </Sidebar>
-      <div className='flex flex-col w-full transition-all duration-200 overflow-x-hidden'>
+      <div className={`flex flex-col w-full transition-all duration-200 overflow-x-hidden ${sidebarOpened ? ' -z-10 backdrop-blur-blur' : ''} `}>
         <Header
           openSidebarClick={openSidebar}
           title={chatActive ? chatActive.title : 'Chat'}

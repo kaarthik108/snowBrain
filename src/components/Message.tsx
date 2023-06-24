@@ -1,3 +1,5 @@
+"use client";
+
 import { ChatMessage } from '@/types/ChatMessage';
 import { useContext, useEffect, useRef, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -11,16 +13,13 @@ import IconSnow from './ui/IconSnow';
 
 type Props = {
     item: ChatMessage;
-    loading: boolean;
 }
-export const Message = ({ item, loading }: Props) => {
+export const Message = ({ item }: Props) => {
     const { setCurrentMessageToken } = useContext(TokenCountContext);
     const [copied, setCopied] = useState(false);
-    // Use an effect to update the token count
+
     useEffect(() => {
-        // Check if item.content is defined before calling split
         if (item.content) {
-            // Split the content on whitespace and punctuation to approximate tokens
             const approxTokens = item.content.split(/[\s,.!?]+/).length;
             setCurrentMessageToken(approxTokens);
         }
@@ -28,7 +27,6 @@ export const Message = ({ item, loading }: Props) => {
 
     const codeRef = useRef<HTMLElement>(null);
     const isImageMessage = item?.content?.startsWith && item.content.startsWith('https://res.cloudinary.com/');
-    console.log(isImageMessage);
 
     return (
         <div className={`flex py-4 px-2 md:py-5 md:justify-center w-full max-w-full ${item.author === 'user' && 'dark:bg-neutral-950/60 bg-neutral-100/50'} `}>
@@ -36,7 +34,7 @@ export const Message = ({ item, loading }: Props) => {
                 {item.author === 'user' && <IconSnow className='rounded-full' width='28' height='28' />}
                 {item.author === 'assistant' && <IconOpenAI className='rounded-full' />}
             </div>
-            <div className='flex-1 break-words markdown ml-2 mt-1 text-xs sm:text-sm max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] '>
+            <div className='flex-1 markdown ml-2 mt-1 text-xs sm:text-sm max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] '>
                 <div className="w-[calc(100%-50px)]">
                     <ReactMarkdown
                         className="break-words markdown mt-1"

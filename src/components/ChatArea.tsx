@@ -24,7 +24,6 @@ export const ChatArea = ({ chat, loading }: Props) => {
                 <Message
                     key={item.id}
                     item={item}
-                    loading={loading}
                 />
             ))}
             {loading && (
@@ -33,7 +32,7 @@ export const ChatArea = ({ chat, loading }: Props) => {
 
                         <IconOpenAI className='rounded-full' />
                     </div>
-                    <div className='flex-1 break-words markdown ml-2 mt-1 text-xs sm:text-sm max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] '>
+                    <div className='flex-1 markdown ml-2 mt-1 text-xs sm:text-sm max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] '>
                         <div className="w-[calc(100%-50px)]">
                         </div>
                         <div className="flex items-center justify-start md:px-30 md:mr-10 w-full max-w-3xl ">

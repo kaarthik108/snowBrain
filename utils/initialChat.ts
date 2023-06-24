@@ -17,7 +17,7 @@ export const defaultChat: Chat = {
       id: uuidv4(),
       author: "assistant",
       content:
-        " 'To get the total revenue for each product category, we need to join the PRODUCTS, TRANSACTIONS, ORDER_DETAILS, and PAYMENTS tables. Here's an example SQL query that should work in Snowflake:\n" +
+        " To get the total revenue for each product category, we need to join the PRODUCTS, TRANSACTIONS, ORDER_DETAILS, and PAYMENTS tables. Here's an example SQL query that should work in Snowflake:\n" +
         "\n" +
         "```\n" +
         "SELECT p.CATEGORY, SUM(t.PRICE * t.QUANTITY) AS TOTAL_REVENUE\n" +
@@ -40,7 +40,7 @@ export const defaultChat: Chat = {
       id: uuidv4(),
       author: "assistant",
       content:
-        " 'To visualize the total revenue for each product category, we can use a bar plot. Here's an example code using seaborn:\n" +
+        " To visualize the total revenue for each product category, we can use a bar plot. Here's an example code using seaborn:\n" +
         "\n" +
         "```python\n" +
         "import seaborn as sns\n" +
