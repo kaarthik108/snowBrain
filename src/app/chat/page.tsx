@@ -14,7 +14,7 @@ import { ChatMessage } from "@/types/ChatMessage";
 import { extractSQL } from "lib/extractSQL";
 import uploadToCloudinary from "lib/uploadToCloudinary";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { toast } from 'react-hot-toast';
 import { defaultChat, initialChatId } from "utils/initialChat";
 import { v4 as uuidv4 } from 'uuid';
@@ -29,7 +29,10 @@ const Page = () => {
   const [pythonCode, setPythonCode] = useState("");
   const { setCurrentMessageToken } = useContext(TokenCountContext);
   const [activeChatMessagesCount, setActiveChatMessagesCount] = useState(0);
+  const [triggerFetch, setTriggerFetch] = useState(false);
   const router = useRouter();
+  const pythonCodeRegex = /```python([\s\S]*?)```/g;
+  const sqlRegex = /```(?:sql)?\s*([\s\S]*?SELECT[\s\S]*?FROM[\s\S]*?)```/g;
 
   useEffect(() => {
     const activeChat = chatList.find(item => item.id === chatActiveId);
@@ -40,17 +43,6 @@ const Page = () => {
     }
   }, [chatActiveId, chatList])
 
-  const [triggerFetch, setTriggerFetch] = useState(false);
-
-  useEffect(() => {
-    if (triggerFetch) {
-      fetchResponse();
-      setTriggerFetch(false);
-    }
-  }, [triggerFetch]);
-
-  const pythonCodeRegex = /```python([\s\S]*?)```/g;
-  const sqlRegex = /```(?:sql)?\s*([\s\S]*?SELECT[\s\S]*?FROM[\s\S]*?)```/g;
 
   const extractCode = (message: string, regex: RegExp) => {
     let codeMatch;
@@ -140,8 +132,7 @@ const Page = () => {
   };
 
 
-
-  const fetchResponse = async () => {
+  const fetchResponse = useCallback(async () => {
     try {
       setLoading(true);
       const decoder = new TextDecoder('utf-8');
@@ -208,8 +199,14 @@ const Page = () => {
     } finally {
       setTriggerFetch(false);
     }
-  }
+  }, [setLoading, chatList, chatActiveId, setTriggerFetch, setChatList, setPythonCode, sendToFastAPI]);
 
+  useEffect(() => {
+    if (triggerFetch) {
+      fetchResponse();
+      setTriggerFetch(false);
+    }
+  }, [triggerFetch, fetchResponse]);
 
   console.log("Python   ", pythonCode)
   console.log("Chat List", chatList)

@@ -34,22 +34,22 @@ export const Message = ({ item }: Props) => {
                 {item.author === 'user' && <IconSnow className='rounded-full' width='28' height='28' />}
                 {item.author === 'assistant' && <IconOpenAI className='rounded-full' />}
             </div>
-            <div className='flex-1 markdown ml-2 mt-1 text-xs sm:text-sm max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] '>
+            <div className='flex-1 markdown ml-2 mt-1 text-sm md:text-md max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] '>
                 <div className="w-[calc(100%-50px)]">
                     <ReactMarkdown
-                        className="break-words markdown mt-1"
+                        className="break-words markdown mt-1 space-y-1"
                         components={{
                             code: ({ children, inline, className }) => {
                                 const language = className?.split("-")[1];
                                 if (inline)
                                     return (
-                                        <span className="px-1 py-1 text-xs sm:text-sm rounded-md dark:bg-neutral-800 bg-neutral-50">
+                                        <span className="px-1 py-1 text-xs md:text-sm rounded-md dark:bg-neutral-800 bg-neutral-50">
                                             {children}
                                         </span>
                                     );
                                 return (
-                                    <div className="w-full my-4 sm:my-6 overflow-hidden rounded-md dark:bg-neutral-950/60 bg-gray-800 text-white">
-                                        <div className="bg-[#1e283880]  py-1 sm:py-2 px-2 sm:px-3 text-xs flex items-center justify-between">
+                                    <div className="w-full my-4 md:my-6 overflow-hidden rounded-md dark:bg-neutral-950/60 bg-gray-800 text-white">
+                                        <div className="bg-[#1e283880]  py-1 md:py-2 px-2 md:px-3 text-xs flex items-center justify-between">
                                             <div>{language ?? "sql"}</div>
                                             <CopyToClipboard text={codeRef?.current?.innerText as string} onCopy={() => { setCopied(true); setTimeout(() => setCopied(false), 3000) }}>
                                                 <button className="flex items-center gap-1">
