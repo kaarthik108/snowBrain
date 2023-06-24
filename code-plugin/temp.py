@@ -21,26 +21,16 @@ cur = conn.cursor()
 cur.execute('USE DATABASE ' + os.environ["DATABASE"])
 cur.execute('USE SCHEMA ' + os.environ["SCHEMA"])
 cur.execute(f"""
-SELECT
-    ORDER_DETAILS.ORDER_DATE,
-    ORDER_DETAILS.ORDER_ID
-FROM
-    STREAM_HACKATHON.STREAMLIT.ORDER_DETAILS
-JOIN
-    STREAM_HACKATHON.STREAMLIT.TRANSACTIONS
-ON
-    ORDER_DETAILS.ORDER_ID = TRANSACTIONS.ORDER_ID;
+SELECT t.PRICE, t.QUANTITY
+FROM STREAM_HACKATHON.STREAMLIT.TRANSACTIONS t
 """)
 all_rows = cur.fetchall()
 field_names = [i[0] for i in cur.description]
 df = pd.DataFrame(all_rows)
 df.columns = field_names
 
-import seaborn as sns
-
-# Group the orders by date and count the number of orders
-orders_by_date = df.groupby('ORDER_DATE')['ORDER_ID'].count().reset_index()
-
-# Create the bar plot
-sns.barplot(data=orders_by_date, x='ORDER_DATE', y='ORDER_ID')
+# Assuming the data is stored in a DataFrame called 'df'
+plt.scatter(df['PRICE'], df['QUANTITY'])
+plt.xlabel('Price')
+plt.ylabel('Quantity')
 plt.savefig("output.png")

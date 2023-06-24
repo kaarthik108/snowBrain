@@ -51,103 +51,84 @@ const Page = () => {
   }, [triggerFetch]);
 
 
-
-  const sendToFastAPI = async (pythonCode: string, initialSqlCode: string) => {
-    setLoading(true);
-    if (!pythonCode) {
-      console.log("No python code found");
-      setLoading(false);
-      return;
-    }
-    // Fetch the SQL code from the latest messages in the chat
-    let fullChat = [...chatList];
-    let chatIndex = fullChat.findIndex(item => item.id === chatActiveId);
-
-    const messages: ChatMessage[] = fullChat[chatIndex].messages;
-    console.log(messages)
-    let sqlCode = initialSqlCode;
-    if (!sqlCode) {
-      // Handle case where no SQL code is found in the latest messages
-      console.log("No SQL code found");
-      let combined_prompt = "Write the DQL(Data query language) for the data needed here in SQL:\n" + pythonCode;
-      const response = await fetch('/api/py', {
-        method: 'POST',
-        body: JSON.stringify({ prompt: combined_prompt }),  // Assuming pythonCode is the prompt
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      })
-
-      if (!response.body) {
-        console.log("Error", response)
-        setLoading(false);
-        return;
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder('utf-8');
-      let responseBody = '';
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) {
-          break;
-        }
-        responseBody += decoder.decode(value);
-      }
-
-      let sqlCodeResponse: ChatMessage[] = [{ id: uuidv4(), author: 'assistant', content: responseBody }]
-      console.log("SQL Code Response", sqlCodeResponse)
-      const sql = await extractSQL(sqlCodeResponse);
-      console.log("SQL Code", sql)
-      if (!sql) {
-        console.log("Failed to get SQL code from /api/sql");
-        setLoading(false);
-
-        return;
-      }
-      sqlCode = sql
-
-    }
-    console.log("Python Code", pythonCode)
-    console.log("SQL Code", sqlCode)
-    const response = await fetch('http://127.0.0.1:8000/execute', {
-      method: 'POST',
-      body: JSON.stringify({
-        script: pythonCode,
-        sql: sqlCode
-      }),
+  const fetchData = async (url: string, method: string, data: any) => {
+    const response = await fetch(url, {
+      method: method,
       headers: {
         'Content-Type': 'application/json'
       },
+      body: JSON.stringify(data)
     });
 
-    if (!response.ok) {
-      // Handle any errors here
-      console.log("Error", response)
+    if (!response.ok) throw new Error("Response Error");
+
+    return response;
+  };
+
+  const sendToFastAPI = async (pythonCode: string, initialSqlCode: string) => {
+    setLoading(true);
+
+    if (!pythonCode) {
       setLoading(false);
       return;
     }
-    console.log("Response", response)
-    // Assuming the response is base64 encoded image
-    const imageData = await response.blob();
 
-    console.log("Response Data", imageData)
-    const imageUrl = await uploadToCloudinary(imageData)
+    let fullChat = [...chatList];
+    let chatIndex = fullChat.findIndex(item => item.id === chatActiveId);
+    const messages: ChatMessage[] = fullChat[chatIndex].messages;
+    let sqlCode = initialSqlCode;
 
-    console.log("Image URL", imageUrl)
+    if (!sqlCode) {
+      let combined_prompt = "Write the DQL(Data query language) for the data needed here in SQL:\n" + pythonCode;
 
-    // Add new chat message with the image
-    let newMessage: ChatMessage = {
-      id: uuidv4(),
-      author: 'assistant',
-      content: imageUrl
-    };
-    setLoading(false);
-    fullChat[chatIndex].messages = [...fullChat[chatIndex].messages, newMessage];
-    setChatList([...fullChat]);
-    console.log("fullChat List", fullChat)
+      try {
+        const response = await fetchData('/api/py', 'POST', { prompt: combined_prompt });
 
-  }
+        const reader = response.body?.getReader();
+        if (!reader) throw new Error("No response body");
+
+        const decoder = new TextDecoder('utf-8');
+        let responseBody = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          responseBody += decoder.decode(value);
+        }
+
+        let sqlCodeResponse: ChatMessage[] = [{ id: uuidv4(), author: 'assistant', content: responseBody }];
+        const sql = await extractSQL(sqlCodeResponse);
+
+        if (!sql) {
+          setLoading(false);
+          return;
+        }
+        sqlCode = sql;
+      } catch (error) {
+        setLoading(false);
+        return;
+      }
+    }
+
+    try {
+      const response = await fetchData('http://127.0.0.1:8000/execute', 'POST', { script: pythonCode, sql: sqlCode });
+      const imageData = await response.blob();
+      const imageUrl = await uploadToCloudinary(imageData);
+
+      let newMessage: ChatMessage = {
+        id: uuidv4(),
+        author: 'assistant',
+        content: imageUrl
+      };
+
+      fullChat[chatIndex].messages = [...fullChat[chatIndex].messages, newMessage];
+      setChatList([...fullChat]);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
 
 
   const fetchResponse = async () => {
