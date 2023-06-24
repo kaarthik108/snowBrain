@@ -52,7 +52,7 @@ const Page = () => {
 
 
 
-  const sendToFastAPI = async (pythonCode: string) => {
+  const sendToFastAPI = async (pythonCode: string, initialSqlCode: string) => {
     setLoading(true);
     if (!pythonCode) {
       console.log("No python code found");
@@ -65,15 +65,12 @@ const Page = () => {
 
     const messages: ChatMessage[] = fullChat[chatIndex].messages;
     console.log(messages)
-    let sql = await extractSQL(messages);
-    // if (sql) setsqlCode(sql);
-    console.log(sql);
-
-    if (!sql) {
+    let sqlCode = initialSqlCode;
+    if (!sqlCode) {
       // Handle case where no SQL code is found in the latest messages
       console.log("No SQL code found");
-      let combined_prompt = "Give me the DQL Data Query Language sql code to create as a dataframe first so I could run this python code (Always only give SQL code)" + pythonCode;
-      const response = await fetch('/api/sql', {
+      let combined_prompt = "Write the DQL(Data query language) for the data needed here in SQL:\n" + pythonCode;
+      const response = await fetch('/api/py', {
         method: 'POST',
         body: JSON.stringify({ prompt: combined_prompt }),  // Assuming pythonCode is the prompt
         headers: {
@@ -88,7 +85,6 @@ const Page = () => {
       }
 
       const reader = response.body.getReader();
-      setLoading(false);
       const decoder = new TextDecoder('utf-8');
       let responseBody = '';
       while (true) {
@@ -101,22 +97,24 @@ const Page = () => {
 
       let sqlCodeResponse: ChatMessage[] = [{ id: uuidv4(), author: 'assistant', content: responseBody }]
       console.log("SQL Code Response", sqlCodeResponse)
-      sql = await extractSQL(sqlCodeResponse);
+      const sql = await extractSQL(sqlCodeResponse);
       console.log("SQL Code", sql)
       if (!sql) {
         console.log("Failed to get SQL code from /api/sql");
+        setLoading(false);
+
         return;
       }
-      setLoading(true);
+      sqlCode = sql
 
     }
     console.log("Python Code", pythonCode)
-    console.log("SQL Code", sql)
+    console.log("SQL Code", sqlCode)
     const response = await fetch('http://127.0.0.1:8000/execute', {
       method: 'POST',
       body: JSON.stringify({
         script: pythonCode,
-        sql: sql
+        sql: sqlCode
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -171,13 +169,7 @@ const Page = () => {
       console.log("Question", question)
 
       let endpoint = "/api/sql";
-      // let fetchBody = { prompt: question, history: history };
-      let keywords = ["data analysis", "visualization", "datanalysis", "visualisation", "vizualisation", "charts", "graphs", "analysis", "plots", "matplot", "seaborn", "plotly", "visual"];
 
-      // Store the history array in chatHistories with the chat id as the key
-      if (keywords.some(keyword => question.toLowerCase().includes(keyword))) {
-        endpoint = "/api/py";
-      }
       const response = await fetch(endpoint, {
         method: 'POST',
         body: JSON.stringify({ prompt: question, history: history }),
@@ -193,6 +185,7 @@ const Page = () => {
       const reader = response.body.getReader();
       setLoading(false);
       let messageObject: ChatMessage = { id: uuidv4(), author: 'assistant', content: "" }; // Fixing author type issue
+
       // Add a new messageObject for the AI's response
       fullChat[ChatIndex].messages = [...fullChat[ChatIndex].messages, messageObject]; // Using spread operator instead of concat for array
       while (true) {
@@ -206,10 +199,18 @@ const Page = () => {
           while ((pythonCodeMatch = pythonCodeRegex.exec(messageObject.content)) !== null) {
             pythonCode = pythonCodeMatch[1].trim();
           }
+
+          const sqlRegex = /```(?:sql)?\s*([\s\S]*?SELECT[\s\S]*?FROM[\s\S]*?)```/g;
+          let sqlCodeMatch;
+          let initialSqlCode = '';
+          while ((sqlCodeMatch = sqlRegex.exec(messageObject.content)) !== null) {
+            initialSqlCode = sqlCodeMatch[1].trim();
+          }
+
           setPythonCode(pythonCode);
 
           // Call the new function here
-          sendToFastAPI(pythonCode);
+          sendToFastAPI(pythonCode, initialSqlCode);
           fullChat[ChatIndex].messages[fullChat[ChatIndex].messages.length - 1] = messageObject;
           setChatList([...fullChat]);
           break;
@@ -217,6 +218,7 @@ const Page = () => {
 
         const text = decoder.decode(value);
         messageObject.content += text;
+
         // Update the last message with updated message
         fullChat[ChatIndex].messages[fullChat[ChatIndex].messages.length - 1] = messageObject;
 
@@ -225,6 +227,7 @@ const Page = () => {
     }
     setTriggerFetch(false);
   }
+
 
   console.log("Python   ", pythonCode)
   console.log("Chat List", chatList)
@@ -288,9 +291,9 @@ const Page = () => {
 
   const handleDeleteChat = (id: string) => {
     let updatedChatList = deleteChat([...chatList], id);
+    router.push('/')
     setChatList(updatedChatList);
     setChatActiveId('');
-    router.push('/')
   }
 
   const handleEditChat = (id: string, newTitle: string) => {
