@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -14,10 +15,13 @@ type Props = {
 
 
 export const MessageInput = ({ disabled, onSend }: Props) => {
-    const { data: session } = useSession();
+    // const { data: session } = useSession();
     const [text, setText] = useState('')
     const textEl = useRef<HTMLTextAreaElement>(null)
-
+    const { isLoaded, userId, sessionId, getToken } = useAuth();
+    // if (!isLoaded || !userId) {
+    //     return null;
+    // }
 
     useEffect(() => {
         if (textEl.current) {
@@ -30,7 +34,7 @@ export const MessageInput = ({ disabled, onSend }: Props) => {
 
 
     const handleSendMessage = () => {
-        if (session) { // check if session exists
+        if (userId) { // check if session exists
             if (!disabled && text.trim() !== '') {
                 onSend(text)
                 setText('')

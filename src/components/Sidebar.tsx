@@ -1,7 +1,8 @@
 "use client";
 
+import { SignInButton, UserButton, useAuth } from "@clerk/nextjs";
 import { useSession } from 'next-auth/react';
-import { LoginButton } from './LoginButton';
+// import { LoginButton } from './LoginButton';
 import SchemaDialog from './SchemaDialog';
 import { UserMenu } from './UserMenu';
 import IconGithub from './ui/IconGithub';
@@ -21,9 +22,13 @@ type SidebarProps = {
 
 
 export const Sidebar = ({ open, onClose, onNewChat, children }: SidebarProps) => {
-    const { data: session } = useSession();
+    // const { data: session } = useSession();
+    const { isLoaded, userId, sessionId, getToken } = useAuth();
+    // if (!isLoaded || !userId) {
+    //     return null;
+    // }
 
-    console.log(session);
+    console.log(userId);
 
     return (
         <section className={`fixed left-0 top-0 bottom-0 dark:text-[#eaeaea] text-zinc-700 ${open ? 'w-screen' : 'w-0'} md:w-64 md:static`} >
@@ -39,10 +44,10 @@ export const Sidebar = ({ open, onClose, onNewChat, children }: SidebarProps) =>
                             <IconSeparator color='gray' width="32px" height="32px" />
                         </div>
                         <div className='flex  '>
-                            <span className='text-xl text-[#999] font-semibold'>S n o w b r a i n</span>
+                            <span className='text-xl text-[#999] font-semibold brightness-20 hover:brightness-150'>S n o w b r a i n</span>
                         </div>
                     </div>
-                    <div className='flex  items-center justify-center py-6'>
+                    <div className='flex  items-center justify-center py-6 brightness-20 hover:brightness-150'>
 
                         <SchemaDialog />
 
@@ -54,12 +59,14 @@ export const Sidebar = ({ open, onClose, onNewChat, children }: SidebarProps) =>
                     <nav className='flex-1 pt-2 overflow-y-auto '>
                         {children}
                     </nav>
-                    <div className='flex items-center justify-center gap-2 mb-3 rounded-md  dark:hover:bg-gray-500/20 hover:bg-gray-500/20'>
-                        {session?.user ? (
-                            <UserMenu user={session.user} />
+                    <div className='flex items-center justify-center gap-2 mb-3 rounded-md text-[#999]'>
+                        {userId ? (
+                            <UserButton afterSignOutUrl="/" />
                         ) : (
-                            <LoginButton showGoogleIcon={false} text='Login' className='my-1 text-[#999]' />
-                        )}
+                            <div className='brightness-20 hover:brightness-150'><SignInButton /> </div>
+                        )
+
+                        }
                     </div>
                     <div className='border-t border-gray-700  pt-2'>
                         <div className='flex justify-center gap-4 mb-2'>

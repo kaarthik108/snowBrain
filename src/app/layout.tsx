@@ -1,5 +1,5 @@
-import AuthProvider from '@/components/Providers';
 import { TokenCountProvider } from '@/components/token';
+import { ClerkProvider } from '@clerk/nextjs';
 import { Metadata } from "next";
 import { Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
@@ -35,15 +35,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <AuthProvider>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
           <TokenCountProvider>
             <Toaster />
             {children}
           </TokenCountProvider>
-        </AuthProvider>
-      </body>
-    </html>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
