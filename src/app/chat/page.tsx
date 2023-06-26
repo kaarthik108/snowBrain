@@ -237,7 +237,7 @@ const Page = () => {
       });
       return;
     }
-    if (activeChatMessagesCount >= 10) {
+    if (activeChatMessagesCount >= 12) {
       toast((t) => <CustomToast message='You have reached the maximum number of messages for this chat' />, {
         duration: 4000,
         position: 'top-center',
@@ -303,7 +303,7 @@ const Page = () => {
       <div className={`flex flex-col w-full transition-all duration-200 overflow-x-hidden ${sidebarOpened ? ' -z-10 backdrop-blur-blur' : ''} `}>
         <Header
           openSidebarClick={openSidebar}
-          title={activeChat ? activeChat.title : 'Chat'}
+          title={activeChat ? activeChat.title : 'snowbrain'}
           newChatClick={handleNewChat}
         />
 
@@ -311,7 +311,7 @@ const Page = () => {
 
         <Footer
           onSendMessage={handleSendMessage}
-          disabled={Loading || activeChatMessagesCount >= 12}
+          disabled={Loading || activeChatMessagesCount >= 10}
         />
       </div>
     </main>
