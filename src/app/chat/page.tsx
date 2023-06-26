@@ -151,7 +151,7 @@ const Page = () => {
           history.push(question, answer);
         }
         let question = chat.messages[chat.messages.length - 1].content;
-        console.log("Question", question)
+        // console.log("Question", question)
 
         const response = await fetch("/api/sql", {
           method: 'POST',
@@ -195,7 +195,7 @@ const Page = () => {
         }
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       setLoading(false);
       alert('An error occurred');
     } finally {
@@ -210,8 +210,8 @@ const Page = () => {
     }
   }, [triggerFetch, getSql]);
 
-  console.log("Python   ", pythonCode)
-  console.log("Chat List", chatList)
+  // console.log("Python   ", pythonCode)
+  // console.log("Chat List", chatList)
 
 
   const openSidebar = () => setSidebarOpened(true);
