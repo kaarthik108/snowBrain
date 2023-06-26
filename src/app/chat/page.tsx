@@ -19,6 +19,8 @@ import { toast } from 'react-hot-toast';
 import { defaultChat, initialChatId } from "utils/initialChat";
 import { v4 as uuidv4 } from 'uuid';
 
+const MODAL_API_ENDPOINT = process.env.MODAL_API_ENDPOINT;
+
 
 const Page = () => {
   const [sidebarOpened, setSidebarOpened] = useState(false);
@@ -113,7 +115,7 @@ const Page = () => {
     }
 
     try {
-      const response = await fetchData('http://127.0.0.1:8000/execute', 'POST', { script: pythonCode, sql: sqlCode });
+      const response = await fetchData(MODAL_API_ENDPOINT!, 'POST', { script: pythonCode, sql: sqlCode });
       const imageData = await response.blob();
       const imageUrl = await uploadToCloudinary(imageData);
 

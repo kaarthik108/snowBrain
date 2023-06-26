@@ -1,3 +1,3 @@
 from modal import Stub
 
-stub = Stub("snowbrain")
+stub = Stub("snowbrain_modal")

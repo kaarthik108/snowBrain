@@ -21,16 +21,25 @@ cur = conn.cursor()
 cur.execute('USE DATABASE ' + os.environ["DATABASE"])
 cur.execute('USE SCHEMA ' + os.environ["SCHEMA"])
 cur.execute(f"""
-SELECT t.PRICE, t.QUANTITY
-FROM STREAM_HACKATHON.STREAMLIT.TRANSACTIONS t
+SELECT CATEGORY, COUNT(*) AS PRODUCT_COUNT
+FROM STREAM_HACKATHON.STREAMLIT.PRODUCTS
+GROUP BY CATEGORY;
 """)
 all_rows = cur.fetchall()
 field_names = [i[0] for i in cur.description]
 df = pd.DataFrame(all_rows)
 df.columns = field_names
 
-# Assuming the data is stored in a DataFrame called 'df'
-plt.scatter(df['PRICE'], df['QUANTITY'])
-plt.xlabel('Price')
-plt.ylabel('Quantity')
+import seaborn as sns
+
+# Count the number of products in each category
+product_counts = df['CATEGORY'].value_counts()
+
+# Create a bar plot
+sns.barplot(x=product_counts.index, y=product_counts.values)
+plt.xlabel('Category')
+plt.ylabel('Number of Products')
+plt.title('Number of Products by Category')
+plt.xticks(rotation=45)
+plt.show()
 plt.savefig("output.png")
