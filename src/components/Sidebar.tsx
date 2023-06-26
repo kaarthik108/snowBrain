@@ -61,7 +61,7 @@ export const Sidebar = ({ open, onClose, onNewChat, children }: SidebarProps) =>
                     </div>
                     <div className='border-t border-gray-700  pt-2'>
                         <div className='flex justify-center gap-4 mb-2'>
-                            <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">
+                            <a href="https://github.com/kaarthik108" target="_blank" rel="noopener noreferrer">
                                 <IconGithub width={24} height={24} className='brightness-50 hover:brightness-90' />
                             </a>
                             <a href="https://twitter.com/kaarthikcodes" target="_blank" rel="noopener noreferrer">

@@ -2,6 +2,7 @@ import { TokenCountProvider } from '@/components/token';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Metadata } from "next";
 import { Inter } from 'next/font/google';
+import Head from 'next/head';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
@@ -34,15 +35,25 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>
-          <TokenCountProvider>
-            <Toaster />
-            {children}
-          </TokenCountProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <>
+      <Head>
+        <script
+          async
+          src="https://umami-livid-seven.vercel.app/script.js"
+          data-website-id={process.env.NEXT_PUBLIC_WEBSITE_ID}>
+        </script>
+      </Head>
+      <ClerkProvider>
+        <html lang="en">
+          <body className={inter.className}>
+            <TokenCountProvider>
+              <Toaster />
+              {children}
+            </TokenCountProvider>
+          </body>
+        </html>
+      </ClerkProvider>
+    </>
+
   )
 }
