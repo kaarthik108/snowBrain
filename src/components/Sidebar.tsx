@@ -1,10 +1,7 @@
 "use client";
 
 import { SignInButton, UserButton, useAuth } from "@clerk/nextjs";
-import { useSession } from 'next-auth/react';
-// import { LoginButton } from './LoginButton';
 import SchemaDialog from './SchemaDialog';
-import { UserMenu } from './UserMenu';
 import IconGithub from './ui/IconGithub';
 import IconLinkedIn from './ui/IconLinkedIn';
 import IconMinimize2 from './ui/IconMinimize2';
