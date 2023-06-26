@@ -31,7 +31,7 @@ class Script(BaseModel):
     script: str
     sql: str
 
-@stub.function(image=image, secret=modal.Secret.from_name("snowbrain"), cpu=1)
+@stub.function(image=image, secret=modal.Secret.from_name("snowbrain"), cpu=2)
 @modal.asgi_app()
 def fastapi_app():
     from fastapi import FastAPI, HTTPException

@@ -63,10 +63,11 @@ export const Chain = async (question: string, history: []) => {
   const stream = new TransformStream();
   const writer = stream.writable.getWriter();
   const model = new ChatOpenAI({
-    temperature: 0,
+    temperature: 0.02,
     modelName: "gpt-3.5-turbo-16k",
     openAIApiKey: process.env.OPENAI_API_KEY ?? "",
     streaming: true,
+    maxTokens: 1500,
     callbacks: [
       {
         async handleLLMNewToken(token) {
@@ -82,6 +83,8 @@ export const Chain = async (question: string, history: []) => {
   });
   const qamodel = new ChatOpenAI({
     modelName: "gpt-3.5-turbo-16k",
+    temperature: 0,
+    maxTokens: 1500,
   });
 
   const chain = ConversationalRetrievalQAChain.fromLLM(
@@ -113,6 +116,7 @@ export const pyChain = async (question: string, history: []) => {
   const model = new ChatOpenAI({
     temperature: 0,
     modelName: "gpt-4-0613",
+    maxTokens: 1500,
     openAIApiKey: process.env.OPENAI_API_KEY ?? "",
     streaming: true,
     callbacks: [
@@ -130,6 +134,8 @@ export const pyChain = async (question: string, history: []) => {
   });
   const qamodel = new OpenAI({
     modelName: "gpt-3.5-turbo-16k",
+    temperature: 0,
+    maxTokens: 1500,
   });
 
   const chain = ConversationalRetrievalQAChain.fromLLM(
