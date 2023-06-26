@@ -35,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
+    <html lang="en">
       <Head>
         <script
           async
@@ -44,16 +44,14 @@ export default function RootLayout({
         </script>
       </Head>
       <ClerkProvider>
-        <html lang="en">
-          <body className={inter.className}>
-            <TokenCountProvider>
-              <Toaster />
-              {children}
-            </TokenCountProvider>
-          </body>
-        </html>
+        <body className={inter.className}>
+          <TokenCountProvider>
+            <Toaster />
+            {children}
+          </TokenCountProvider>
+        </body>
       </ClerkProvider>
-    </>
+    </html>
 
   )
 }
