@@ -37,13 +37,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
-        <Script
-          async
-          src="https://umami-livid-seven.vercel.app/script.js"
-          data-website-id="a626f755-5202-4315-8841-43dfa42676df">
-        </Script>
-      </Head>
+      <Script
+        async
+        id='umami'
+        src="https://umami-livid-seven.vercel.app/script.js"
+        data-website-id="a626f755-5202-4315-8841-43dfa42676df">
+      </Script>
       <ClerkProvider>
         <body className={inter.className}>
           <TokenCountProvider>
@@ -53,6 +52,5 @@ export default function RootLayout({
         </body>
       </ClerkProvider>
     </html>
-
   )
 }
