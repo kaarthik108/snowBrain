@@ -40,7 +40,7 @@ export default function RootLayout({
         <script
           async
           src="https://umami-livid-seven.vercel.app/script.js"
-          data-website-id={process.env.NEXT_PUBLIC_WEBSITE_ID}>
+          data-website-id="a626f755-5202-4315-8841-43dfa42676df">
         </script>
       </Head>
       <ClerkProvider>
