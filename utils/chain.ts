@@ -2,7 +2,6 @@ import { ConversationalRetrievalQAChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { OpenAI } from "langchain/llms/openai";
-import { PromptTemplate } from "langchain/prompts";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { pinecone } from "../utils/pinecone-client";
 
@@ -19,8 +18,6 @@ Follow Up Input: \"""
 \"""
 Standalone question:`;
 
-const prompt = PromptTemplate.fromTemplate(CONDENSE_QUESTION_PROMPT);
-
 const QA_PROMPT = ` You're an AI assistant who is specialized in snowflake database and can guide people based on their questions about sql and snowflake.
 
 Your responses should always be formatted in Markdown.
@@ -34,8 +31,6 @@ context: {context}
 
 Answer in Markdown:
 `;
-
-const q_prompt = PromptTemplate.fromTemplate(QA_PROMPT);
 
 const CODE_PROMPT = ` 
 As an AI assistant you are only allowed to write DQL(Data query language) for the data needed to run the below python code.
@@ -150,7 +145,6 @@ export const pyChain = async (question: string, history: []) => {
   );
 
   const c_history = question + history;
-  // console.log(c_history);
   chain.call({
     question: question,
     chat_history: c_history,

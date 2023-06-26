@@ -1,5 +1,4 @@
 export const uploadToCloudinary = async (img: Blob) => {
-  console.log("img", img);
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
   const formData = new FormData();
@@ -20,15 +19,12 @@ export const uploadToCloudinary = async (img: Blob) => {
 
     if (response.ok) {
       const jsonResponse = await response.json();
-      console.log(jsonResponse);
       // jsonResponse.secure_url will have the image URL
       return jsonResponse.secure_url || null;
     } else {
-      console.error(`Server responded with ${response.status}`);
       return undefined;
     }
   } catch (error) {
-    console.error("Failed to upload image", error);
     return undefined;
   }
 };
