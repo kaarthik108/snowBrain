@@ -3,6 +3,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { Metadata } from "next";
 import { Inter } from 'next/font/google';
 import Head from 'next/head';
+import Script from 'next/script';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
 
@@ -37,11 +38,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head>
-        <script
+        <Script
           async
           src="https://umami-livid-seven.vercel.app/script.js"
           data-website-id="a626f755-5202-4315-8841-43dfa42676df">
-        </script>
+        </Script>
       </Head>
       <ClerkProvider>
         <body className={inter.className}>
