@@ -1,4 +1,5 @@
 import { DatabaseSchemaProps } from "@/types/schema";
+import React from "react";
 import ReactMarkdown from 'react-markdown';
 
 export const DatabaseSchema: React.FC<DatabaseSchemaProps> = ({ tables }) => (

@@ -22,13 +22,7 @@ type SidebarProps = {
 
 
 export const Sidebar = ({ open, onClose, onNewChat, children }: SidebarProps) => {
-    // const { data: session } = useSession();
-    const { isLoaded, userId, sessionId, getToken } = useAuth();
-    // if (!isLoaded || !userId) {
-    //     return null;
-    // }
-
-    console.log(userId);
+    const { userId } = useAuth();
 
     return (
         <section className={`fixed left-0 top-0 bottom-0 dark:text-[#eaeaea] text-zinc-700 ${open ? 'w-screen' : 'w-0'} md:w-64 md:static`} >

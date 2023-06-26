@@ -1,3 +1,4 @@
+import React from 'react';
 import { cn } from 'utils/cn';
 
 function IconOpenAI({ className, ...props }: React.ComponentProps<'svg'>) {

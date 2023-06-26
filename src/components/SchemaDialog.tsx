@@ -2,9 +2,7 @@ import {
   Button,
   Dialog,
   DialogBody,
-  DialogFooter,
   DialogHeader,
-  Typography,
 } from "@material-tailwind/react";
 import { Fragment, useState } from "react";
 import { tables } from "../../utils/tables";
