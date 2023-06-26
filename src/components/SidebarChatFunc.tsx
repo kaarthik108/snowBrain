@@ -15,7 +15,7 @@ type Props = {
 }
 
 
-export const SidebarChatButton = ({ chatItem, active, onClick, onDelete, onEdit }: Props) => {
+export const SidebarChatFunc = ({ chatItem, active, onClick, onDelete, onEdit }: Props) => {
 
     const [deleting, setDeleting] = useState(false);
     const [editing, setEditing] = useState(false);

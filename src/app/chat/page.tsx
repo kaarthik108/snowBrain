@@ -2,12 +2,12 @@
 
 import { useLocalStorage } from "@/../hooks/use-local-storage";
 import { appendUserMessage, createNewChat, deleteChat, editChat } from '@/../utils/chatHelpers';
-import { ChatArea } from "@/components/ChatArea";
+import { ChatBox } from "@/components/ChatBox";
 import CustomToast from '@/components/CustomToast';
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
-import { SidebarChatButton } from "@/components/SidebarChatButton";
+import { SidebarChatFunc } from "@/components/SidebarChatFunc";
 import { TokenCountContext } from "@/components/token";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
@@ -24,8 +24,8 @@ const Page = () => {
   const [sidebarOpened, setSidebarOpened] = useState(false);
   const [Loading, setLoading] = useState(false);
   const [chatList, setChatList] = useLocalStorage<Chat[]>('chatList', [defaultChat]);
-  const [chatActiveId, setChatActiveId] = useState<string>(defaultChat.id);
-  const [chatActive, setChatActive] = useState<Chat | undefined>(defaultChat);
+  const [activeChatId, setactiveChatId] = useState<string>(defaultChat.id);
+  const [activeChat, setactiveChat] = useState<Chat | undefined>(defaultChat);
   const [pythonCode, setPythonCode] = useState("");
   const { setCurrentMessageToken } = useContext(TokenCountContext);
   const [activeChatMessagesCount, setActiveChatMessagesCount] = useState(0);
@@ -35,13 +35,13 @@ const Page = () => {
   const sqlRegex = /```(?:sql)?\s*([\s\S]*?SELECT[\s\S]*?FROM[\s\S]*?)```/g;
 
   useEffect(() => {
-    const activeChat = chatList.find(item => item.id === chatActiveId);
-    setChatActive(activeChat);
+    const activeChat = chatList.find(item => item.id === activeChatId);
+    setactiveChat(activeChat);
 
     if (activeChat) {
       setActiveChatMessagesCount(activeChat.messages.length);
     }
-  }, [chatActiveId, chatList])
+  }, [activeChatId, chatList])
 
 
   const extractCode = (message: string, regex: RegExp) => {
@@ -76,7 +76,7 @@ const Page = () => {
     }
 
     let fullChat = [...chatList];
-    let chatIndex = fullChat.findIndex(item => item.id === chatActiveId);
+    let chatIndex = fullChat.findIndex(item => item.id === activeChatId);
     const messages: ChatMessage[] = fullChat[chatIndex].messages;
     let sqlCode = initialSqlCode;
 
@@ -132,12 +132,12 @@ const Page = () => {
   };
 
 
-  const fetchResponse = useCallback(async () => {
+  const getSql = useCallback(async () => {
     try {
       setLoading(true);
       const decoder = new TextDecoder('utf-8');
 
-      let chatIndex = chatList.findIndex(item => item.id === chatActiveId);
+      let chatIndex = chatList.findIndex(item => item.id === activeChatId);
       if (chatIndex > -1) {
         let chat = chatList[chatIndex];
 
@@ -199,14 +199,14 @@ const Page = () => {
     } finally {
       setTriggerFetch(false);
     }
-  }, [setLoading, chatList, chatActiveId, setTriggerFetch, setChatList, setPythonCode, sendToFastAPI]);
+  }, [setLoading, chatList, activeChatId, setTriggerFetch, setChatList, setPythonCode, sendToFastAPI]);
 
   useEffect(() => {
     if (triggerFetch) {
-      fetchResponse();
+      getSql();
       setTriggerFetch(false);
     }
-  }, [triggerFetch, fetchResponse]);
+  }, [triggerFetch, getSql]);
 
   console.log("Python   ", pythonCode)
   console.log("Chat List", chatList)
@@ -224,13 +224,13 @@ const Page = () => {
       });
       return;
     }
-    setChatActiveId('')
+    setactiveChatId('')
     closeSidebar();
   }
 
 
   const handleSendMessage = (message: string) => {
-    if (chatActiveId === initialChatId) {
+    if (activeChatId === initialChatId) {
       toast((t) => <CustomToast message='You cannot add new messages to the initial chat. Please create a new chat.' />, {
         duration: 4000,
         position: 'top-center',
@@ -244,12 +244,12 @@ const Page = () => {
       });
       return;
     }
-    if (!chatActiveId) {
+    if (!activeChatId) {
       let newChat = createNewChat(message);
       setChatList([newChat, ...chatList]);
-      setChatActiveId(newChat.id);
+      setactiveChatId(newChat.id);
     } else {
-      let updatedChatList = appendUserMessage([...chatList], chatActiveId, message);
+      let updatedChatList = appendUserMessage([...chatList], activeChatId, message);
       setChatList(updatedChatList);
 
       // Update the message count for the active chat
@@ -264,7 +264,7 @@ const Page = () => {
   const handleSelectChat = (id: string) => {
     if (Loading) return;
     let item = chatList.find(item => item.id === id);
-    if (item) setChatActiveId(item.id);
+    if (item) setactiveChatId(item.id);
     closeSidebar();
   }
 
@@ -272,7 +272,7 @@ const Page = () => {
     let updatedChatList = deleteChat([...chatList], id);
     router.push('/')
     setChatList(updatedChatList);
-    setChatActiveId('');
+    setactiveChatId('');
   }
 
   const handleEditChat = (id: string, newTitle: string) => {
@@ -290,10 +290,10 @@ const Page = () => {
         onNewChat={handleNewChat}
       >
         {chatList.map(item => (
-          <SidebarChatButton
+          <SidebarChatFunc
             key={item.id}
             chatItem={item}
-            active={item.id === chatActiveId}
+            active={item.id === activeChatId}
             onClick={handleSelectChat}
             onDelete={handleDeleteChat}
             onEdit={handleEditChat}
@@ -303,11 +303,11 @@ const Page = () => {
       <div className={`flex flex-col w-full transition-all duration-200 overflow-x-hidden ${sidebarOpened ? ' -z-10 backdrop-blur-blur' : ''} `}>
         <Header
           openSidebarClick={openSidebar}
-          title={chatActive ? chatActive.title : 'Chat'}
+          title={activeChat ? activeChat.title : 'Chat'}
           newChatClick={handleNewChat}
         />
 
-        <ChatArea chat={chatActive} loading={Loading} />
+        <ChatBox chat={activeChat} loading={Loading} />
 
         <Footer
           onSendMessage={handleSendMessage}

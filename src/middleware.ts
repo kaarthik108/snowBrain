@@ -15,6 +15,21 @@ export async function middleware(req: NextRequest) {
           "There is a rate limit on this API. Please try again later."
         );
 
+      if (req.nextUrl.pathname.startsWith("/api")) {
+        if (
+          !req.headers
+            .get("referer")
+            ?.includes(
+              `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` as string
+            )
+        ) {
+          return NextResponse.json(
+            { message: "Unauthorized" },
+            { status: 401 }
+          );
+        }
+      }
+
       return NextResponse.next();
     }
   } catch (error) {

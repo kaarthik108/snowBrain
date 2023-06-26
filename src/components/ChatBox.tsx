@@ -10,7 +10,7 @@ type Props = {
 }
 
 
-export const ChatArea = ({ chat, loading }: Props) => {
+export const ChatBox = ({ chat, loading }: Props) => {
     const scrollArea = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
