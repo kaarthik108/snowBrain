@@ -25,14 +25,14 @@ export default function SchemaDialog() {
           <Dialog
             open={open}
             handler={handleClose}
-            className="m-auto absolute inset-0 bg-[#151313] md:max-w-3xl max-w-xs mx-auto text-xs rounded-lg shadow max-h-[60vh] flex flex-col overflow-y-scroll space-y-1 "
+            className="m-auto absolute inset-0 dark:bg-[#151313] md:max-w-3xl max-w-xs mx-auto text-xs rounded-lg shadow max-h-[60vh] flex flex-col overflow-y-scroll space-y-1 "
           >
-            <DialogHeader className="py-4 text-[#999] mx-4">
+            <DialogHeader className="py-4 dark:text-[#999] text-zinc-700 mx-4 text-lg font-bold">
               Database Schema
             </DialogHeader>
             <DialogBody
               divider
-              className=" overflow-x-hidden py-4 my-2 text-[#999] scrollbar-thin text-sm mx-4 backdrop-blur-sm "
+              className="overflow-x-hidden py-4 my-2 text-[#999] scrollbar-thin text-sm mx-4 backdrop-blur-sm "
             >
               <DatabaseSchema tables={tables} />
             </DialogBody>

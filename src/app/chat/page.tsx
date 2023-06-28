@@ -350,7 +350,7 @@ const Page = () => {
         onClose={closeSidebar}
         onNewChat={handleNewChat}
       >
-        {chatList.map((item) => (
+        {chatList.map((item, index) => (
           <SidebarChatFunc
             key={item.id}
             chatItem={item}
@@ -358,13 +358,13 @@ const Page = () => {
             onClick={handleSelectChat}
             onDelete={handleDeleteChat}
             onEdit={handleEditChat}
+            sequence={index + 1}
           />
         ))}
       </Sidebar>
       <div
-        className={`flex flex-col w-full transition-all duration-200 overflow-x-hidden ${
-          sidebarOpened ? " -z-10 backdrop-blur-blur" : ""
-        } `}
+        className={`flex flex-col w-full transition-all duration-200 overflow-x-hidden ${sidebarOpened ? " -z-10 backdrop-blur-blur" : ""
+          } `}
       >
         <Header
           openSidebarClick={openSidebar}
