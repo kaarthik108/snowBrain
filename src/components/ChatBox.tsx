@@ -7,10 +7,11 @@ import IconOpenAI from './ui/IconOpenAI';
 type Props = {
     chat: Chat | undefined;
     loading: boolean;
+    status: string;
 }
 
 
-export const ChatBox = ({ chat, loading }: Props) => {
+export const ChatBox = ({ chat, loading, status }: Props) => {
     const scrollArea = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -40,7 +41,7 @@ export const ChatBox = ({ chat, loading }: Props) => {
                                 <div className="flex items-center justify-center gap-1 py-1 text-sm rounded-md max-w-fit dark:bg-neutral-950/50 ">
 
                                     <div className="w-2 h-2 bg-green-600 rounded-full animate-ping" />
-                                    <span>Thinking</span>
+                                    <span>{status ? status : 'Thinking'}</span>
                                 </div>
                             </div>
                         </div>

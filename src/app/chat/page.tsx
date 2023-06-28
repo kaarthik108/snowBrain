@@ -12,6 +12,7 @@ import { TokenCountContext } from "@/components/token";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { extractSQL } from "lib/extractSQL";
+import { toMarkdownTable } from "lib/mdTable";
 import uploadToCloudinary from "lib/uploadToCloudinary";
 import { useRouter } from "next/navigation";
 import { useCallback, useContext, useEffect, useState } from "react";
@@ -28,7 +29,7 @@ const Page = () => {
   const [chatList, setChatList] = useLocalStorage<Chat[]>('chatList', [defaultChat]);
   const [activeChatId, setactiveChatId] = useState<string>(defaultChat.id);
   const [activeChat, setactiveChat] = useState<Chat | undefined>(defaultChat);
-  const [pythonCode, setPythonCode] = useState("");
+  const [status, setstatus] = useState("");
   const { setCurrentMessageToken } = useContext(TokenCountContext);
   const [activeChatMessagesCount, setActiveChatMessagesCount] = useState(0);
   const [triggerFetch, setTriggerFetch] = useState(false);
@@ -69,9 +70,17 @@ const Page = () => {
     return response;
   };
 
+  const snowsql = async (sqlCode: string) => {
+    setLoading(true);
+    setstatus("Querying Snowflake. Hang tight! ");
+    const response = await fetchData('/api/snow', 'POST', { query: sqlCode });
+    const data = response.json();
+    setLoading(false);
+    return data;
+  }
+
   const sendToFastAPI = async (pythonCode: string, initialSqlCode: string) => {
     setLoading(true);
-
     if (!pythonCode) {
       setLoading(false);
       return;
@@ -117,6 +126,7 @@ const Page = () => {
     try {
       // console.log("sqlCode", sqlCode);
       // console.log("pythonCode", pythonCode);
+      setstatus("Generating visualizations... ");
       const response = await fetchData(MODAL_API, 'POST', { script: pythonCode, sql: sqlCode });
       const imageData = await response.blob();
       const imageUrl = await uploadToCloudinary(imageData);
@@ -139,6 +149,7 @@ const Page = () => {
   const getSql = useCallback(async () => {
     try {
       setLoading(true);
+      setstatus("Getting SQL");
       const decoder = new TextDecoder('utf-8');
 
       let chatIndex = chatList.findIndex(item => item.id === activeChatId);
@@ -153,7 +164,6 @@ const Page = () => {
           history.push(question, answer);
         }
         let question = chat.messages[chat.messages.length - 1].content;
-        // console.log("Question", question)
 
         const response = await fetch("/api/sql", {
           method: 'POST',
@@ -181,10 +191,25 @@ const Page = () => {
             let pythonCode = extractCode(messageObject.content, pythonCodeRegex);
             let initialSqlCode = extractCode(messageObject.content, sqlRegex);
 
-            setPythonCode(pythonCode);
-
             // Call the new function here
             sendToFastAPI(pythonCode, initialSqlCode);
+
+            if (!pythonCode && initialSqlCode) {
+
+              const data = await snowsql(initialSqlCode);
+              let markdownTable = toMarkdownTable(data);
+
+              let newMessage: ChatMessage = {
+                id: uuidv4(),
+                author: 'assistant',
+                content: markdownTable
+              };
+
+              chatList[chatIndex].messages.push(newMessage);
+              setLoading(false);
+
+            }
+
             setChatList([...chatList]);
             break;
           }
@@ -203,7 +228,7 @@ const Page = () => {
     } finally {
       setTriggerFetch(false);
     }
-  }, [setLoading, chatList, activeChatId, setTriggerFetch, setChatList, setPythonCode, sendToFastAPI]);
+  }, [setLoading, chatList, activeChatId, setTriggerFetch, setChatList, sendToFastAPI]);
 
   useEffect(() => {
     if (triggerFetch) {
@@ -212,8 +237,6 @@ const Page = () => {
     }
   }, [triggerFetch, getSql]);
 
-  // console.log("Python   ", pythonCode)
-  // console.log("Chat List", chatList)
 
 
   const openSidebar = () => setSidebarOpened(true);
@@ -311,7 +334,7 @@ const Page = () => {
           newChatClick={handleNewChat}
         />
 
-        <ChatBox chat={activeChat} loading={Loading} />
+        <ChatBox chat={activeChat} loading={Loading} status={status} />
 
         <Footer
           onSendMessage={handleSendMessage}
