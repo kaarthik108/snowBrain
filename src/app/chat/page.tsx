@@ -13,15 +13,11 @@ import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { extractSQL } from "lib/extractSQL";
 import { toMarkdownTable } from "lib/mdTable";
-import uploadToCloudinary from "lib/uploadToCloudinary";
 import { useRouter } from "next/navigation";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { toast } from 'react-hot-toast';
 import { defaultChat, initialChatId } from "utils/initialChat";
 import { v4 as uuidv4 } from 'uuid';
-
-const MODAL_API = process.env.NEXT_PUBLIC_MODAL_API_ENDPOINT!!;
-
 
 const Page = () => {
   const [sidebarOpened, setSidebarOpened] = useState(false);
@@ -124,17 +120,16 @@ const Page = () => {
     }
 
     try {
-      // console.log("sqlCode", sqlCode);
       // console.log("pythonCode", pythonCode);
+      // console.log("sqlCode", sqlCode);
       setstatus("Generating visualizations... ");
-      const response = await fetchData(MODAL_API, 'POST', { script: pythonCode, sql: sqlCode });
-      const imageData = await response.blob();
-      const imageUrl = await uploadToCloudinary(imageData);
-
+      const response = await fetchData('/api/modal', 'POST', { pythonCode: pythonCode, sqlCode: sqlCode });
+      const data = await response.json();
+      // console.log("data", data);
       let newMessage: ChatMessage = {
         id: uuidv4(),
         author: 'assistant',
-        content: imageUrl
+        content: data.imageUrl,
       };
 
       fullChat[chatIndex].messages = [...fullChat[chatIndex].messages, newMessage];
@@ -179,19 +174,16 @@ const Page = () => {
 
         const reader = response.body.getReader();
         setLoading(false);
-        let messageObject: ChatMessage = { id: uuidv4(), author: 'assistant', content: "" }; // Fixing author type issue
+        let messageObject: ChatMessage = { id: uuidv4(), author: 'assistant', content: "" };
 
-        // Add a new messageObject for the AI's response
         chatList[chatIndex].messages.push(messageObject);
         while (true) {
           const { done, value } = await reader.read();
 
           if (done) {
-            // Once streaming is done, we handle the message content
             let pythonCode = extractCode(messageObject.content, pythonCodeRegex);
             let initialSqlCode = extractCode(messageObject.content, sqlRegex);
 
-            // Call the new function here
             sendToFastAPI(pythonCode, initialSqlCode);
 
             if (!pythonCode && initialSqlCode) {
@@ -217,7 +209,6 @@ const Page = () => {
           const text = decoder.decode(value);
           messageObject.content += text;
 
-          // Update the last message with updated message
           setChatList([...chatList]);
         }
       }
@@ -282,8 +273,7 @@ const Page = () => {
       // Update the message count for the active chat
       setActiveChatMessagesCount(prev => prev + 1);
     }
-    setCurrentMessageToken(0); // Reset token count
-    // setLoading(true);
+    setCurrentMessageToken(0);
     setTriggerFetch(true);
   }
 
