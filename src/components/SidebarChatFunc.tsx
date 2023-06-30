@@ -47,67 +47,64 @@ export const SidebarChatFunc = ({
   };
 
   return (
-    <div className="flex flex-col">
-      <div
-        onClick={handleClickButton}
-        className={`flex items-center rounded-md p-3 text-sm cursor-pointer hover:bg-gray-500/10 border-black/20 ${
-          active ? "bg-gray-500/20" : "bg-transparent"
+    <div
+      onClick={handleClickButton}
+      className={`flex items-center rounded-md p-3 text-sm cursor-pointer hover:bg-gray-500/10 border-black/20 ${active ? "bg-gray-500/20" : "bg-transparent"
         }`}
-      >
-        <div className="mr-3">
-          {!deleting && <IconMessageSquare width={16} height={16} />}
-          {deleting && <IconTrash2 width={16} height={16} />}
-        </div>
+    >
+      <div className="mr-3">
+        {!deleting && <IconMessageSquare width={16} height={16} />}
+        {deleting && <IconTrash2 width={16} height={16} />}
+      </div>
 
-        <div className="flex-1 text-sm overflow-x-hidden">
-          {editing && (
-            <input
-              className="w-full bg-transparent outline-none text-sm border border-black dark:border-gray-500"
-              value={titleInput}
-              onChange={(e) => setTitleInput(e.target.value)}
-            />
-          )}
-          {!editing && (
-            <div className="border border-transparent truncate">
-              {!deleting && chatItem.title}
-              {deleting && `Delete "${chatItem.title}"`}
-            </div>
-          )}
-        </div>
-        {active && !deleting && !editing && (
-          <div className="flex">
-            <div
-              className="cursor-pointer mx-1 opacity-60 hover:opacity-100"
-              onClick={() => setEditing(true)}
-            >
-              <IconEdit width={16} height={16} />
-            </div>
-            <div
-              className="cursor-pointer mx-1 opacity-60 hover:opacity-100"
-              onClick={() => setDeleting(true)}
-            >
-              <IconTrash2 width={16} height={16} />
-            </div>
-          </div>
+      <div className="flex-1 text-sm overflow-x-hidden">
+        {editing && (
+          <input
+            className="w-full bg-transparent outline-none text-sm border border-black dark:border-gray-500"
+            value={titleInput}
+            onChange={(e) => setTitleInput(e.target.value)}
+          />
         )}
-        {(editing || deleting) && (
-          <div className="flex">
-            <div
-              className="cursor-pointer mx-1 opacity-60 hover:opacity-100"
-              onClick={handleConfirmButton}
-            >
-              <IconCheck width={16} height={16} />
-            </div>
-            <div
-              className="cursor-pointer mx-1 opacity-60 hover:opacity-100"
-              onClick={handleCancelButton}
-            >
-              <IconX width={16} height={16} />
-            </div>
+        {!editing && (
+          <div className="border border-transparent truncate">
+            {!deleting && chatItem.title}
+            {deleting && `Delete "${chatItem.title}"`}
           </div>
         )}
       </div>
-      <div className="ml-3 text-xs text-neutral-600">{5 - sequence}/4</div>
+      {active && !deleting && !editing && (
+        <div className="flex">
+          <div
+            className="cursor-pointer mx-1 opacity-60 hover:opacity-100"
+            onClick={() => setEditing(true)}
+          >
+            <IconEdit width={16} height={16} />
+          </div>
+          <div
+            className="cursor-pointer mx-1 opacity-60 hover:opacity-100"
+            onClick={() => setDeleting(true)}
+          >
+            <IconTrash2 width={16} height={16} />
+          </div>
+        </div>
+      )}
+      {(editing || deleting) && (
+        <div className="flex">
+          <div
+            className="cursor-pointer mx-1 opacity-60 hover:opacity-100"
+            onClick={handleConfirmButton}
+          >
+            <IconCheck width={16} height={16} />
+          </div>
+          <div
+            className="cursor-pointer mx-1 opacity-60 hover:opacity-100"
+            onClick={handleCancelButton}
+          >
+            <IconX width={16} height={16} />
+          </div>
+        </div>
+      )}
+      <div className="ml-3 text-xs text-neutral-600">{sequence}/4</div>
     </div>
   );
 };

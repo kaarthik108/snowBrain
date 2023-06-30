@@ -38,7 +38,7 @@ export const ChatBox = ({ chat, loading, status }: Props) => {
             <div className="w-[calc(100%-50px)]"></div>
             <div className="flex items-center justify-start md:px-30 md:mr-10 w-full max-w-3xl ">
               <div className="flex justify-start">
-                <div className="flex items-center justify-center gap-1 py-1 text-sm rounded-md max-w-fit dark:bg-neutral-950/50 ">
+                <div className="flex items-center justify-center gap-2 py-1 text-sm rounded-md max-w-fit dark:bg-neutral-950/50 ">
                   <div className="w-2 h-2 bg-green-600 rounded-full animate-ping" />
                   <span>{status ? status : "Thinking"}</span>
                 </div>

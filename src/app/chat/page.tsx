@@ -161,7 +161,7 @@ const Page = () => {
   const getSql = useCallback(async () => {
     try {
       setLoading(true);
-      setstatus("Getting SQL");
+      setstatus("uhmmm... ");
       const decoder = new TextDecoder("utf-8");
 
       let chatIndex = chatList.findIndex((item) => item.id === activeChatId);
@@ -358,7 +358,7 @@ const Page = () => {
             onClick={handleSelectChat}
             onDelete={handleDeleteChat}
             onEdit={handleEditChat}
-            sequence={index + 1}
+            sequence={chatList.length - index}
           />
         ))}
       </Sidebar>
