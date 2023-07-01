@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import snowflake from "snowflake-sdk";
+import { snow } from "utils/snow";
 
 // export const runtime = "edge";
 
@@ -7,15 +7,7 @@ export async function POST(request: NextRequest) {
   const requestBody = await request.json();
   const query = requestBody.query;
 
-  const connection = snowflake.createConnection({
-    account: process.env.ACCOUNT as string,
-    username: process.env.USER_NAME as string,
-    password: process.env.PASSWORD,
-    role: process.env.ROLE,
-    warehouse: process.env.WAREHOUSE,
-    database: process.env.DATABASE,
-    schema: process.env.SCHEMA,
-  });
+  const connection = snow;
 
   return new Promise((resolve, reject) => {
     connection.connect((err, conn) => {
