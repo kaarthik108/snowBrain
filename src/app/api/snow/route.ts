@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
   return new Promise((resolve) => {
     connectionPool.use(async (clientConnection) => {
-      const statement = await clientConnection.execute({
+      clientConnection.execute({
         sqlText: query,
         complete: (err, stmt, rows) => {
           if (err) {
