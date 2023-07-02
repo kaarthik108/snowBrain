@@ -21,25 +21,28 @@ cur = conn.cursor()
 cur.execute('USE DATABASE ' + os.environ["DATABASE"])
 cur.execute('USE SCHEMA ' + os.environ["SCHEMA"])
 cur.execute(f"""
-SELECT CATEGORY, COUNT(*) AS PRODUCT_COUNT
-FROM STREAM_HACKATHON.STREAMLIT.PRODUCTS
-GROUP BY CATEGORY;
+SELECT CUSTOMER_ID, AVG(TOTAL_AMOUNT) as AVG_ORDER_AMOUNT
+FROM STREAM_HACKATHON.STREAMLIT.ORDER_DETAILS
+GROUP BY CUSTOMER_ID;
 """)
 all_rows = cur.fetchall()
 field_names = [i[0] for i in cur.description]
 df = pd.DataFrame(all_rows)
 df.columns = field_names
 
-import seaborn as sns
+import matplotlib.pyplot as plt
 
-# Count the number of products in each category
-product_counts = df['CATEGORY'].value_counts()
+# Group orders by customer and calculate the average order amount
+avg_order_amount = df.groupby('CUSTOMER_ID')['TOTAL_AMOUNT'].mean()
 
-# Create a bar plot
-sns.barplot(x=product_counts.index, y=product_counts.values)
-plt.xlabel('Category')
-plt.ylabel('Number of Products')
-plt.title('Number of Products by Category')
-plt.xticks(rotation=45)
+# Generate bar chart
+avg_order_amount.plot(kind='bar')
+
+# Set labels and title
+plt.xlabel('Customer ID')
+plt.ylabel('Average Order Amount')
+plt.title('Average Order Amount per Customer')
+
+# Show the plot
 plt.show()
 plt.savefig("output.png")

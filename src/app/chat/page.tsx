@@ -94,13 +94,9 @@ const Page = () => {
     let sqlCode = initialSqlCode;
 
     if (!sqlCode) {
-      let combined_prompt =
-        "Write the DQL(Data query language) for the data needed here in SQL:\n" +
-        pythonCode;
-
       try {
         const response = await fetchData("/api/py", "POST", {
-          prompt: combined_prompt,
+          prompt: pythonCode,
         });
 
         const reader = response.body?.getReader();
@@ -207,7 +203,6 @@ const Page = () => {
               pythonCodeRegex
             );
             let initialSqlCode = extractCode(messageObject.content, sqlRegex);
-
             sendToFastAPI(pythonCode, initialSqlCode);
 
             if (!pythonCode && initialSqlCode) {
