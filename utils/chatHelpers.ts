@@ -38,14 +38,20 @@ export const appendUserMessage = (
   message: string
 ) => {
   let chatIndex = fullChat.findIndex((item) => item.id === chatActiveId);
+
+  if (chatIndex < 0) {
+    console.error(`Chat with id ${chatActiveId} not found.`);
+    return fullChat;
+  }
+
   fullChat[chatIndex].messages.push({
     id: uuidv4(),
     author: "user",
     content: message,
   });
+
   return fullChat;
 };
-
 export const deleteChat = (fullChat: Chat[], chatId: string) => {
   let chatIndex = fullChat.findIndex((item) => item.id === chatId);
   fullChat.splice(chatIndex, 1);

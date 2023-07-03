@@ -1,7 +1,5 @@
 import { Chat } from "@/types/Chat";
 
-import { v4 as uuidv4 } from "uuid";
-
 export const initialChatId = "Initial Chat";
 
 export const defaultChat: Chat = {
@@ -9,16 +7,15 @@ export const defaultChat: Chat = {
   title: "Initial Chat",
   messages: [
     {
-      id: uuidv4(),
+      id: "1",
       author: "user",
       content: "Show me the total revenue for each product category ?",
     },
     {
-      id: uuidv4(),
+      id: "2",
       author: "assistant",
       content:
-        " To get the total revenue for each product category, we need to join the PRODUCTS, TRANSACTIONS, ORDER_DETAILS, and PAYMENTS tables. Here's an example SQL query that should work in Snowflake:\n" +
-        "\n" +
+        "To get the total revenue for each product category, we need to join the PRODUCTS, TRANSACTIONS, ORDER_DETAILS, and PAYMENTS tables. Here's an example SQL query that should work in Snowflake:\n" +
         "```\n" +
         "SELECT p.CATEGORY, SUM(t.PRICE * t.QUANTITY) AS TOTAL_REVENUE\n" +
         "FROM STREAM_HACKATHON.STREAMLIT.PRODUCTS p\n" +
@@ -26,21 +23,19 @@ export const defaultChat: Chat = {
         "JOIN STREAM_HACKATHON.STREAMLIT.ORDER_DETAILS o ON t.ORDER_ID = o.ORDER_ID\n" +
         "JOIN STREAM_HACKATHON.STREAMLIT.PAYMENTS pm ON o.ORDER_ID = pm.ORDER_ID\n" +
         "GROUP BY p.CATEGORY;\n" +
-        "```\n" +
-        "\n" +
         "This query joins the four tables on their respective keys and calculates the total revenue for each product category by multiplying the price and quantity of each transaction and summing them up. The result is grouped by category.",
     },
     {
-      id: uuidv4(),
+      id: "3",
       author: "user",
       content:
         "Can you make some visualization on this? I want to see the total revenue for each product category.",
     },
     {
-      id: uuidv4(),
+      id: "4",
       author: "assistant",
       content:
-        " To visualize the total revenue for each product category, we can use a bar plot. Here's an example code using seaborn:\n" +
+        "To visualize the total revenue for each product category, we can use a bar plot. Here's an example code using seaborn:\n" +
         "\n" +
         "```python\n" +
         "import seaborn as sns\n" +
@@ -65,7 +60,7 @@ export const defaultChat: Chat = {
         "\n",
     },
     {
-      id: uuidv4(),
+      id: "5",
       author: "assistant",
       content:
         "https://res.cloudinary.com/dmq9hcus4/image/upload/v1687389412/vkyjqb1c1b1a9smjrypj.png",
