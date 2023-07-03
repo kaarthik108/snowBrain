@@ -273,7 +273,55 @@ const Page = () => {
     closeSidebar();
   };
 
+  const handleSelectChat = (id: string) => {
+    if (Loading) return;
+    let item = chatList.find((item) => item.id === id);
+    if (item) setactiveChatId(item.id);
+    closeSidebar();
+  };
+
+
+  const handleDeleteChat = (id: string) => {
+    if (id === initialChatId) {
+      toast(
+        (t) => (
+          <CustomToast message="You cannot delete the initial chat." />
+        ),
+        {
+          duration: 4000,
+          position: "top-center",
+        }
+      );
+      return;
+    }
+
+    let chatIndex = chatList.findIndex(chat => chat.id === id);
+    let previousChatId = "";
+
+    if (chatIndex > 0) {
+      previousChatId = chatList[chatIndex - 1].id;
+    }
+
+    let updatedChatList = deleteChat([...chatList], id);
+
+    setChatList(updatedChatList);
+    setactiveChatId(previousChatId);
+  };
+
   const handleSendMessage = (message: string) => {
+    if (!activeChatId) {
+      toast(
+        (t) => (
+          <CustomToast message="Please select a chat before sending messages." />
+        ),
+        {
+          duration: 4000,
+          position: "top-center",
+        }
+      );
+      return;
+    }
+
     if (activeChatId === initialChatId) {
       toast(
         (t) => (
@@ -286,6 +334,7 @@ const Page = () => {
       );
       return;
     }
+
     if (activeChatMessagesCount >= 12) {
       toast(
         (t) => (
@@ -298,7 +347,10 @@ const Page = () => {
       );
       return;
     }
-    if (!activeChatId) {
+
+    let chatExists = chatList.some(chat => chat.id === activeChatId);
+
+    if (!chatExists) {
       let newChat = createNewChat(message);
       setChatList([newChat, ...chatList]);
       setactiveChatId(newChat.id);
@@ -313,25 +365,25 @@ const Page = () => {
       // Update the message count for the active chat
       setActiveChatMessagesCount((prev) => prev + 1);
     }
+
     setCurrentMessageToken(0);
     setTriggerFetch(true);
   };
 
-  const handleSelectChat = (id: string) => {
-    if (Loading) return;
-    let item = chatList.find((item) => item.id === id);
-    if (item) setactiveChatId(item.id);
-    closeSidebar();
-  };
-
-  const handleDeleteChat = (id: string) => {
-    let updatedChatList = deleteChat([...chatList], id);
-    router.push("/");
-    setChatList(updatedChatList);
-    setactiveChatId("");
-  };
-
   const handleEditChat = (id: string, newTitle: string) => {
+    if (id === initialChatId) {
+      toast(
+        (t) => (
+          <CustomToast message="You cannot modify the initial chat." />
+        ),
+        {
+          duration: 4000,
+          position: "top-center",
+        }
+      );
+      return;
+    }
+
     if (newTitle) {
       let updatedChatList = editChat([...chatList], id, newTitle);
       setChatList(updatedChatList);

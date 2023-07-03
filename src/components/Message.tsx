@@ -1,7 +1,7 @@
 "use client";
 
 import { ChatMessage } from "@/types/ChatMessage";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
@@ -27,6 +27,7 @@ const extractTextContent = (children: any): string => {
 
 export const Message = ({ item }: Props) => {
   const { setCurrentMessageToken } = useContext(TokenCountContext);
+  const [_, forceUpdate] = useState(0);
 
   useEffect(() => {
     if (item.content) {
@@ -38,6 +39,7 @@ export const Message = ({ item }: Props) => {
   const isImageMessage =
     item?.content?.startsWith &&
     item.content.startsWith("https://res.cloudinary.com/");
+  const copyStatusRef = useRef<{ [key: string]: boolean }>({});
 
   return (
     <div
@@ -61,12 +63,17 @@ export const Message = ({ item }: Props) => {
               code: ({ children, inline, className }) => {
                 const language = className?.split("-")[1];
                 const codeText = extractTextContent(children);
-                const [localCopied, setLocalCopied] = useState(false);
+
+                const id = language + codeText;
+                if (!copyStatusRef.current[id]) {
+                  copyStatusRef.current[id] = false;
+                }
 
                 const handleCopy = () => {
                   navigator.clipboard.writeText(codeText);
-                  setLocalCopied(true);
-                  setTimeout(() => setLocalCopied(false), 3000);
+                  copyStatusRef.current[id] = true;
+                  setTimeout(() => (copyStatusRef.current[id] = false), 3000);
+                  forceUpdate(i => i + 1);
                 };
 
                 if (inline)
@@ -84,7 +91,7 @@ export const Message = ({ item }: Props) => {
                         onClick={handleCopy}
                       >
                         <IconClipboard width={8} />
-                        {localCopied ? "Copied!" : "Copy"}
+                        {copyStatusRef.current[id] ? "Copied!" : "Copy"}
                       </button>
                     </div>
                     <code
