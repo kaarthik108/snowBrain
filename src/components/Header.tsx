@@ -10,7 +10,7 @@ type Props = {
 
 export const Header = ({ openSidebarClick, title, newChatClick }: Props) => {
   return (
-    <header className="flex items-center justify-between w-full border-b border-b-gray-600 p-2 md:hidden ">
+    <header className="flex items-center justify-between w-full border-b border-b-gray-600 p-2 lg:hidden ">
       <div onClick={openSidebarClick}>
         <IconMenu width={24} height={24} />
       </div>

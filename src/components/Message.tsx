@@ -42,77 +42,78 @@ export const Message = ({ item }: Props) => {
   const copyStatusRef = useRef<{ [key: string]: boolean }>({});
 
   return (
-    <div
-      className={`flex py-4 px-2 md:py-5 md:justify-center w-full max-w-full ${item.author === "user" && "dark:bg-neutral-950/60 bg-neutral-100/50"
-        } `}
-    >
-      <div
-        className={`w-8 h-8 md:w-10 md:h-10 flex md:ml-0 rounded items-center justify-center ${item.author === "assistant" ? "" : ""
-          }`}
-      >
-        {item.author === "user" && (
-          <IconSnow className="rounded-full" width="28" height="28" />
-        )}
-        {item.author === "assistant" && <IconOpenAI className="rounded-full" />}
-      </div>
-      <div className="flex-1 markdown ml-2 mt-1 text-sm md:text-md max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] ">
-        <div className="w-[calc(100%-50px)]">
-          <ReactMarkdown
-            className="break-words markdown mt-1 space-y-1"
-            components={{
-              code: ({ children, inline, className }) => {
-                const language = className?.split("-")[1];
-                const codeText = extractTextContent(children);
-
-                const id = language + codeText;
-                if (!copyStatusRef.current[id]) {
-                  copyStatusRef.current[id] = false;
-                }
-
-                const handleCopy = () => {
-                  navigator.clipboard.writeText(codeText);
-                  copyStatusRef.current[id] = true;
-                  setTimeout(() => (copyStatusRef.current[id] = false), 3000);
-                  forceUpdate(i => i + 1);
-                };
-
-                if (inline)
-                  return (
-                    <span className="px-1 py-1 text-xs md:text-sm rounded-md dark:bg-neutral-800 bg-neutral-50">
-                      {children}
-                    </span>
-                  );
-                return (
-                  <div className="w-full my-4 md:my-6 overflow-hidden rounded-md dark:bg-neutral-950/60 bg-gray-800 text-white">
-                    <div className="bg-[#1e283880]  py-1 md:py-2 px-2 md:px-3 text-xs flex items-center justify-between">
-                      <div>{language ?? "sql"}</div>
-                      <button
-                        className="flex items-center gap-1"
-                        onClick={handleCopy}
-                      >
-                        <IconClipboard width={8} />
-                        {copyStatusRef.current[id] ? "Copied!" : "Copy"}
-                      </button>
-                    </div>
-                    <code
-                      className={
-                        (className ?? "hljs language-javascript ") +
-                        " dark:bg-[#1e283880] text-[#eaeaea] block p-3 overflow-auto border-t border-t-gray-300/40"
-                      }
-                    >
-                      {children}
-                    </code>
-                  </div>
-                );
-              },
-            }}
-            rehypePlugins={[rehypeHighlight]}
-            remarkPlugins={[remarkGfm]}
+    <div className={`py-4 md:py-5 ${item.author === "user" ? "dark:bg-neutral-950/60 bg-neutral-100/50" : ""}`}>
+      <div className="md:max-w-2xl lg:max-w-4xl m-auto">
+        <div className={`grid grid-cols-[auto_1fr] mx-auto`}>
+          <div
+            className={`w-8 h-8 md:w-10 md:h-10 flex md:ml-0 rounded items-center justify-center ${item.author === "assistant" ? "" : ""}`}
           >
-            {isImageMessage
-              ? `![matplot graph](${item.content})`
-              : item.content ?? ""}
-          </ReactMarkdown>
+            {item.author === "user" && (
+              <IconSnow className="rounded-full" width="28" height="28" />
+            )}
+            {item.author === "assistant" && <IconOpenAI className="rounded-full" />}
+          </div>
+          <div className="flex-1 markdown ml-2 mt-1 max-w-xl text-sm lg:text-md md:max-w-xl lg:max-w-2xl xl:max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] ">
+            <div className="w-[calc(100%-50px)]">
+              <ReactMarkdown
+                className="break-words markdown mt-1 space-y-1"
+                components={{
+                  code: ({ children, inline, className }) => {
+                    const language = className?.split("-")[1];
+                    const codeText = extractTextContent(children);
+
+                    const id = language + codeText;
+                    if (!copyStatusRef.current[id]) {
+                      copyStatusRef.current[id] = false;
+                    }
+
+                    const handleCopy = () => {
+                      navigator.clipboard.writeText(codeText);
+                      copyStatusRef.current[id] = true;
+                      setTimeout(() => (copyStatusRef.current[id] = false), 3000);
+                      forceUpdate(i => i + 1);
+                    };
+
+                    if (inline)
+                      return (
+                        <span className="px-1 py-1 text-xs md:text-sm rounded-md dark:bg-neutral-800 bg-neutral-50">
+                          {children}
+                        </span>
+                      );
+                    return (
+                      <div className="w-full my-4 md:my-6 overflow-hidden rounded-md dark:bg-neutral-950/60 bg-gray-800 text-white overflow:auto;">
+                        <div className="bg-[#1e283880]  py-1 md:py-2 px-2 md:px-3 text-xs flex items-center justify-between">
+                          <div>{language ?? "sql"}</div>
+                          <button
+                            className="flex items-center gap-1"
+                            onClick={handleCopy}
+                          >
+                            <IconClipboard width={8} />
+                            {copyStatusRef.current[id] ? "Copied!" : "Copy"}
+                          </button>
+                        </div>
+                        <code
+                          className={
+                            (className ?? "hljs language-javascript ") +
+                            " dark:bg-[#1e283880] text-[#eaeaea] block p-3 overflow-auto border-t border-t-gray-300/40"
+                          }
+                        >
+                          {children}
+                        </code>
+                      </div>
+                    );
+                  },
+                }}
+                rehypePlugins={[rehypeHighlight]}
+                remarkPlugins={[remarkGfm]}
+              >
+                {isImageMessage
+                  ? `![matplot graph](${item.content})`
+                  : item.content ?? ""}
+              </ReactMarkdown>
+
+            </div>
+          </div>
         </div>
       </div>
     </div>

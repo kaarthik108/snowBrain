@@ -27,14 +27,12 @@ export const Sidebar = ({
 
   return (
     <section
-      className={`fixed left-0 top-0 bottom-0 dark:text-[#eaeaea] text-zinc-700 ${
-        open ? "w-screen" : "w-0"
-      } md:w-64 md:static`}
+      className={`fixed left-0 top-0 bottom-0 dark:text-[#eaeaea] text-zinc-700 ${open ? "w-screen" : "w-0"
+        } lg:w-64 lg:static`}
     >
       <div
-        className={`transition-all duration-200 flex h-screen ${
-          open ? "ml-0 " : "-ml-96"
-        } md:ml-0`}
+        className={`transition-all duration-200 flex h-screen ${open ? "ml-0 " : "-ml-96"
+          } lg:ml-0`}
       >
         <div className="flex flex-col w-64 p-2 shadow-md md:translate-x-0 border-neutral-800  bg-neutral-950 text-neutral-50 ">
           <div className="flex items-center mb-6 mt-3 pl-0 justify-center">
@@ -116,7 +114,7 @@ export const Sidebar = ({
         </div>
         <div
           onClick={onClose}
-          className="flex justify-center items-center w-10 h-10 cursor-pointer md:hidden"
+          className="flex justify-center items-center w-10 h-10 cursor-pointer lg:hidden"
         >
           <IconMinimize2 width={24} height={24} />
         </div>

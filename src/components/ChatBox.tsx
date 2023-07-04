@@ -20,7 +20,7 @@ export const ChatBox = ({ chat, loading, status }: Props) => {
   return (
     <section
       ref={scrollArea}
-      className="flex-auto h-0 overflow-y-scroll overflow-x-hidden"
+      className="flex-auto h-0 overflow-y-scroll w-full"
     >
       <ChatPlaceholder />
       {chat &&
