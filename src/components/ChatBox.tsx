@@ -26,22 +26,19 @@ export const ChatBox = ({ chat, loading, status }: Props) => {
       {chat &&
         chat.messages.map((item) => <Message key={item.id} item={item} />)}
       {loading && (
-        <div
-          className={`flex py-4 px-2 md:py-5 md:justify-center w-full max-w-full `}
-        >
+        <div className="md:max-w-2xl lg:max-w-4xl m-auto">
           <div
-            className={`w-8 h-8 md:w-10 md:h-10 flex md:ml-0 rounded items-center justify-center `}
+            className={`grid grid-cols-[auto_1fr] mx-auto  `}
           >
-            <IconOpenAI className="rounded-full" />
-          </div>
-          <div className="flex-1 markdown ml-2 mt-1 text-xs sm:text-sm max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] ">
-            <div className="w-[calc(100%-50px)]"></div>
-            <div className="flex items-center justify-start md:px-30 md:mr-10 w-full max-w-3xl ">
-              <div className="flex justify-start">
-                <div className="flex items-center justify-center gap-2 py-1 text-sm rounded-md max-w-fit dark:bg-neutral-950/50 ">
-                  <div className="w-2 h-2 bg-green-600 rounded-full animate-ping" />
-                  <span>{status ? status : "Thinking"}</span>
-                </div>
+            <div
+              className={`w-8 h-8 md:w-10 md:h-10 flex md:ml-0 rounded items-center justify-center `}
+            >
+              <IconOpenAI className="rounded-full" />
+            </div>
+            <div className="flex-1 markdown ml-2 mt-1 text-xs sm:text-sm max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] ">
+              <div className="flex items-center justify-center gap-2 py-1 text-sm rounded-md max-w-fit ">
+                <div className="w-2 h-2 bg-green-600 rounded-full animate-ping" />
+                <span>{status ? status : "Thinking"}</span>
               </div>
             </div>
           </div>

@@ -275,26 +275,16 @@ const Page = () => {
     let activeChatIndex = chatList.findIndex((item) => item.id === activeChatId);
 
     if (activeChatId === initialChatId) {
-      toast(
-        (t) => (
-          <CustomToast message="You cannot add new messages to the initial chat. Please create a new chat." />
-        ),
-        {
-          duration: 4000,
-          position: "top-center",
-        }
-      );
+      toast(<CustomToast message="You cannot add new messages to the initial chat. Please create a new chat." />, {
+        duration: 4000,
+        position: "top-center",
+      });
       return;
-    } else if (activeChatMessagesCount >= 12) {
-      toast(
-        (t) => (
-          <CustomToast message="You have reached the maximum number of messages for this chat" />
-        ),
-        {
-          duration: 4000,
-          position: "top-center",
-        }
-      );
+    } else if (activeChatMessagesCount >= 20) {
+      toast(<CustomToast message="You have reached the maximum number of messages for this chat" />, {
+        duration: 4000,
+        position: "top-center",
+      });
       return;
     } else if (activeChatId && activeChatIndex !== -1) {
       let updatedChatList = appendUserMessage(
@@ -370,7 +360,7 @@ const Page = () => {
 
         <Footer
           onSendMessage={handleSendMessage}
-          disabled={Loading || activeChatMessagesCount >= 10}
+          disabled={Loading || activeChatMessagesCount >= 20}
         />
       </div>
     </main>

@@ -32,12 +32,13 @@ export const MessageInput = ({ disabled, onSend }: Props) => {
         setText("");
       }
     } else {
-      toast(() => <CustomToast message="Please login to send messages" />, {
+      toast(<CustomToast message="Please login to send messages" />, {
         duration: 4000,
         position: "top-center",
       });
     }
   };
+
 
   const handleTextKeyUp = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.code.toLowerCase() === "enter" && !e.shiftKey) {
@@ -64,9 +65,8 @@ export const MessageInput = ({ disabled, onSend }: Props) => {
 
       <div
         onClick={handleSendMessage}
-        className={`self-end p-2 mr-2 cursor-pointer rounded ${
-          text.length ? "opacity-100 " : "opacity-20"
-        }`}
+        className={`self-end p-2 mr-2 cursor-pointer rounded ${text.length ? "opacity-100 " : "opacity-20"
+          }`}
       >
         <IconSend width={18} height={18} />
       </div>
