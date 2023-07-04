@@ -15,9 +15,6 @@
     "@material-tailwind/react": "^2.0.4",
     "@pinecone-database/pinecone": "^0.1.6",
     "@radix-ui/react-slot": "^1.0.2",
-    "@types/node": "20.3.1",
-    "@types/react": "18.2.12",
-    "@types/react-dom": "18.2.5",
     "@upstash/ratelimit": "^0.4.3",
     "@upstash/redis": "^1.21.0",
     "autoprefixer": "10.4.14",
@@ -47,10 +44,12 @@
     "@types/react-copy-to-clipboard": "^5.0.4",
     "@types/snowflake-sdk": "^1.6.13",
     "@types/uuid": "^9.0.2",
+    "@types/node": "20.3.1",
+    "@types/react": "18.2.12",
+    "@types/react-dom": "18.2.5",
     "depcheck": "^1.4.3",
     "eslint": "^8.31.0",
     "eslint-config-next": "13.4.7-canary.1",
-    "prettier": "^2.7.1",
-    "react-hot-toast": "^2.4.1"
+    "prettier": "^2.7.1"
   }
 }
