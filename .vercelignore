@@ -1,3 +1,4 @@
 code-plugin/**/*
 embed/**/*
 README.md
+.env.example

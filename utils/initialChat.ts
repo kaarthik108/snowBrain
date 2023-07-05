@@ -23,16 +23,23 @@ export const defaultChat: Chat = {
         "JOIN STREAM_HACKATHON.STREAMLIT.ORDER_DETAILS o ON t.ORDER_ID = o.ORDER_ID\n" +
         "JOIN STREAM_HACKATHON.STREAMLIT.PAYMENTS pm ON o.ORDER_ID = pm.ORDER_ID\n" +
         "GROUP BY p.CATEGORY;\n" +
+        "```\n" +
         "This query joins the four tables on their respective keys and calculates the total revenue for each product category by multiplying the price and quantity of each transaction and summing them up. The result is grouped by category.",
     },
     {
       id: "3",
+      author: "assistant",
+      content:
+        "\nCATEGORY | TOTAL_REVENUE\n--- | ---\nElectronics | 286.49\nGadgets | 140.25\nAccessories | 411.34\nAudio | 203.05\n",
+    },
+    {
+      id: "4",
       author: "user",
       content:
         "Can you make some visualization on this? I want to see the total revenue for each product category.",
     },
     {
-      id: "4",
+      id: "5",
       author: "assistant",
       content:
         "To visualize the total revenue for each product category, we can use a bar plot. Here's an example code using seaborn:\n" +
@@ -60,7 +67,7 @@ export const defaultChat: Chat = {
         "\n",
     },
     {
-      id: "5",
+      id: "6",
       author: "assistant",
       content:
         "https://res.cloudinary.com/dmq9hcus4/image/upload/v1687389412/vkyjqb1c1b1a9smjrypj.png",

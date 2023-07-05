@@ -1,37 +1,99 @@
 # snowbrain
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kaarthik108/snowbrain&project-name=snowbrain&repo-name=snowbrain)
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+## Tech Stack
+- [Snowflake](https://www.snowflake.com/) - Database processing
+- [Next.js](https://nextjs.org/) - Frontend & backend
+- [Pinecone](https://www.pinecone.io/) - Vector database
+- [OpenAI](https://www.openai.com/) - LLM
+- [Langchain](https://js.langchain.com/docs/) - LLM management
+- [Cloudinary](https://cloudinary.com/) - Image data
+- [Clerk.dev](https://clerk.dev/) - Auth
+- [Upstash Redis](https://upstash.com/) - Rate limiting
+- [Fast API](https://fastapi.tiangolo.com/) - Backend python
+- [Modal Labs](https://modal.com/) - Host API
+- [Vercel](https://vercel.com/) - Hosting
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Snowflake to Vector Database**: Automatic conversion of all Snowflake DDL to a vector database.
+- **Conversational Memory**: Maintain context and improve the quality of interactions.
+- **Snowflake Integration**: Integrate with Snowflake schema for automatic SQL generation and visualization.
+- **Pinecone Vector Database**: Leverage Pinecone's vector database management system for efficient searching capabilities.
+- **Secure Authentication**: Employ Clerk.dev for secure and hassle-free user authentication.
+- **Rate Limit Handling**: Utilize Upstash Redis for managing rate limits.
+- **Fast API**: High-performance Python web framework for building APIs.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Follow these steps to get **snowbrain** up and running in your local environment.
 
-## Learn More
+1. **Update Environment Variables**
 
-To learn more about Next.js, take a look at the following resources:
+    Make sure to update the environment variables as necessary. Refer to the example provided:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    ```bash
+    .env.example
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+2. **Auto fetch All Schema DDL**
 
-## Deploy on Vercel
+    You can do this by running the following command:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    ```bash
+    python embed/snowflake_ddl_fetcher.py
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+3. **Convert DDL Documents to Vector & Upload to Pinecone**
+
+    Use the following command to do this:
+
+    ```bash
+    python embed/embed.py
+    ```
+
+4. **Install Dependencies for the Code Plugin**
+
+    Navigate to the code plugin directory and install the necessary dependencies using Poetry:
+
+    ```bash
+    cd code-plugin && poetry install
+    ```
+
+5. **Deploy FastAPI to Modal Labs**
+
+    Run the following command to deploy your FastAPI:
+
+    ```bash
+    modal deploy main.py
+    ```
+
+    After deploying, make sure to store the endpoint in your environment variables:
+
+    ```bash
+    MODAL_API_ENDPOINT=
+    ```
+
+6. **Run Locally**
+
+    Test the setup locally using the following command:
+
+    ```bash
+    npm run dev
+    ```
+
+7. **Deploy to Vercel**
+
+    Finally, when you're ready, deploy the project to Vercel.
+
+
+## One-Click Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kaarthik108/snowbrain&project-name=snowbrain&repo-name=snowbrain)
+
+## License
+
+This repo is MIT licensed.
