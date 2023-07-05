@@ -20,6 +20,7 @@ import { extractSQL } from "lib/extractSQL";
 import { toMarkdownTable } from "lib/mdTable";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { extractPythonCode, extractSqlCode, fetchData, readResponseBody, setErrorMessage } from "utils/fetchHelpers";
 import { defaultChat, initialChatId } from "utils/initialChat";
 import { v4 as uuidv4 } from "uuid";
 
@@ -35,8 +36,6 @@ const Page = () => {
   const { setCurrentMessageToken } = useContext(TokenCountContext);
   const [activeChatMessagesCount, setActiveChatMessagesCount] = useState(0);
   const [triggerFetch, setTriggerFetch] = useState(false);
-  const pythonCodeRegex = /```python([\s\S]*?)```/g;
-  const sqlRegex = /```(?:sql)?\s*([\s\S]*?SELECT[\s\S]*?FROM[\s\S]*?)```/g;
 
   useEffect(() => {
     const activeChat = chatList.find((item) => item.id === activeChatId);
@@ -47,28 +46,6 @@ const Page = () => {
     }
   }, [activeChatId, chatList]);
 
-  const extractCode = (message: string, regex: RegExp) => {
-    let codeMatch;
-    let code = "";
-    while ((codeMatch = regex.exec(message)) !== null) {
-      code = codeMatch[1].trim();
-    }
-    return code;
-  };
-
-  const fetchData = async (url: string, method: string, data: any) => {
-    const response = await fetch(url, {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) throw new Error("Response Error");
-
-    return response;
-  };
 
   const snowsql = async (sqlCode: string) => {
     setLoading(true);
@@ -79,7 +56,7 @@ const Page = () => {
     return data;
   };
 
-  const sendToFastAPI = async (pythonCode: string, initialSqlCode: string) => {
+  const sendToFastAPI = useCallback(async (pythonCode: string, initialSqlCode: string) => {
     setLoading(true);
     if (!pythonCode) {
       setLoading(false);
@@ -88,7 +65,7 @@ const Page = () => {
 
     let fullChat = [...chatList];
     let chatIndex = fullChat.findIndex((item) => item.id === activeChatId);
-    const messages: ChatMessage[] = fullChat[chatIndex].messages;
+    // const messages: ChatMessage[] = fullChat[chatIndex].messages;
     let sqlCode = initialSqlCode;
 
     if (!sqlCode) {
@@ -97,17 +74,7 @@ const Page = () => {
           prompt: pythonCode,
         });
 
-        const reader = response.body?.getReader();
-        if (!reader) throw new Error("No response body");
-
-        const decoder = new TextDecoder("utf-8");
-        let responseBody = "";
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          responseBody += decoder.decode(value);
-        }
+        const responseBody = await readResponseBody(response);
 
         let sqlCodeResponse: ChatMessage[] = [
           { id: uuidv4(), author: "assistant", content: responseBody },
@@ -126,15 +93,13 @@ const Page = () => {
     }
 
     try {
-      // console.log("pythonCode", pythonCode);
-      // console.log("sqlCode", sqlCode);
       setstatus("Generating visualizations... ");
       const response = await fetchData("/api/modal", "POST", {
         pythonCode: pythonCode,
         sqlCode: sqlCode,
       });
       const data = await response.json();
-      // console.log("data", data);
+
       let newMessage: ChatMessage = {
         id: uuidv4(),
         author: "assistant",
@@ -147,10 +112,12 @@ const Page = () => {
       ];
       setChatList([...fullChat]);
       setLoading(false);
-    } catch (error) {
-      setLoading(false);
     }
-  };
+    catch (error) {
+      setLoading(false);
+      setErrorMessage(chatList, activeChatId, setChatList);
+    }
+  }, [activeChatId, chatList, setChatList]);
 
   const getSql = useCallback(async () => {
     try {
@@ -196,12 +163,9 @@ const Page = () => {
           const { done, value } = await reader.read();
 
           if (done) {
-            let pythonCode = extractCode(
-              messageObject.content,
-              pythonCodeRegex
-            );
-            let initialSqlCode = extractCode(messageObject.content, sqlRegex);
-            sendToFastAPI(pythonCode, initialSqlCode);
+            let pythonCode = extractPythonCode(messageObject.content);
+            let initialSqlCode = extractSqlCode(messageObject.content);
+            await sendToFastAPI(pythonCode, initialSqlCode);
 
             if (!pythonCode && initialSqlCode) {
               const data = await snowsql(initialSqlCode);
@@ -228,9 +192,8 @@ const Page = () => {
         }
       }
     } catch (error) {
-      // console.error(error);
       setLoading(false);
-      alert("An error occurred");
+      setErrorMessage(chatList, activeChatId, setChatList);
     } finally {
       setTriggerFetch(false);
     }
@@ -360,7 +323,7 @@ const Page = () => {
 
         <Footer
           onSendMessage={handleSendMessage}
-          disabled={Loading || activeChatMessagesCount >= 20}
+          disabled={Loading || activeChatMessagesCount >= 22}
         />
       </div>
     </main>
