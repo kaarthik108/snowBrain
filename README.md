@@ -1,4 +1,4 @@
-# snowbrain
+# Snowbrain
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kaarthik108/snowbrain&project-name=snowbrain&repo-name=snowbrain)
 
@@ -77,7 +77,15 @@ Follow these steps to get **snowbrain** up and running in your local environment
     MODAL_API_ENDPOINT=
     ```
 
-6. **Run Locally**
+6. **Install packages**
+
+    Install packages using the following command:
+
+    ```bash
+    npm i
+    ```
+
+7. **Run Locally**
 
     Test the setup locally using the following command:
 
@@ -85,7 +93,7 @@ Follow these steps to get **snowbrain** up and running in your local environment
     npm run dev
     ```
 
-7. **Deploy to Vercel**
+8. **Deploy to Vercel**
 
     Finally, when you're ready, deploy the project to Vercel.
 
