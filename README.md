@@ -99,8 +99,16 @@ Follow these steps to get **snowbrain** up and running in your local environment
 
 
 ## One-Click Deploy
-
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kaarthik108/snowbrain&project-name=snowbrain&repo-name=snowbrain)
+
+
+## Contributing
+
+Here's how you can contribute:
+
+- [Open an issue](https://github.com/kaarthik108/snowbrain/issues) if you believe you've encountered a bug.
+- Make a [pull request](https://github.com/kaarthik108/snowbrain/pulls) to add new features/make improvements/fix bugs.
+
 
 ## License
 
