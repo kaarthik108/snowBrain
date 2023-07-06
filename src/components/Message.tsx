@@ -53,8 +53,8 @@ export const Message = ({ item }: Props) => {
             )}
             {item.author === "assistant" && <IconOpenAI className="rounded-full" />}
           </div>
-          <div className="flex-1 markdown ml-2 mt-1 max-w-xl text-xs md:text-sm lg:text-md md:max-w-xl lg:max-w-2xl xl:max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] ">
-            <div className="w-[calc(100%-50px)]">
+          <div className="flex-1 markdown ml-2 mt-1 max-w-xs text-xs md:text-sm lg:text-md md:max-w-2xl lg:max-w-2xl xl:max-w-3xl items-start justify-center dark:text-[#eaeaea] text-[#111] ">
+            <div className="md:w-[calc(100%-10px)] break-words w-full">
               <ReactMarkdown
                 className="break-words markdown mt-1 space-y-1"
                 components={{
