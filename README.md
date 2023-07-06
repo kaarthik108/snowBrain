@@ -3,6 +3,12 @@
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kaarthik108/snowbrain&project-name=snowbrain&repo-name=snowbrain)
 
 
+
+https://github.com/kaarthik108/snowbrain/assets/53030784/398bdf32-ba84-426d-a809-979f26886df7
+
+
+
+
 ## Tech Stack
 - [Snowflake](https://www.snowflake.com/) - Database processing
 - [Next.js](https://nextjs.org/) - Frontend & backend
