@@ -42,4 +42,4 @@ jobs:
       - name: Deploy FastAPI app to Modal
         run: |
           cd code-plugin
-          modal deploy main.py
+          poetry run modal deploy main.py
