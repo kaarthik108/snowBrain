@@ -6,6 +6,7 @@
 ## Tech Stack
 - [Snowflake](https://www.snowflake.com/) - Database processing
 - [Next.js](https://nextjs.org/) - Frontend & backend
+- [Tailwindcss](https://tailwindcss.com/) - Styling
 - [Pinecone](https://www.pinecone.io/) - Vector database
 - [OpenAI](https://www.openai.com/) - LLM
 - [Langchain](https://js.langchain.com/docs/) - LLM management
@@ -97,6 +98,7 @@ Follow these steps to get **snowbrain** up and running in your local environment
 
     Finally, when you're ready, deploy the project to Vercel.
 
+<br/>
 
 ## One-Click Deploy
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kaarthik108/snowbrain&project-name=snowbrain&repo-name=snowbrain)

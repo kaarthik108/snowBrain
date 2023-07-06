@@ -11,7 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.21.10",
+    "@clerk/nextjs": "4.21.10",
     "@material-tailwind/react": "^2.0.4",
     "@pinecone-database/pinecone": "^0.1.6",
     "@radix-ui/react-slot": "^1.0.2",
@@ -22,7 +22,7 @@
     "clsx": "^1.2.1",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.5",
-    "langchain": "^0.0.96",
+    "langchain": "0.0.96",
     "next": "13.4.8",
     "postcss": "8.4.24",
     "react": "18.2.0",
@@ -32,7 +32,7 @@
     "react-markdown": "^8.0.7",
     "rehype-highlight": "^6.0.0",
     "remark-gfm": "^3.0.1",
-    "snowflake-sdk": "^1.6.23",
+    "snowflake-sdk": "1.6.23",
     "tailwind-merge": "^1.13.2",
     "tailwindcss": "3.3.2",
     "tailwindcss-animate": "^1.0.6",

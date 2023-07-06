@@ -1,0 +1,45 @@
+name: Deploy fastapi
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "code-plugin/main.py"
+
+jobs:
+  deploy:
+    name: Deploy example app
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-20.04
+    env:
+      MODAL_TOKEN_ID: ${{ secrets.MODAL_MODAL_LABS_TOKEN_ID }}
+      MODAL_TOKEN_SECRET: ${{ secrets.MODAL_MODAL_LABS_TOKEN_SECRET }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+
+      - name: Cache Poetry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+
+      - name: Install dependencies
+        run: |
+          cd code-plugin
+          poetry install
+
+      - name: Deploy FastAPI app to Modal
+        run: |
+          cd code-plugin
+          modal deploy main.py
