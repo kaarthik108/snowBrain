@@ -34,6 +34,16 @@ https://github.com/kaarthik108/snowbrain/assets/53030784/398bdf32-ba84-426d-a809
 - **Rate Limit Handling**: Utilize Upstash Redis for managing rate limits.
 - **Fast API**: High-performance Python web framework for building APIs.
 
+## Example Queries
+
+snowbrain is designed to make complex data querying simple. Here are some example queries you can try:
+
+- **Total revenue per product category**: "Show me the total revenue for each product category."
+- **Top customers by sales**: "Who are the top 10 customers by sales?"
+- **Average order value per region**: "What is the average order value for each region?"
+- **Order volume**: "How many orders were placed last week?"
+- **Product price listing**: "Display the list of products with their prices."
+
 ## Installation
 
 Follow these steps to get **snowbrain** up and running in your local environment.
