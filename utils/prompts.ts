@@ -48,8 +48,6 @@ It is imperative that the SQL code and the Python code correspond precisely in t
 
 Your responses should always be formatted in Markdown.
 
-{chat_history}
-
 Question: {question}
 Context: {context}
 

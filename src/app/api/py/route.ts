@@ -1,11 +1,14 @@
-import { ConversationalRetrievalQAChain } from "langchain/chains";
+import { RetrievalQAChain } from "langchain/chains";
 import { ChatOpenAI } from "langchain/chat_models/openai";
+import { PromptTemplate } from "langchain/prompts";
 import { initPinecone } from "utils/pinecone-client";
 import { CODE_PROMPT } from "utils/prompts";
 
 export const runtime = "edge";
 
-const pyChain = async (question: string, history: []) => {
+const prompt = PromptTemplate.fromTemplate(CODE_PROMPT);
+
+const pyChain = async (question: string) => {
   const vectorStore = await initPinecone();
 
   const encoder = new TextEncoder();
@@ -15,7 +18,7 @@ const pyChain = async (question: string, history: []) => {
   const model = new ChatOpenAI({
     temperature: 0.6,
     modelName: "gpt-4",
-    maxTokens: 1000,
+    maxTokens: 800,
     openAIApiKey: process.env.OPENAI_API_KEY,
     streaming: true,
     callbacks: [
@@ -32,23 +35,18 @@ const pyChain = async (question: string, history: []) => {
     ],
   });
 
-  const chain = ConversationalRetrievalQAChain.fromLLM(
-    model,
-    vectorStore.asRetriever(),
-    {
-      qaTemplate: CODE_PROMPT,
-    }
-  );
+  const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
+    prompt: prompt,
+  });
 
   chain.call({
-    question: question,
-    chat_history: "",
+    query: question,
   });
   return stream.readable;
 };
 
 export async function POST(req: Request) {
-  const { prompt, history } = await req.json();
-  const stream = pyChain(prompt, history);
+  const { prompt } = await req.json();
+  const stream = pyChain(prompt);
   return new Response(await stream);
 }

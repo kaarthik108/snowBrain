@@ -40,3 +40,5 @@ test.py
 
 __pycache__/
 .venv
+
+code-plugin/main-test.py
