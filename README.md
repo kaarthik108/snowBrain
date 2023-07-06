@@ -22,7 +22,7 @@ https://github.com/kaarthik108/snowbrain/assets/53030784/398bdf32-ba84-426d-a809
 - [Fast API](https://fastapi.tiangolo.com/) - Backend python
 - [Modal Labs](https://modal.com/) - Host API
 - [Vercel](https://vercel.com/) - Hosting
-
+- [umami](https://umami.is/) - Web analytics
 
 ## Features
 
