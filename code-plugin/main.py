@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from common import stub
 
 import subprocess
@@ -7,6 +8,8 @@ import modal
 
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Depends, status, Request
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from pydantic import BaseModel
 
@@ -29,6 +32,9 @@ class Script(BaseModel):
     sql: str
 
 
+auth_scheme = HTTPBearer()
+
+
 @stub.function(image=image, secret=modal.Secret.from_name("snowbrain"), cpu=2)
 @modal.asgi_app()
 def fastapi_app():
@@ -44,7 +50,19 @@ def fastapi_app():
     )
 
     @app.post("/execute")
-    async def execute(script: Script):
+    async def execute(
+        script: Script,
+        request: Request,
+        token: HTTPAuthorizationCredentials = Depends(auth_scheme),
+    ):
+        import os
+
+        if token.credentials != os.environ["AUTH_TOKEN"]:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect bearer token",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
         try:
             # Install the packages
             # for package in script.packages:
@@ -83,7 +101,10 @@ df.columns = field_names
 """
 
             combined_script = (
-                snowflake_script + "\n" + script.script + '\nplt.savefig("output.png")'
+                snowflake_script
+                + "\n"
+                + script.script
+                + '\nplt.savefig("output.png", dpi=400)'
             )
 
             with open("temp.py", "w") as file:

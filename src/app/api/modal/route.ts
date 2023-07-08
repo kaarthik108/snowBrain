@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.MODAL_AUTH_TOKEN}`,
     },
     body: JSON.stringify({ script: pythonCode, sql: sqlCode }),
   });
