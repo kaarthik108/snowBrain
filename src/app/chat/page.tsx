@@ -8,7 +8,6 @@ import {
   editChat,
 } from "@/../utils/chatHelpers";
 import { ChatBox } from "@/components/ChatBox";
-import CustomToast from "@/components/CustomToast";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
@@ -18,8 +17,8 @@ import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { extractSQL } from "lib/extractSQL";
 import { toMarkdownTable } from "lib/mdTable";
+import { useToast } from "lib/useToast";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
 import { extractPythonCode, extractSqlCode, fetchData, readResponseBody, setErrorMessage } from "utils/fetchHelpers";
 import { defaultChat, initialChatId } from "utils/initialChat";
 import { v4 as uuidv4 } from "uuid";
@@ -36,6 +35,7 @@ const Page = () => {
   const { setCurrentMessageToken } = useContext(TokenCountContext);
   const [activeChatMessagesCount, setActiveChatMessagesCount] = useState(0);
   const [triggerFetch, setTriggerFetch] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const activeChat = chatList.find((item) => item.id === activeChatId);
@@ -48,12 +48,29 @@ const Page = () => {
 
 
   const snowsql = async (sqlCode: string) => {
-    setLoading(true);
-    setstatus("Querying Snowflake. Hang tight! ");
-    const response = await fetchData("/api/snow", "POST", { query: sqlCode });
-    const data = response.json();
-    setLoading(false);
-    return data;
+    try {
+      setLoading(true);
+      setstatus("Querying Snowflake. Hang tight! ");
+
+      const response = await fetchData("/api/snow", "POST", { query: sqlCode });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setLoading(false);
+      return data;
+
+    } catch (error) {
+      toast({
+        title: "Snowflake Slip-up!",
+        description: `Error while querying Snowflake: ${error}`,
+        variant: "destructive",
+        className: "bg-[#e2e8f0] text-black",
+      });
+      setLoading(false);
+    }
   };
 
   const sendToFastAPI = useCallback(async (pythonCode: string, initialSqlCode: string) => {
@@ -65,7 +82,6 @@ const Page = () => {
 
     let fullChat = [...chatList];
     let chatIndex = fullChat.findIndex((item) => item.id === activeChatId);
-    // const messages: ChatMessage[] = fullChat[chatIndex].messages;
     let sqlCode = initialSqlCode;
 
     if (!sqlCode) {
@@ -147,7 +163,7 @@ const Page = () => {
         });
         if (!response.body) {
           setLoading(false);
-          return alert("Something went wrong");
+          return;
         }
 
         const reader = response.body.getReader();
@@ -219,15 +235,12 @@ const Page = () => {
   const handleNewChat = () => {
     if (Loading) return;
     if (chatList.length >= 4) {
-      toast(
-        (t) => (
-          <CustomToast message="You have reached the maximum number of chats" />
-        ),
-        {
-          duration: 4000,
-          position: "top-center",
-        }
-      );
+      toast({
+        title: "Oh No, Too Many Chats!",
+        description: "You have reached the maximum number of chats. Please delete one to create a new one.",
+        variant: "destructive",
+        className: "bg-white text-black",
+      });
       return;
     }
     setactiveChatId("");
@@ -238,16 +251,22 @@ const Page = () => {
     let activeChatIndex = chatList.findIndex((item) => item.id === activeChatId);
 
     if (activeChatId === initialChatId) {
-      toast(<CustomToast message="You cannot add new messages to the initial chat. Please create a new chat." />, {
-        duration: 4000,
-        position: "top-center",
-      });
+      toast({
+        title: "oops!",
+        description: "You cannot add new messages to the initial chat. Please create a new chat.",
+        variant: "destructive",
+        className: "bg-[#e2e8f0] text-black",
+      })
       return;
     } else if (activeChatMessagesCount >= 20) {
-      toast(<CustomToast message="You have reached the maximum number of messages for this chat" />, {
-        duration: 4000,
-        position: "top-center",
-      });
+      toast({
+        title: "Chat-aholic Alert!",
+        description: "You have reached the maximum number of messages for this chat. Please create a new chat.",
+        variant: "destructive",
+        className: "bg-[#e2e8f0] text-black",
+      }
+      );
+
       return;
     } else if (activeChatId && activeChatIndex !== -1) {
       let updatedChatList = appendUserMessage(

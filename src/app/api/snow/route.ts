@@ -12,7 +12,7 @@ const connectionPool = snowflake.createPool(
     schema: process.env.SCHEMA,
   },
   {
-    max: 10,
+    max: 100,
     min: 0,
   }
 );
@@ -21,13 +21,15 @@ export async function POST(request: NextRequest) {
   const requestBody = await request.json();
   const query = requestBody.query;
 
-  return new Promise((resolve) => {
-    connectionPool.use(async (clientConnection) => {
+  let result;
+  try {
+    const clientConnection = await connectionPool.acquire();
+    result = await new Promise((resolve, reject) => {
       clientConnection.execute({
         sqlText: query,
         complete: (err, stmt, rows) => {
           if (err) {
-            resolve(
+            reject(
               NextResponse.json({
                 error:
                   "Failed to execute statement due to the following error: " +
@@ -40,5 +42,9 @@ export async function POST(request: NextRequest) {
         },
       });
     });
-  });
+    connectionPool.release(clientConnection);
+  } catch (error) {
+    return NextResponse.json({ error: error });
+  }
+  return result;
 }

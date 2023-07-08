@@ -1,9 +1,9 @@
+import { Toaster } from "@/components/Toaster";
 import { TokenCountProvider } from "@/components/token";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
-import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     creator: "@kaarthikcodes",
   },
-  metadataBase: new URL("https://snowbrain.vercel.app/"),
+  metadataBase: new URL("https://snowbrain.dev/"),
   themeColor: "#ffffff",
 };
 

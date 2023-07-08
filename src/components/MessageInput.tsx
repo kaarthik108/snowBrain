@@ -1,9 +1,8 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
+import { useToast } from "lib/useToast";
 import React, { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import CustomToast from "./CustomToast";
 import IconSend from "./ui/IconSend";
 import { Textarea } from "./ui/textarea";
 
@@ -16,6 +15,7 @@ export const MessageInput = ({ disabled, onSend }: Props) => {
   const [text, setText] = useState("");
   const textEl = useRef<HTMLTextAreaElement>(null);
   const { userId } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (textEl.current) {
@@ -32,10 +32,13 @@ export const MessageInput = ({ disabled, onSend }: Props) => {
         setText("");
       }
     } else {
-      toast(<CustomToast message="Please login to send messages" />, {
-        duration: 4000,
-        position: "top-center",
-      });
+      toast({
+        title: "Ghost Alert!",
+        description: "You need to be signed in to send messages",
+        variant: "default",
+        className: "bg-[#e2e8f0] text-black",
+
+      })
     }
   };
 

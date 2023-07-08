@@ -1,7 +1,10 @@
 import uploadToCloudinary from "lib/uploadToCloudinary";
 import { NextRequest, NextResponse } from "next/server";
 
-const MODAL_API = process.env.MODAL_API_ENDPOINT!!;
+const MODAL_API =
+  process.env.NODE_ENV === "development"
+    ? "http://127.0.0.1:8000/execute"
+    : process.env.MODAL_API_ENDPOINT!;
 
 export const runtime = "edge";
 
