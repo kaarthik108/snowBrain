@@ -220,6 +220,7 @@ const Page = () => {
     setTriggerFetch,
     setChatList,
     sendToFastAPI,
+    snowsql,
   ]);
 
   useEffect(() => {
