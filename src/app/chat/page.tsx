@@ -47,7 +47,7 @@ const Page = () => {
   }, [activeChatId, chatList]);
 
 
-  const snowsql = async (sqlCode: string) => {
+  const snowsql = useCallback(async (sqlCode: string) => {
     try {
       setLoading(true);
       setstatus("Querying Snowflake. Hang tight! ");
@@ -71,7 +71,7 @@ const Page = () => {
       });
       setLoading(false);
     }
-  };
+  }, []);
 
   const sendToFastAPI = useCallback(async (pythonCode: string, initialSqlCode: string) => {
     setLoading(true);

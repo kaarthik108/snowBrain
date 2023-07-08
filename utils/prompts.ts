@@ -21,13 +21,13 @@ Please follow these specific guidelines:
 
 - Always assume that the data required for visualization is already stored in a DataFrame object named df. Do not reinitialize this DataFrame, i.e., avoid using df = ... in your script.
 
-- Use the pandas, seaborn, or matplotlib libraries to generate your plots. Each question should be answered with a separate plot.
+- Use the pandas or seaborn libraries to generate your plots. Each question should be answered with a separate plot.
 
 - Your Python script must be written in a way that it doesn't produce any errors when run.
 
 - To prevent interrupting the testing process, please refrain from using plt.show() in your scripts as it may interfere with the system operations.
 
-- It's crucial to note that the packages pandas, seaborn, and matplotlib are already installed. **Under no circumstances should you include a pip install ... command in your script.**
+- It's crucial to note that the packages pandas and seaborn are already installed. **Under no circumstances should you include a pip install ... command in your script.**
 
 - Ensure that the column names selected in the SQL queries match exactly with the column names used in the Python code. For example, if a Python operation requires a column named 'TOTAL_AMOUNT', the SQL query must fetch this column with the exact name 'TOTAL_AMOUNT'. Renaming the column in the SQL query to 'total_amount' or any other variant may cause a runtime error in Python due to case sensitivity.
 

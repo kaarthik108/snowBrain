@@ -9,7 +9,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 const title = "snowbrain";
-const description = `snowbrain - AI Driven Insights with Snowflake`;
+const description = `snowbrain - AI Driven snowflake data insights`;
 
 export const metadata: Metadata = {
   title,

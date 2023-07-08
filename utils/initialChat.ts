@@ -42,35 +42,22 @@ export const defaultChat: Chat = {
       id: "5",
       author: "assistant",
       content:
-        "To visualize the total revenue for each product category, we can use a bar plot. Here's an example code using seaborn:\n" +
-        "\n" +
+        "To visualize the total revenue for each product category, we can use a bar plot. Here's the Python code to create the visualization using the pandas and seaborn libraries:\n\n" +
         "```python\n" +
+        "import pandas as pd\n" +
         "import seaborn as sns\n" +
-        "import matplotlib.pyplot as plt\n" +
         "\n" +
-        "# Assuming the data is already stored in a DataFrame called df\n" +
-        "\n" +
-        "# Group the data by category and calculate the total revenue\n" +
-        "revenue_by_category = df.groupby('CATEGORY')['TOTAL_REVENUE'].sum().reset_index()\n" +
-        "\n" +
-        "# Create the bar plot\n" +
-        "plt.figure(figsize=(10, 6))\n" +
-        "sns.barplot(x='CATEGORY', y='TOTAL_REVENUE', data=revenue_by_category)\n" +
-        "plt.xlabel('Product Category')\n" +
-        "plt.ylabel('Total Revenue')\n" +
-        "plt.title('Total Revenue by Product Category')\n" +
-        "plt.xticks(rotation=45)\n" +
-        "plt.show()\n" +
+        "# Assuming the query result is stored in a DataFrame named 'df'\n" +
+        "sns.barplot(x='CATEGORY', y='TOTAL_REVENUE', data=df)\n" +
         "```\n" +
-        "\n" +
-        "This code first groups the data by category and calculates the sum of the total revenue for each category. Then, it creates a bar plot using seaborn's `barplot` function, with the x-axis representing the product categories and the y-axis representing the total revenue. The plot is then customized with labels and a title, and the x-axis labels are rotated for better readability.\n" +
-        "\n",
+        "Make sure to replace 'CATEGORY' and 'TOTAL_REVENUE' with the actual column names returned by the SQL query. This code will create a bar plot with the product categories on the x-axis and the total revenue on the y-axis.\n\n" +
+        "Let me know if there's anything else I can help you with!",
     },
     {
       id: "6",
       author: "assistant",
       content:
-        "https://res.cloudinary.com/dmq9hcus4/image/upload/v1687389412/vkyjqb1c1b1a9smjrypj.png",
+        "https://res.cloudinary.com/dmq9hcus4/image/upload/v1688855825/snowbrain/hacgkibu5wx7tbiuehwj.png",
     },
   ],
 };

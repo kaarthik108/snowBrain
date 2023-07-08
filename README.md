@@ -1,15 +1,9 @@
-# Snowbrain
+# snowbrain
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kaarthik108/snowbrain&project-name=snowbrain&repo-name=snowbrain)
 
 
-
-
-
 https://github.com/kaarthik108/snowbrain/assets/53030784/d4273bea-4494-438d-bce3-466788109b95
-
-
-
 
 
 ## Tech Stack
@@ -18,12 +12,12 @@ https://github.com/kaarthik108/snowbrain/assets/53030784/d4273bea-4494-438d-bce3
 - [Tailwindcss](https://tailwindcss.com/) - Styling
 - [Pinecone](https://www.pinecone.io/) - Vector database
 - [OpenAI](https://www.openai.com/) - LLM
-- [Langchain](https://js.langchain.com/docs/) - LLM management
+- [Langchain](https://js.langchain.com/docs/) - LLM wrapper
 - [Cloudinary](https://cloudinary.com/) - Image data
 - [Clerk.dev](https://clerk.dev/) - Auth
 - [Upstash Redis](https://upstash.com/) - Rate limiting
 - [Fast API](https://fastapi.tiangolo.com/) - Backend python
-- [Modal Labs](https://modal.com/) - Host API
+- [Modal Labs](https://modal.com/) - Host backend fastapi
 - [Vercel](https://vercel.com/) - Hosting
 - [umami](https://umami.is/) - Web analytics
 
@@ -85,7 +79,7 @@ Follow these steps to get **snowbrain** up and running in your local environment
 
 5. **Deploy FastAPI to Modal Labs**
 
-    Run the following command to deploy your FastAPI:
+    Run the following command to deploy your FastAPI (make sure to add a secrets file in modal labs):
 
     ```bash
     modal deploy main.py
@@ -95,6 +89,7 @@ Follow these steps to get **snowbrain** up and running in your local environment
 
     ```bash
     MODAL_API_ENDPOINT=
+    MODAL_AUTH_TOKEN=random_secret
     ```
 
 6. **Install packages**
@@ -119,9 +114,15 @@ Follow these steps to get **snowbrain** up and running in your local environment
 
 <br/>
 
+Note: Vercel build is automatically blocked on folders code-plugin, embed and readme.md. You can additionally add a build block command in vercel's dashboard.
+
+<br/>
+
+
 ## One-Click Deploy
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kaarthik108/snowbrain&project-name=snowbrain&repo-name=snowbrain)
 
+<br/>
 
 ## Contributing
 
@@ -130,6 +131,7 @@ Here's how you can contribute:
 - [Open an issue](https://github.com/kaarthik108/snowbrain/issues) if you believe you've encountered a bug.
 - Make a [pull request](https://github.com/kaarthik108/snowbrain/pulls) to add new features/make improvements/fix bugs.
 
+<br/>
 
 ## License
 
