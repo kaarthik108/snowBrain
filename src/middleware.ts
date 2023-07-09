@@ -3,8 +3,8 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export async function middleware(req: NextRequest) {
-  const ip = req.ip ?? "127.0.0.1";
-
+  const ip = req.headers.get("x-forwarded-for") || "127:0:0:1";
+  console.log(ip);
   try {
     if (process.env.NODE_ENV != "development") {
       const { success } = await rateLimiter.limit(ip);
