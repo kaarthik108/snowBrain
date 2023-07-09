@@ -335,7 +335,7 @@ const Page = () => {
       >
         <Header
           openSidebarClick={openSidebar}
-          title={activeChat ? activeChat.title : "snowbrain"}
+          title={activeChat ? activeChat.title : "snowBrain"}
           newChatClick={handleNewChat}
         />
 

@@ -8,8 +8,8 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const title = "snowbrain";
-const description = `snowbrain - AI Driven snowflake data insights`;
+const title = "snowBrain";
+const description = `snowBrain - AI Driven snowflake data insights`;
 
 export const metadata: Metadata = {
   title,
@@ -35,12 +35,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Script
-        async
-        id="umami"
-        src="https://umami-livid-seven.vercel.app/script.js"
-        data-website-id="a626f755-5202-4315-8841-43dfa42676df"
-      ></Script>
+      <Script async src="https://umami-livid-seven.vercel.app/script.js" data-website-id="b0156ebc-cb72-4891-9ce8-4b7a71c5ca0e"></Script>
       <ClerkProvider>
         <body className={inter.className}>
           <TokenCountProvider>

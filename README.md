@@ -1,4 +1,4 @@
-# snowbrain
+# snowBrain
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kaarthik108/snowbrain&project-name=snowbrain&repo-name=snowbrain)
 
@@ -33,7 +33,7 @@ https://github.com/kaarthik108/snowbrain/assets/53030784/d4273bea-4494-438d-bce3
 
 ## Example Queries
 
-snowbrain is designed to make complex data querying simple. Here are some example queries you can try:
+snowBrain is designed to make complex data querying simple. Here are some example queries you can try:
 
 - **Total revenue per product category**: "Show me the total revenue for each product category."
 - **Top customers by sales**: "Who are the top 10 customers by sales?"
@@ -43,7 +43,7 @@ snowbrain is designed to make complex data querying simple. Here are some exampl
 
 ## Installation
 
-Follow these steps to get **snowbrain** up and running in your local environment.
+Follow these steps to get **snowBrain** up and running in your local environment.
 
 1. **Update Environment Variables**
 
