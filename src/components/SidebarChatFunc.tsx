@@ -1,4 +1,4 @@
-import { Chat } from "@/types/Chat";
+import { Chat } from "chat";
 import React, { useState } from "react";
 import IconCheck from "./ui/IconCheck";
 import IconEdit from "./ui/IconEdit";

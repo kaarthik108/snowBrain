@@ -14,9 +14,9 @@ interface TokenCountContextProps {
 // Update context initial value
 export const TokenCountContext = React.createContext<TokenCountContextProps>({
   currentMessage: "",
-  setCurrentMessage: () => {},
+  setCurrentMessage: () => { },
   currentMessageToken: 0,
-  setCurrentMessageToken: () => {},
+  setCurrentMessageToken: () => { },
 });
 
 // Update provider component

@@ -1,4 +1,4 @@
-import { ChatMessage } from "@/types/ChatMessage";
+import { ChatMessage } from "chat";
 
 export const extractSQL = (messages: ChatMessage[]): string | null => {
   for (const message of messages) {

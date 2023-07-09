@@ -1,4 +1,4 @@
-import { Chat } from "@/types/Chat";
+import { Chat } from "chat";
 import React, { useEffect, useRef } from "react";
 import { ChatPlaceholder } from "./ChatPlaceholder";
 import { Message } from "./Message";

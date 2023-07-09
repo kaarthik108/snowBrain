@@ -1,6 +1,5 @@
-import { DatabaseSchemaProps } from "@/types/schema";
+import { DatabaseSchemaProps } from "chat";
 import React from "react";
-import ReactMarkdown from "react-markdown";
 
 export const DatabaseSchema: React.FC<DatabaseSchemaProps> = ({ tables }) => (
   <div className="space-y-4 ">

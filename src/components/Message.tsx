@@ -1,6 +1,6 @@
 "use client";
 
-import { ChatMessage } from "@/types/ChatMessage";
+import { ChatMessage } from "chat";
 import { useContext, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";

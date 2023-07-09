@@ -1,5 +1,4 @@
-import { Chat } from "@/types/Chat";
-import { ChatMessage } from "@/types/ChatMessage";
+import { Chat, ChatMessage } from "chat";
 import { v4 as uuidv4 } from "uuid";
 
 const pythonCodeRegex = /```python([\s\S]*?)```/g;

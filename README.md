@@ -5,6 +5,9 @@
 
 https://github.com/kaarthik108/snowbrain/assets/53030784/d4273bea-4494-438d-bce3-466788109b95
 
+SnowBrain is an open-source prototype that serves as your personal data analyst. It converses in SQL, remembers previous discussions, and even draws data visualizations for you.
+
+This project is a unique blend of Snowflake, Langchain, OpenAI, Pinecone, NEXTjs, and FastAPI, among other technologies. It's all about reimagining the simplicity of SQL querying. Dive in and discover a new way of interacting with your data.
 
 ## Tech Stack
 - [Snowflake](https://www.snowflake.com/) - Database processing

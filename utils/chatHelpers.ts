@@ -1,4 +1,4 @@
-import { Chat } from "@/types/Chat";
+import { Chat } from "chat";
 import { Dispatch, SetStateAction } from "react";
 import { v4 as uuidv4 } from "uuid";
 

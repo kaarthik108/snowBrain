@@ -1,4 +1,4 @@
-import { Chat } from "@/types/Chat";
+import { Chat } from "chat";
 
 export const initialChatId = "Initial Chat";
 

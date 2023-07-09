@@ -16,7 +16,6 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 
 load_dotenv()
 
-# Set up logging
 logging.basicConfig(level=logging.INFO)
 
 

@@ -50,7 +50,7 @@ export const Sidebar = ({
             </div>
             <div className="flex  ">
               <span className="text-xl text-[#999] font-semibold brightness-20 hover:brightness-150">
-                S n o w b r a i n
+                s n o w B r a i n
               </span>
             </div>
           </div>

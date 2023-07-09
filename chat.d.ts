@@ -1,3 +1,15 @@
+export interface ChatMessage {
+  id: string;
+  author: "user" | "assistant";
+  content: string;
+}
+
+export interface Chat {
+  id: string;
+  title: string;
+  messages: ChatMessage[];
+}
+
 export interface Column {
   name: string;
   type: string;

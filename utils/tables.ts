@@ -1,4 +1,4 @@
-import { Table } from "@/types/schema";
+import { Table } from "chat";
 
 export const tables: Table[] = [
   {
