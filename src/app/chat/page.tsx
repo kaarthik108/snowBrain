@@ -66,7 +66,6 @@ const Page = () => {
         title: "Snowflake Slip-up!",
         description: `Error while querying Snowflake: ${error}`,
         variant: "destructive",
-        className: "bg-[#e2e8f0] text-black",
       });
       setLoading(false);
     }
@@ -239,7 +238,6 @@ const Page = () => {
         title: "Oh No, Too Many Chats!",
         description: "You have reached the maximum number of chats. Please delete one to create a new one.",
         variant: "destructive",
-        className: "bg-white text-black",
       });
       return;
     }
@@ -255,7 +253,6 @@ const Page = () => {
         title: "oops!",
         description: "You cannot add new messages to the initial chat. Please create a new chat.",
         variant: "destructive",
-        className: "bg-[#e2e8f0] text-black",
       })
       return;
     } else if (activeChatMessagesCount >= 20) {
@@ -263,7 +260,6 @@ const Page = () => {
         title: "Chat-aholic Alert!",
         description: "You have reached the maximum number of messages for this chat. Please create a new chat.",
         variant: "destructive",
-        className: "bg-[#e2e8f0] text-black",
       }
       );
 

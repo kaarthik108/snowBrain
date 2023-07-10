@@ -150,6 +150,8 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
+      className:
+        "bg-[#e2e8f0] dark:bg-neutral-900 text-black dark:text-white border-gray-500 dark:border-gray-500",
       onOpenChange: (open) => {
         if (!open) dismiss();
       },

@@ -36,8 +36,6 @@ export const MessageInput = ({ disabled, onSend }: Props) => {
         title: "Ghost Alert!",
         description: "You need to be signed in to send messages",
         variant: "default",
-        className: "bg-[#e2e8f0] text-black",
-
       })
     }
   };
