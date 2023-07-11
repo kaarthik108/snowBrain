@@ -3,7 +3,11 @@
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/kaarthik108/snowbrain&project-name=snowbrain&repo-name=snowbrain)
 
 
-https://github.com/kaarthik108/snowbrain/assets/53030784/d4273bea-4494-438d-bce3-466788109b95
+
+https://github.com/kaarthik108/snowBrain/assets/53030784/022a7c1c-ca5b-4bb6-952d-f3092000b175
+
+
+
 
 SnowBrain is an open-source prototype that serves as your personal data analyst. It converses in SQL, remembers previous discussions, and even draws data visualizations for you.
 
