@@ -9,6 +9,10 @@ module.exports = {
       {
         protocol: 'https',
         hostname: '**.githubusercontent.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
       }
     ]
   }

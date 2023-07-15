@@ -43,7 +43,7 @@ export function ChatMessage({
 
         <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1">
           {isImage ? (
-            <Image src={message.content} alt="" />
+            <Image src={message.content} width={700} height={700} alt="" />
           ) : (
             <MemoizedReactMarkdown
               className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"

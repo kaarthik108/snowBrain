@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     { media: '(prefers-color-scheme: light)', color: 'white' },
     { media: '(prefers-color-scheme: dark)', color: 'black' }
   ],
-  metadataBase: new URL('http://localhost:3000')
+  metadataBase: new URL('https://snowbrain-git-dev-kaarthik108.vercel.app/')
 }
 
 interface RootLayoutProps {
