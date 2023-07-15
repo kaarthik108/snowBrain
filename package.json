@@ -33,7 +33,7 @@
     "encoding": "^0.1.13",
     "focus-trap-react": "^10.1.1",
     "nanoid": "^4.0.2",
-    "next": "13.4.9",
+    "next": "13.4.10",
     "next-themes": "^0.2.1",
     "openai-edge": "^0.5.1",
     "react": "^18.2.0",

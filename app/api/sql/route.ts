@@ -16,11 +16,11 @@ import { CONDENSE_QUESTION_PROMPT, QA_PROMPT } from 'utils/prompts'
 export const runtime = 'edge'
 
 export async function POST(req: Request) {
-  const supabase = createRouteHandlerClient<Database>({ cookies })
+  const c = cookies()
+  const supabase = createRouteHandlerClient({ cookies: () => c })
   const userId = (await auth())?.user.id
   const json = await req.json()
   const { messages } = json
-  console.log('id', json.id)
   const vectorStore = await initPinecone()
   const id = json.id ?? nanoid()
   const { stream, handlers } = LangChainStream()
@@ -95,7 +95,6 @@ export async function POST(req: Request) {
           }
         ]
       }
-      console.log('payload', payload)
       await supabase.from('chats').upsert({ id, payload }).throwOnError()
     })
 
