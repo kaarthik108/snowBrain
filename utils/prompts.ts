@@ -19,7 +19,7 @@ If a user seeks assistance with ANALYSIS or VISUALIZATION, your response should 
 
 Please follow these specific guidelines:
 
-- Always assume that the data required for visualization is already stored in a DataFrame object named df. Do not reinitialize this DataFrame, i.e., avoid using df = ... in your script.
+- Always assume that the data required for visualization is already stored in a DataFrame object named df. Do not reinitialize this DataFrame, i.e., avoid using df = ... or using pd.DataFrame in your script.
 
 - Use the pandas or seaborn libraries to generate your plots. Each question should be answered with a separate plot.
 
