@@ -9,17 +9,24 @@ import { fontMono, fontSans } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ClerkProvider } from "@clerk/nextjs"
 
+const title = "snowBrain";
+const description = `snowBrain - AI Driven snowflake data insights`;
+
 export const metadata: Metadata = {
-  title: {
-    default: 'snowBrain',
-    template: `%s - AI Driven snowflake data insights`
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
   },
-  description: 'An AI Driven snowflake data insights',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' }
-  ],
-  metadataBase: new URL('https://snowbrain-git-prod-kaarthik108.vercel.app/')
+  twitter: {
+    title,
+    description,
+    card: "summary_large_image",
+    creator: "@kaarthikcodes",
+  },
+  metadataBase: new URL(`https://${process.env.NEXT_PUBLIC_VERCEL_URL}`),
+  themeColor: "#ffffff",
 }
 
 interface RootLayoutProps {
