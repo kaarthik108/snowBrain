@@ -1,18 +1,18 @@
 'use server'
 
-import { Database } from '@/lib/db_types'
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { revalidatePath } from 'next/cache'
-import { cookies } from 'next/headers'
 
-import { auth } from '@/auth'
 import { type Chat } from '@/lib/types'
+import { supabaseClient } from '@/utils/supabase'
+import { auth } from '@clerk/nextjs'
 
 export async function getChats(userId?: string | null) {
   if (!userId) {
     return []
   }
-  const supabase = createServerActionClient<Database>({ cookies })
+  const { getToken } = auth()
+  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabase = await supabaseClient(supabaseAccessToken as string)
 
   try {
     const { data } = await supabase
@@ -28,7 +28,9 @@ export async function getChats(userId?: string | null) {
 }
 
 export async function getChat(id: string) {
-  const supabase = createServerActionClient<Database>({ cookies })
+  const { getToken } = auth()
+  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabase = await supabaseClient(supabaseAccessToken as string)
 
   const { data } = await supabase
     .from('chats')
@@ -40,8 +42,9 @@ export async function getChat(id: string) {
 }
 
 export async function removeChat({ id, path }: { id: string; path: string }) {
-  const supabase = createServerActionClient<Database>({ cookies })
-
+  const { getToken } = auth()
+  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabase = await supabaseClient(supabaseAccessToken as string)
   try {
     await supabase.from('chats').delete().eq('id', id).throwOnError()
 
@@ -55,15 +58,12 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
 }
 
 export async function clearChats() {
-  const supabase = createServerActionClient<Database>({ cookies })
+  const { userId, getToken } = auth()
+  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabase = await supabaseClient(supabaseAccessToken as string)
 
   try {
-    const session = await auth()
-    await supabase
-      .from('chats')
-      .delete()
-      .eq('user_id', session?.user.id)
-      .throwOnError()
+    await supabase.from('chats').delete().eq('user_id', userId).throwOnError()
     return revalidatePath('/')
   } catch (error) {
     console.log('clear chats error', error)
@@ -74,8 +74,9 @@ export async function clearChats() {
 }
 
 export async function getSharedChat(id: string) {
-  const supabase = createServerActionClient<Database>({ cookies })
-
+  const { getToken } = auth()
+  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabase = await supabaseClient(supabaseAccessToken as string)
   const { data } = await supabase
     .from('chats')
     .select('payload')
@@ -87,7 +88,9 @@ export async function getSharedChat(id: string) {
 }
 
 export async function shareChat(chat: Chat) {
-  const supabase = createServerActionClient<Database>({ cookies })
+  const { getToken } = auth()
+  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabase = await supabaseClient(supabaseAccessToken as string)
 
   const payload = {
     ...chat,

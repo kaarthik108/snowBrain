@@ -1,7 +1,7 @@
-import { auth } from '@/auth'
 import { Database } from '@/lib/db_types'
 import { nanoid } from '@/lib/utils'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { supabaseClient } from '@/utils/supabase'
+import { auth } from '@clerk/nextjs'
 import { LangChainStream, Message, StreamingTextResponse } from 'ai'
 import { CallbackManager } from 'langchain/callbacks'
 import { ConversationalRetrievalQAChain } from 'langchain/chains'
@@ -9,16 +9,19 @@ import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { OpenAI } from 'langchain/llms/openai'
 import { ChatMessageHistory } from 'langchain/memory'
 import { AIMessage, HumanMessage, SystemMessage } from 'langchain/schema'
-import { cookies } from 'next/headers'
 import { initPinecone } from 'utils/pinecone-client'
 import { CONDENSE_QUESTION_PROMPT, QA_PROMPT } from 'utils/prompts'
 
 export const runtime = 'edge'
 
 export async function POST(req: Request) {
-  const c = cookies()
-  const supabase = createRouteHandlerClient({ cookies: () => c })
-  const userId = (await auth())?.user.id
+  const { getToken, userId } = auth()
+  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabase = await supabaseClient(supabaseAccessToken as string)
+  if (!userId) {
+    return new Response('Unauthorized', { status: 401 })
+  }
+  // const userId = (await auth())?.user.id
   const json = await req.json()
   const { messages } = json
   const vectorStore = await initPinecone()
@@ -95,7 +98,10 @@ export async function POST(req: Request) {
           }
         ]
       }
-      await supabase.from('chats').upsert({ id, payload }).throwOnError()
+      await supabase
+        .from('chats')
+        .upsert({ id, user_id: userId, payload })
+        .throwOnError()
     })
 
   return new StreamingTextResponse(stream)

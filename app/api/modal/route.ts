@@ -1,9 +1,7 @@
-import { auth } from '@/auth'
-import { Database } from '@/lib/db_types'
 import uploadToCloudinary from '@/lib/uploadToCloudinary'
 import { nanoid } from '@/lib/utils'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { supabaseClient } from '@/utils/supabase'
+import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 
 const MODAL_API =
@@ -15,8 +13,12 @@ export const runtime = 'edge'
 
 export async function POST(req: NextRequest) {
   const { pythonCode, sqlCode, messages } = await req.json()
-  const supabase = createRouteHandlerClient<Database>({ cookies })
-  const userId = (await auth())?.user.id
+  const { getToken, userId } = auth()
+  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabase = await supabaseClient(supabaseAccessToken as string)
+  if (!userId) {
+    return new Response('Unauthorized', { status: 401 })
+  }
 
   const response = await fetch(MODAL_API, {
     method: 'POST',
@@ -56,7 +58,10 @@ export async function POST(req: NextRequest) {
     ]
   }
 
-  await supabase.from('chats').upsert({ id, payload }).throwOnError()
+  await supabase
+    .from('chats')
+    .upsert({ id, user_id: userId, payload })
+    .throwOnError()
 
   return NextResponse.json({ imageUrl })
 }

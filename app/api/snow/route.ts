@@ -1,8 +1,6 @@
-import { auth } from '@/auth'
-import { Database } from '@/lib/db_types'
 import { nanoid, toMarkdownTable } from '@/lib/utils'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { supabaseClient } from '@/utils/supabase'
+import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 import snowflake from 'snowflake-sdk'
 
@@ -23,8 +21,9 @@ const connectionPool = snowflake.createPool(
 )
 
 export async function POST(request: NextRequest) {
-  const supabase = createRouteHandlerClient<Database>({ cookies })
-  const userId = (await auth())?.user.id
+  const { getToken, userId } = auth()
+  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabase = await supabaseClient(supabaseAccessToken as string)
 
   const requestBody = await request.json()
   const query = requestBody.query
@@ -68,7 +67,7 @@ export async function POST(request: NextRequest) {
             try {
               await supabase
                 .from('chats')
-                .upsert({ id, payload })
+                .upsert({ id, user_id: userId, payload })
                 .throwOnError()
               resolve(NextResponse.json(markdownTable))
             } catch (error: any) {

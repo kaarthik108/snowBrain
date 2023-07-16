@@ -7,6 +7,7 @@ import { Header } from '@/components/header'
 import { Providers } from '@/components/providers'
 import { fontMono, fontSans } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { ClerkProvider } from "@clerk/nextjs"
 
 export const metadata: Metadata = {
   title: {
@@ -29,22 +30,24 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body
-        className={cn(
-          'font-sans antialiased',
-          fontSans.variable,
-          fontMono.variable
-        )}
-      >
-        <Toaster />
-        <Providers attribute="class" defaultTheme="system" enableSystem>
-          <div className="flex min-h-screen flex-col">
-            {/* @ts-ignore */}
-            <Header />
-            <main className="flex flex-1 flex-col bg-muted/50">{children}</main>
-          </div>
-        </Providers>
-      </body>
+      <ClerkProvider>
+        <body
+          className={cn(
+            'font-sans antialiased',
+            fontSans.variable,
+            fontMono.variable
+          )}
+        >
+          <Toaster />
+          <Providers attribute="class" defaultTheme="system" enableSystem>
+            <div className="flex min-h-screen flex-col">
+              {/* @ts-ignore */}
+              <Header />
+              <main className="flex flex-1 flex-col bg-muted/50">{children}</main>
+            </div>
+          </Providers>
+        </body>
+      </ClerkProvider>
     </html>
   )
 }
