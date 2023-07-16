@@ -1,4 +1,3 @@
-import { Database } from '@/lib/db_types'
 import { nanoid } from '@/lib/utils'
 import { supabaseClient } from '@/utils/supabaseClient'
 import { auth } from '@clerk/nextjs'
@@ -18,6 +17,7 @@ export async function POST(req: Request) {
   const { getToken, userId } = auth()
   const supabaseAccessToken = await getToken({ template: 'supabase' })
   const supabase = await supabaseClient(supabaseAccessToken as string)
+
   if (!userId) {
     return new Response('Unauthorized', { status: 401 })
   }
@@ -68,51 +68,48 @@ export async function POST(req: Request) {
         return new AIMessage(m.content)
       })
     )
-
     let completion: any
-    chain
+    await chain
       .call({
         question: question,
         chat_history: history
       })
       .then(result => {
         completion = result
+        handlers.handleChainEnd()
       })
       .catch(console.error)
-      .finally(async () => {
-        handlers.handleChainEnd()
 
-        const title = messages[0].content.substring(0, 100)
-        const createdAt = Date.now()
-        const path = `/chat/${id}`
-        const payload = {
-          id,
-          title,
-          userId,
-          createdAt,
-          path,
-          messages: [
-            ...messages,
-            {
-              content: completion.text,
-              role: 'assistant'
-            }
-          ]
+    const title = messages[0].content.substring(0, 100)
+    const createdAt = Date.now()
+    const path = `/chat/${id}`
+    const payload = {
+      id,
+      title,
+      userId,
+      createdAt,
+      path,
+      messages: [
+        ...messages,
+        {
+          content: completion.text,
+          role: 'assistant'
         }
+      ]
+    }
 
-        try {
-          console.log('Payload for supabase:', payload)
-          const { error } = await supabase
-            .from('chats')
-            .upsert({ id, user_id: userId, payload })
-          if (error) {
-            console.error('Error from supabase:', error.message)
-            throw error
-          }
-        } catch (error) {
-          console.error('Supabase write error:', error)
-        }
-      })
+    try {
+      console.log('Payload for supabase:', payload)
+      const { error } = await supabase
+        .from('chats')
+        .upsert({ id, user_id: userId, payload })
+      if (error) {
+        console.error('Error from supabase:', error.message)
+        throw error
+      }
+    } catch (error) {
+      console.error('Supabase write error:', error)
+    }
 
     return new StreamingTextResponse(stream)
   } catch (error) {
