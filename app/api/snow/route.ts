@@ -24,7 +24,9 @@ export async function POST(request: NextRequest) {
   const { getToken, userId } = auth()
   const supabaseAccessToken = await getToken({ template: 'supabase' })
   const supabase = await supabaseClient(supabaseAccessToken as string)
-
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
   const requestBody = await request.json()
   const query = requestBody.query
   const messages = requestBody.messages
@@ -39,9 +41,7 @@ export async function POST(request: NextRequest) {
           if (err) {
             reject(
               NextResponse.json({
-                error:
-                  'Failed to execute statement due to the following error: ' +
-                  err.message
+                error: 'Failed to execute statement in Snowflake.'
               })
             )
           } else {
@@ -64,25 +64,18 @@ export async function POST(request: NextRequest) {
                 }
               ]
             }
-            try {
-              await supabase
-                .from('chats')
-                .upsert({ id, user_id: userId, payload })
-                .throwOnError()
-              resolve(NextResponse.json(markdownTable))
-            } catch (error: any) {
-              reject(
-                NextResponse.json({ error: "Couldn't save markdown chat" })
-              )
-            }
+            await supabase
+              .from('chats')
+              .upsert({ id, user_id: userId, payload })
+              .throwOnError()
+            resolve(NextResponse.json(markdownTable))
           }
         }
       })
     })
     connectionPool.release(clientConnection)
   } catch (error: any) {
-    console.error(error.message)
-    return NextResponse.json({ error: error.message })
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
   return result
 }

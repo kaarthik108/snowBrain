@@ -38,21 +38,17 @@ const fetchData = async (url: string, method: string, data: any) => {
 }
 
 const snowsql = async (sqlCode: string, messages: Message[]) => {
-  try {
-    const response = await fetchData('/api/snow', 'POST', {
-      query: sqlCode,
-      messages: messages
-    })
+  const response = await fetchData('/api/snow', 'POST', {
+    query: sqlCode,
+    messages: messages
+  })
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const markdownTable = await response.json()
-    return markdownTable
-  } catch (error) {
-    console.log(error)
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
+
+  const markdownTable = await response.json()
+  return markdownTable
 }
 
 const sendToFastAPI = async (
@@ -78,7 +74,6 @@ const sendToFastAPI = async (
         { id: id, role: 'assistant', content: text }
       ]
       const sql = await extractSQL(sqlCodeResponse)
-      console.log('sql----\n', sql)
       if (!sql) {
         return
       }
@@ -96,7 +91,6 @@ const sendToFastAPI = async (
     })
     const data = await response.json()
 
-    console.log(data.imageUrl)
     return data.imageUrl
   } catch (error) {
     console.log(error)

@@ -16,8 +16,9 @@ export async function POST(req: NextRequest) {
   const { getToken, userId } = auth()
   const supabaseAccessToken = await getToken({ template: 'supabase' })
   const supabase = await supabaseClient(supabaseAccessToken as string)
+
   if (!userId) {
-    return new Response('Unauthorized', { status: 401 })
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   const response = await fetch(MODAL_API, {
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
   const imageUrl = await uploadToCloudinary(imageData)
 
   if (!imageUrl) {
-    return NextResponse.json({ error: 'Upload Error' })
+    return NextResponse.json({ error: 'Upload Error' }, { status: 500 })
   }
 
   const title = 'Modal cloudinary'
@@ -63,5 +64,5 @@ export async function POST(req: NextRequest) {
     .upsert({ id, user_id: userId, payload })
     .throwOnError()
 
-  return NextResponse.json({ imageUrl })
+  return NextResponse.json({ imageUrl }, { status: 200 })
 }

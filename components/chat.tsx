@@ -5,7 +5,6 @@ import { useChat, type Message } from 'ai/react'
 import { ChatList } from '@/components/chat-list'
 import { ChatPanel } from '@/components/chat-panel'
 import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
-import { EmptyScreen } from '@/components/empty-screen'
 import {
   Dialog,
   DialogContent,
@@ -82,7 +81,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
             content: newContent,
             role: 'assistant'
           }
-          console.log('newMessage----\n', newMessage)
           let newMessages = [...messages, newMessage]
           setMessages(newMessages)
           setIsSnowLoading(false)
@@ -101,7 +99,6 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
             <ChatScrollAnchor trackVisibility={isLoading} />
           </>
         ) : (
-          // <EmptyScreen setInput={setInput} />
           <ChatList messages={_defaultpayload} isLoading={false} />
         )}
       </div>

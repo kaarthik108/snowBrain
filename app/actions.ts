@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { type Chat } from '@/lib/types'
 import { supabaseClient } from '@/utils/supabaseClient'
 import { auth } from '@clerk/nextjs'
+import { redirect } from 'next/navigation'
 
 export async function getChats(userId?: string | null) {
   if (!userId) {
@@ -62,12 +63,11 @@ export async function clearChats() {
 
   try {
     await supabase.from('chats').delete().eq('user_id', userId).throwOnError()
-    return revalidatePath('/')
+    revalidatePath('/')
+    return redirect('/')
   } catch (error) {
-    console.log('clear chats error', error)
-    return {
-      error: 'Unauthorized'
-    }
+    console.log('error', error)
+    return
   }
 }
 

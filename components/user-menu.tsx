@@ -1,13 +1,9 @@
 'use client'
 
-// import {
-//   createClientComponentClient,
-//   type Session
-// } from '@supabase/auth-helpers-nextjs'
-import { SignOutButton, useAuth, useClerk } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -30,16 +26,13 @@ function getUserInitials(name: string) {
 
 export function UserMenu({ user }: UserMenuProps) {
   const { signOut } = useAuth();
-  const router = useRouter();
 
   const handleSignOut = async () => {
     try {
       await signOut();
-      // Redirect to home or login page after sign out
-      // You might need to update this depending on your routing setup
-      router.refresh()
+      redirect('/')
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

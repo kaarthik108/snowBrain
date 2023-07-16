@@ -10,23 +10,24 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
   IconGitHub,
-  IconNextChat,
   IconSeparator,
 } from '@/components/ui/icons'
 import { UserMenu } from '@/components/user-menu'
 import { cn } from '@/lib/utils'
 import { SignInButton, currentUser } from '@clerk/nextjs'
+import LogoIcon from './ui/LogoIcon'
 
 export async function Header() {
+
   const user = await currentUser();
+
   const serializableUser = {
     id: user?.id,
     name: user?.firstName,
     email: user?.emailAddresses[0].emailAddress,
     avatar_url: user?.profileImageUrl,
   };
-  // const serializableUser = null;
-  // console.log("user is---\n", serializableUser);
+
   return (
     <header className="sticky top-0 z-50 flex h-16 w-full shrink-0 items-center justify-between border-b bg-gradient-to-b from-background/10 via-background/50 to-background/80 px-4 backdrop-blur-xl">
       <div className="flex items-center">
@@ -43,8 +44,7 @@ export async function Header() {
           </Sidebar>
         ) : (
           <Link href="/" target="_blank" rel="nofollow">
-            <IconNextChat className="mr-2 h-6 w-6 dark:hidden" inverted />
-            <IconNextChat className="mr-2 hidden h-6 w-6 dark:block" />
+            <LogoIcon className="mr-2 h-6 w-6" />
           </Link>
         )}
         <div className="flex items-center">

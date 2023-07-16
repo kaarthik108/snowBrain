@@ -14,8 +14,6 @@ export function ChatList({ messages, isLoading }: ChatList) {
   if (!messages.length) {
     return null
   }
-  console.log('loading: ', isLoading)
-
   return (
     <>
       <div className="relative mx-auto max-w-2xl px-4">

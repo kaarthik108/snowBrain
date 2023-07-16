@@ -19,7 +19,6 @@ export function ChatMessage({
   isLoading,
   ...props
 }: ChatMessageProps) {
-  console.log('message: ', message)
   const isImage = message
     ? message.content?.startsWith('https://res.cloudinary.com/')
     : false
