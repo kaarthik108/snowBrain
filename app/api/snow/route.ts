@@ -1,5 +1,5 @@
 import { nanoid, toMarkdownTable } from '@/lib/utils'
-import { supabaseClient } from '@/utils/supabase'
+import { supabaseClient } from '@/utils/supabaseClient'
 import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 import snowflake from 'snowflake-sdk'

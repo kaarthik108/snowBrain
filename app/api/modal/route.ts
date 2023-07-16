@@ -1,6 +1,6 @@
 import uploadToCloudinary from '@/lib/uploadToCloudinary'
 import { nanoid } from '@/lib/utils'
-import { supabaseClient } from '@/utils/supabase'
+import { supabaseClient } from '@/utils/supabaseClient'
 import { auth } from '@clerk/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 

@@ -1,6 +1,6 @@
 import { Database } from '@/lib/db_types'
 import { nanoid } from '@/lib/utils'
-import { supabaseClient } from '@/utils/supabase'
+import { supabaseClient } from '@/utils/supabaseClient'
 import { auth } from '@clerk/nextjs'
 import { LangChainStream, Message, StreamingTextResponse } from 'ai'
 import { CallbackManager } from 'langchain/callbacks'
