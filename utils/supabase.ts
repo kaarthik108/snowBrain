@@ -5,8 +5,7 @@ export const supabaseClient = async (supabaseAccessToken: string) => {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      global: { headers: { Authorization: `Bearer ${supabaseAccessToken}` } },
-      auth: { persistSession: false }
+      global: { headers: { Authorization: `Bearer ${supabaseAccessToken}` } }
     }
   )
   // set Supabase JWT on the client object,
