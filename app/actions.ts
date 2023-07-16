@@ -20,7 +20,6 @@ export async function getChats(userId?: string | null) {
       .select('payload')
       .order('payload->createdAt', { ascending: false })
       .throwOnError()
-
     return (data?.map(entry => entry.payload) as Chat[]) ?? []
   } catch (error) {
     return []
@@ -31,13 +30,11 @@ export async function getChat(id: string) {
   const { getToken } = auth()
   const supabaseAccessToken = await getToken({ template: 'supabase' })
   const supabase = await supabaseClient(supabaseAccessToken as string)
-
   const { data } = await supabase
     .from('chats')
     .select('payload')
     .eq('id', id)
     .maybeSingle()
-
   return (data?.payload as Chat) ?? null
 }
 
@@ -45,6 +42,7 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
   const { getToken } = auth()
   const supabaseAccessToken = await getToken({ template: 'supabase' })
   const supabase = await supabaseClient(supabaseAccessToken as string)
+
   try {
     await supabase.from('chats').delete().eq('id', id).throwOnError()
 
@@ -83,13 +81,13 @@ export async function getSharedChat(id: string) {
     .eq('id', id)
     .not('payload->sharePath', 'is', null)
     .maybeSingle()
-
   return (data?.payload as Chat) ?? null
 }
 
 export async function shareChat(chat: Chat) {
   const { getToken } = auth()
   const supabaseAccessToken = await getToken({ template: 'supabase' })
+
   const supabase = await supabaseClient(supabaseAccessToken as string)
 
   const payload = {
