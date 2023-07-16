@@ -33,6 +33,7 @@ __pycache__/
 .venv
 
 code-plugin/main-test.py
+code-plugin/__pycache__/
 # turbo
 .turbo
 
