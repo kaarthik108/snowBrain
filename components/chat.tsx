@@ -5,12 +5,12 @@ import { useChat, type Message } from 'ai/react'
 import { ChatList } from '@/components/chat-list'
 import { ChatPanel } from '@/components/chat-panel'
 import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
+import { useToast } from '@/lib/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { extractPythonCode, extractSqlCode, snow } from '@/utils/fetchHelpers'
 import { _defaultpayload } from '@/utils/initialChat'
 import { nanoid } from 'nanoid'
 import { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -18,7 +18,7 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 }
 
 export function Chat({ id, initialMessages, className }: ChatProps) {
-
+  const { toast } = useToast();
   const [pythonCode, setPythonCode] = useState('')
   const [sqlCode, setSqlCode] = useState('')
   const [isSnowLoading, setIsSnowLoading] = useState(false)
@@ -41,7 +41,11 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     },
     onResponse(response) {
       if (response.status === 401) {
-        toast.error(response.statusText)
+        toast({
+          title: 'Error',
+          description: 'Something went wrong. Please try again later.',
+          variant: "destructive",
+        })
       }
     },
     onFinish(response) {

@@ -44,3 +44,5 @@ code-plugin/__pycache__/
 
 .vercel
 .vscode
+
+test.js

@@ -1,10 +1,9 @@
 import { Metadata } from 'next'
 
-import { Toaster } from 'react-hot-toast'
-
 import '@/app/globals.css'
 import { Header } from '@/components/header'
 import { Providers } from '@/components/providers'
+import { Toaster } from '@/components/Toaster'
 import { fontMono, fontSans } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ClerkProvider } from "@clerk/nextjs"
@@ -36,6 +35,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head />
       <ClerkProvider>
         <body
           className={cn(

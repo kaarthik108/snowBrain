@@ -1,11 +1,8 @@
 'use client'
 
-import * as React from 'react'
 import { useRouter } from 'next/navigation'
-import { toast } from 'react-hot-toast'
+import * as React from 'react'
 
-import { type Chat, ServerActionResult } from '@/lib/types'
-import { cn, formatDate } from '@/lib/utils'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,6 +13,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle
 } from '@/components/ui/alert-dialog'
+import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -31,13 +29,15 @@ import {
   IconTrash,
   IconUsers
 } from '@/components/ui/icons'
-import Link from 'next/link'
-import { badgeVariants } from '@/components/ui/badge'
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
+import { useToast } from '@/lib/hooks/use-toast'
+import { ServerActionResult, type Chat } from '@/lib/types'
+import { cn, formatDate } from '@/lib/utils'
+import Link from 'next/link'
 
 interface SidebarActionsProps {
   chat: Chat
@@ -55,27 +55,25 @@ export function SidebarActions({
   const [isRemovePending, startRemoveTransition] = React.useTransition()
   const [isSharePending, startShareTransition] = React.useTransition()
   const router = useRouter()
+  const { toast } = useToast()
 
   const copyShareLink = React.useCallback(async (chat: Chat) => {
     if (!chat.sharePath) {
-      return toast.error('Could not copy share link to clipboard')
+      return toast({
+        title: 'Error',
+        description: 'Could not copy share link',
+        variant: 'destructive'
+      })
     }
 
     const url = new URL(window.location.href)
     url.pathname = chat.sharePath
     navigator.clipboard.writeText(url.toString())
     setShareDialogOpen(false)
-    toast.success('Share link copied to clipboard', {
-      style: {
-        borderRadius: '10px',
-        background: '#333',
-        color: '#fff',
-        fontSize: '14px'
-      },
-      iconTheme: {
-        primary: 'white',
-        secondary: 'black'
-      }
+    toast({
+      title: 'Success',
+      description: 'Share link copied to clipboard',
+      variant: 'default'
     })
   }, [])
 
@@ -151,7 +149,11 @@ export function SidebarActions({
                   const result = await shareChat(chat)
 
                   if (result && 'error' in result) {
-                    toast.error(result.error)
+                    toast({
+                      title: 'Error',
+                      description: result.error,
+                      variant: 'destructive'
+                    })
                     return
                   }
 
@@ -195,14 +197,22 @@ export function SidebarActions({
                   })
 
                   if (result && 'error' in result) {
-                    toast.error(result.error)
+                    toast({
+                      title: 'Error',
+                      description: result.error,
+                      variant: 'destructive'
+                    })
                     return
                   }
 
                   setDeleteDialogOpen(false)
                   router.refresh()
                   router.push('/')
-                  toast.success('Chat deleted')
+                  toast({
+                    title: 'Success',
+                    description: 'Chat deleted',
+                    variant: 'default'
+                  })
                 })
               }}
             >
