@@ -47,9 +47,6 @@ dependencies:
   '@upstash/redis':
     specifier: ^1.22.0
     version: 1.22.0(encoding@0.1.13)
-  '@vercel/analytics':
-    specifier: ^1.0.1
-    version: 1.0.1
   '@vercel/og':
     specifier: ^0.5.7
     version: 0.5.7
@@ -1879,10 +1876,6 @@ packages:
       isomorphic-fetch: 3.0.0(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
-
-  /@vercel/analytics@1.0.1:
-    resolution: {integrity: sha512-Ux0c9qUfkcPqng3vrR0GTrlQdqNJ2JREn/2ydrVuKwM3RtMfF2mWX31Ijqo1opSjNAq6rK76PwtANw6kl6TAow==}
-    dev: false
 
   /@vercel/og@0.5.7:
     resolution: {integrity: sha512-KdhPHiLodj2n0Z0yg9feF/onMPlrimhBvCRJOwTpOjvNxefBqM1VIJW5+Ou9mFSIa37Gg0DGBDAoSOJLH2FqxA==}

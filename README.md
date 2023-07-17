@@ -13,8 +13,9 @@ SnowBrain is an open-source prototype that serves as your personal data analyst.
 This project is a unique blend of Snowflake, Langchain, OpenAI, Pinecone, NEXTjs, and FastAPI, among other technologies. It's all about reimagining the simplicity of SQL querying. Dive in and discover a new way of interacting with your data.
 
 ## Tech Stack
-- [Snowflake](https://www.snowflake.com/) - Database processing
+- [Snowflake](https://www.snowflake.com/) - Data Cloud
 - [Next.js](https://nextjs.org/) - Frontend & backend
+- [Supabase](https://supabase.com/) - DB - Persist chat messages
 - [Tailwindcss](https://tailwindcss.com/) - Styling
 - [Pinecone](https://www.pinecone.io/) - Vector database
 - [OpenAI](https://www.openai.com/) - LLM
@@ -103,7 +104,7 @@ Follow these steps to get **snowBrain** up and running in your local environment
     Install packages using the following command:
 
     ```bash
-    npm i
+    pnpm i
     ```
 
 7. **Run Locally**
@@ -111,7 +112,11 @@ Follow these steps to get **snowBrain** up and running in your local environment
     Test the setup locally using the following command:
 
     ```bash
-    npm run dev
+    pnpm run dev
+    ```
+    Test the build
+    ```bash
+    pnpm run build
     ```
 
 8. **Deploy to Vercel**
@@ -139,6 +144,6 @@ Here's how you can contribute:
 
 <br/>
 
-## License
+## Credits
 
-This repo is MIT licensed.
+Thanks to @jaredpalmer, @shuding_, @shadcn, @thorwebdev

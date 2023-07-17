@@ -28,7 +28,6 @@
     "@supabase/supabase-js": "^2.26.0",
     "@upstash/ratelimit": "^0.4.3",
     "@upstash/redis": "^1.22.0",
-    "@vercel/analytics": "^1.0.1",
     "@vercel/og": "^0.5.7",
     "ai": "^2.1.6",
     "class-variance-authority": "^0.4.0",
