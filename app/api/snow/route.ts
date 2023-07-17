@@ -22,7 +22,9 @@ const connectionPool = snowflake.createPool(
 
 export async function POST(request: NextRequest) {
   const { getToken, userId } = auth()
-  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabaseAccessToken = await getToken({
+    template: 'supabase'
+  })
   const supabase = await supabaseClient(supabaseAccessToken as string)
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

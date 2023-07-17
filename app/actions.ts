@@ -12,7 +12,9 @@ export async function getChats(userId?: string | null) {
     return []
   }
   const { getToken } = auth()
-  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabaseAccessToken = await getToken({
+    template: 'supabase'
+  })
   const supabase = await supabaseClient(supabaseAccessToken as string)
 
   try {
@@ -29,7 +31,9 @@ export async function getChats(userId?: string | null) {
 
 export async function getChat(id: string) {
   const { getToken } = auth()
-  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabaseAccessToken = await getToken({
+    template: 'supabase'
+  })
   const supabase = await supabaseClient(supabaseAccessToken as string)
   const { data } = await supabase
     .from('chats')
@@ -41,7 +45,9 @@ export async function getChat(id: string) {
 
 export async function removeChat({ id, path }: { id: string; path: string }) {
   const { getToken } = auth()
-  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabaseAccessToken = await getToken({
+    template: 'supabase'
+  })
   const supabase = await supabaseClient(supabaseAccessToken as string)
 
   try {
@@ -58,7 +64,9 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
 
 export async function clearChats() {
   const { userId, getToken } = auth()
-  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabaseAccessToken = await getToken({
+    template: 'supabase'
+  })
   const supabase = await supabaseClient(supabaseAccessToken as string)
 
   try {
@@ -73,7 +81,9 @@ export async function clearChats() {
 
 export async function getSharedChat(id: string) {
   const { getToken } = auth()
-  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabaseAccessToken = await getToken({
+    template: 'supabase'
+  })
   const supabase = await supabaseClient(supabaseAccessToken as string)
   const { data } = await supabase
     .from('chats')
@@ -86,7 +96,9 @@ export async function getSharedChat(id: string) {
 
 export async function shareChat(chat: Chat) {
   const { getToken } = auth()
-  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabaseAccessToken = await getToken({
+    template: 'supabase'
+  })
 
   const supabase = await supabaseClient(supabaseAccessToken as string)
 

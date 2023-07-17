@@ -14,7 +14,9 @@ export const runtime = 'edge'
 export async function POST(req: NextRequest) {
   const { pythonCode, sqlCode, messages } = await req.json()
   const { getToken, userId } = auth()
-  const supabaseAccessToken = await getToken({ template: 'supabase' })
+  const supabaseAccessToken = await getToken({
+    template: 'supabase'
+  })
   const supabase = await supabaseClient(supabaseAccessToken as string)
 
   if (!userId) {

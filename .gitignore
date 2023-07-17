@@ -32,6 +32,7 @@ yarn-error.log*
 __pycache__/
 
 code-plugin/main-test.py
+code-plugin/__pycache__/
 .venv
 
 # turbo
