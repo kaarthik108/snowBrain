@@ -5,7 +5,7 @@ import { getChat } from '@/app/actions';
 import { Chat } from '@/components/chat';
 import { auth } from '@clerk/nextjs';
 
-export const runtime = 'edge'
+// export const runtime = 'edge'
 export const preferredRegion = 'home'
 
 export interface ChatPageProps {

@@ -38,6 +38,12 @@ dependencies:
   '@supabase/supabase-js':
     specifier: ^2.26.0
     version: 2.26.0(encoding@0.1.13)
+  '@upstash/ratelimit':
+    specifier: ^0.4.3
+    version: 0.4.3(encoding@0.1.13)
+  '@upstash/redis':
+    specifier: ^1.22.0
+    version: 1.22.0(encoding@0.1.13)
   '@vercel/analytics':
     specifier: ^1.0.1
     version: 1.0.1
@@ -147,7 +153,7 @@ devDependencies:
     version: 3.12.0(tailwindcss@3.3.2)
   langchain:
     specifier: ^0.0.109
-    version: 0.0.109(@pinecone-database/pinecone@0.1.6)(@supabase/supabase-js@2.26.0)(encoding@0.1.13)
+    version: 0.0.109(@pinecone-database/pinecone@0.1.6)(@supabase/supabase-js@2.26.0)(@upstash/redis@1.22.0)(encoding@0.1.13)
   postcss:
     specifier: ^8.4.23
     version: 8.4.23
@@ -1814,6 +1820,30 @@ packages:
       '@typescript-eslint/types': 5.59.7
       eslint-visitor-keys: 3.4.1
     dev: true
+
+  /@upstash/core-analytics@0.0.6(encoding@0.1.13):
+    resolution: {integrity: sha512-cpPSR0XJAJs4Ddz9nq3tINlPS5aLfWVCqhhtHnXt4p7qr5+/Znlt1Es736poB/9rnl1hAHrOsOvVj46NEXcVqA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@upstash/redis': 1.22.0(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@upstash/ratelimit@0.4.3(encoding@0.1.13):
+    resolution: {integrity: sha512-Dsp9Mw09Flg28JRklKgFiCXqr3bqv8bbG0kgpUYoHjcgPPolFFyaYOj/I2HExvYLZiogl77NUavBoNvMOK0zUQ==}
+    dependencies:
+      '@upstash/core-analytics': 0.0.6(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@upstash/redis@1.22.0(encoding@0.1.13):
+    resolution: {integrity: sha512-sXoJDoEqqik0HbrNE7yRWckOySEFsoBxfRdCgOqkc0w6py19ZZG50SpGkDDEUXSnBqP8VgGYXhWAiBpqxrt5oA==}
+    dependencies:
+      isomorphic-fetch: 3.0.0(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
 
   /@vercel/analytics@1.0.1:
     resolution: {integrity: sha512-Ux0c9qUfkcPqng3vrR0GTrlQdqNJ2JREn/2ydrVuKwM3RtMfF2mWX31Ijqo1opSjNAq6rK76PwtANw6kl6TAow==}
@@ -4406,6 +4436,14 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
+  /isomorphic-fetch@3.0.0(encoding@0.1.13):
+    resolution: {integrity: sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==}
+    dependencies:
+      node-fetch: 2.6.12(encoding@0.1.13)
+      whatwg-fetch: 3.6.2
+    transitivePeerDependencies:
+      - encoding
+
   /isstream@0.1.2:
     resolution: {integrity: sha512-Yljz7ffyPbrLpLngrMtZ7NduUgVvi6wG9RJ9IUcyCd59YQ911PBJphODUcbOVbqYfxe1wuYf/LJ8PauMRwsM/g==}
     dev: false
@@ -4564,7 +4602,7 @@ packages:
     resolution: {integrity: sha512-Xq9nH7KlWZmXAtodXDDRE7vs6DU1gTU8zYDHDiWLSip45Egwq3plLHzPn27NgvzL2r1LMPC1vdqh98sQxtqj4A==}
     dev: false
 
-  /langchain@0.0.109(@pinecone-database/pinecone@0.1.6)(@supabase/supabase-js@2.26.0)(encoding@0.1.13):
+  /langchain@0.0.109(@pinecone-database/pinecone@0.1.6)(@supabase/supabase-js@2.26.0)(@upstash/redis@1.22.0)(encoding@0.1.13):
     resolution: {integrity: sha512-+H8UP6jtgyHzwOfNqs0iIlc8LPq3ZWfuJ96cOvRbwdJoGKzS5FbxtEFHeh/aMzqLR0zcg6kHezYITX7UOnpFMg==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -4738,6 +4776,7 @@ packages:
       '@anthropic-ai/sdk': 0.5.4(encoding@0.1.13)
       '@pinecone-database/pinecone': 0.1.6(encoding@0.1.13)
       '@supabase/supabase-js': 2.26.0(encoding@0.1.13)
+      '@upstash/redis': 1.22.0(encoding@0.1.13)
       ansi-styles: 5.2.0
       binary-extensions: 2.2.0
       camelcase: 6.3.0
@@ -7682,6 +7721,9 @@ packages:
       yaeti: 0.0.6
     transitivePeerDependencies:
       - supports-color
+
+  /whatwg-fetch@3.6.2:
+    resolution: {integrity: sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==}
 
   /whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}

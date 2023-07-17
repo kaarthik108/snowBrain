@@ -1,3 +1,4 @@
+import { rateLimiter } from '@/lib/rate-limiter'
 import { nanoid } from '@/lib/utils'
 import { supabaseClient } from '@/utils/supabaseClient'
 import { auth } from '@clerk/nextjs'
@@ -14,7 +15,25 @@ import { CONDENSE_QUESTION_PROMPT, QA_PROMPT } from 'utils/prompts'
 
 export const runtime = 'edge'
 
-export async function POST(req: Request) {
+export async function POST(req: Request): Promise<Response> {
+  if (process.env.NODE_ENV != 'development') {
+    const ip = req.headers.get('x-forwarded-for')
+    const { success, limit, reset, remaining } = await rateLimiter.limit(
+      `snowbrain_ratelimit_${ip}`
+    )
+
+    if (!success) {
+      return new Response('You have reached your request limit for the day.', {
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': limit.toString(),
+          'X-RateLimit-Remaining': remaining.toString(),
+          'X-RateLimit-Reset': reset.toString()
+        }
+      })
+    }
+  }
+
   const { getToken, userId } = auth()
   const supabaseAccessToken = await getToken({
     template: 'supabase'
