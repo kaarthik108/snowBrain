@@ -11,6 +11,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import {
   IconGitHub,
   IconSeparator,
+  IconTwitter,
 } from '@/components/ui/icons'
 import { UserMenu } from '@/components/user-menu'
 import { cn } from '@/lib/utils'
@@ -44,7 +45,7 @@ export async function Header() {
           </Sidebar>
         ) : (
           <Link href="/" target="_blank" rel="nofollow">
-            <LogoIcon className="mr-2 h-6 w-6" />
+            <LogoIcon className="mr-3 h-6 w-6" />
           </Link>
         )}
         <div className="flex items-center">
@@ -52,7 +53,7 @@ export async function Header() {
           {user ? (
             <UserMenu user={serializableUser} />
           ) : (
-            <Button variant="link" asChild className="-ml-2">
+            <Button variant="ghost" asChild className="">
               <SignInButton />
             </Button>
           )}
@@ -63,16 +64,27 @@ export async function Header() {
           <Link href="/"> s n o w B r a i n </Link>
         </span>
       </div>
-      <div className="flex items-center justify-end space-x-2">
-        <a
-          target="_blank"
-          href="https://github.com/kaarthik108/snowBrain"
-          rel="noopener noreferrer"
-          className={cn(buttonVariants({ variant: 'outline' }))}
-        >
-          <IconGitHub />
-          <span className="ml-2 hidden md:flex">GitHub</span>
-        </a>
+      <div className="flex items-center gap-2">
+        <div>
+          <a
+            target="_blank"
+            href="https://github.com/kaarthik108/snowBrain"
+            rel="noopener noreferrer"
+            className={cn(buttonVariants({ variant: 'outline' }))}
+          >
+            <IconGitHub />
+          </a>
+        </div>
+        <div>
+          <a
+            target="_blank"
+            href="https://twitter.com/kaarthikcodes"
+            rel="noopener noreferrer"
+            className={cn(buttonVariants({ variant: 'outline' }))}
+          >
+            <IconTwitter />
+          </a>
+        </div>
       </div>
     </header>
   )
