@@ -68,8 +68,8 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
             role: 'assistant'
           }
           let newMessages = [...messages, newMessage]
-          setMessages(newMessages)
           setIsSnowLoading(false)
+          setMessages(newMessages)
         }
       })
       setShouldExecuteSnow(false)
@@ -81,11 +81,11 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
         {messages.length ? (
           <>
-            <ChatList messages={messages} isLoading={isSnowLoading} />
+            <ChatList messages={messages} isSnowLoading={isSnowLoading} />
             <ChatScrollAnchor trackVisibility={isLoading} />
           </>
         ) : (
-          <ChatList messages={_defaultpayload} isLoading={false} />
+          <ChatList messages={_defaultpayload} />
         )}
       </div>
       <ChatPanel
