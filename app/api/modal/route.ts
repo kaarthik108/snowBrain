@@ -11,7 +11,7 @@ const MODAL_API =
 
 export const runtime = 'edge'
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
   const { pythonCode, sqlCode, messages } = await req.json()
   const { getToken, userId } = auth()
   const supabaseAccessToken = await getToken({
@@ -32,7 +32,12 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify({ script: pythonCode, sql: sqlCode })
   })
 
-  if (!response.ok) throw new Error('Response Error')
+  if (!response.ok) {
+    return NextResponse.json(
+      { error: `Script Error ${response.status}` },
+      { status: 500 }
+    )
+  }
 
   const imageData = await response.blob()
 

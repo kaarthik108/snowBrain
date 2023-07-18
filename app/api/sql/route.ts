@@ -7,7 +7,7 @@ import { CallbackManager } from 'langchain/callbacks'
 import { ConversationalRetrievalQAChain } from 'langchain/chains'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { OpenAI } from 'langchain/llms/openai'
-import { ChatMessageHistory } from 'langchain/memory'
+import { BufferMemory, ChatMessageHistory } from 'langchain/memory'
 import { AIMessage, HumanMessage, SystemMessage } from 'langchain/schema'
 import { NextResponse } from 'next/server'
 import { initPinecone } from 'utils/pinecone-client'
@@ -53,31 +53,17 @@ export async function POST(req: Request): Promise<Response> {
 
     const model = new ChatOpenAI({
       temperature: 0.5,
-      modelName: 'gpt-3.5-turbo-16k',
+      modelName: 'gpt-3.5-turbo',
       openAIApiKey: process.env.OPENAI_API_KEY,
       streaming: true,
       maxTokens: 1000,
       callbacks: CallbackManager.fromHandlers(handlers)
     })
     const qamodel = new OpenAI({
-      modelName: 'gpt-3.5-turbo-16k',
+      modelName: 'gpt-3.5-turbo',
       temperature: 0.1,
       maxTokens: 1000
     })
-
-    const chain = ConversationalRetrievalQAChain.fromLLM(
-      model,
-      vectorStore.asRetriever(),
-      {
-        qaTemplate: QA_PROMPT,
-        questionGeneratorChainOptions: {
-          llm: qamodel,
-          template: CONDENSE_QUESTION_PROMPT
-        }
-      }
-    )
-    const question = messages[messages.length - 1].content
-
     const history = new ChatMessageHistory(
       messages.map((m: Message) => {
         if (m.role === 'user') {
@@ -89,6 +75,28 @@ export async function POST(req: Request): Promise<Response> {
         return new AIMessage(m.content)
       })
     )
+    const chain = ConversationalRetrievalQAChain.fromLLM(
+      model,
+      vectorStore.asRetriever(),
+      {
+        qaTemplate: QA_PROMPT,
+        questionGeneratorChainOptions: {
+          llm: qamodel,
+          template: CONDENSE_QUESTION_PROMPT
+        },
+        memory: new BufferMemory({
+          memoryKey: 'chat_history',
+          humanPrefix:
+            "You are a good assistant that answers question based on the document info you have. If you don't have any information just say I don't know. Answer question with the same language of the question",
+          inputKey: 'question',
+          outputKey: 'text',
+          returnMessages: true,
+          chatHistory: history
+        })
+      }
+    )
+    const question = messages[messages.length - 1].content
+
     let completion: any
     chain
       .call({

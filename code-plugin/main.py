@@ -104,7 +104,8 @@ df.columns = field_names
                 snowflake_script
                 + "\n"
                 + script.script
-                + '\nplt.savefig("output.png", dpi=400)'
+                + '\nplt.tight_layout()\n'
+                + '\nplt.savefig("output.png", dpi=100)'
             )
 
             with open("temp.py", "w") as file:

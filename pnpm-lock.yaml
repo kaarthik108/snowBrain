@@ -51,7 +51,7 @@ dependencies:
     specifier: ^0.5.7
     version: 0.5.7
   ai:
-    specifier: ^2.1.6
+    specifier: 2.1.6
     version: 2.1.6(react@18.2.0)(svelte@4.0.5)(vue@3.3.4)
   class-variance-authority:
     specifier: ^0.4.0
@@ -152,7 +152,7 @@ devDependencies:
     specifier: ^3.12.0
     version: 3.12.0(tailwindcss@3.3.2)
   langchain:
-    specifier: ^0.0.109
+    specifier: 0.0.109
     version: 0.0.109(@pinecone-database/pinecone@0.1.6)(@supabase/supabase-js@2.26.0)(@upstash/redis@1.22.0)(encoding@0.1.13)
   postcss:
     specifier: ^8.4.23
@@ -160,6 +160,9 @@ devDependencies:
   prettier:
     specifier: ^2.8.8
     version: 2.8.8
+  prettier-plugin-tailwindcss:
+    specifier: ^0.4.1
+    version: 0.4.1(prettier@2.8.8)
   supabase:
     specifier: ^1.77.9
     version: 1.77.9
@@ -196,8 +199,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.18
     dev: false
 
-  /@anthropic-ai/sdk@0.5.4(encoding@0.1.13):
-    resolution: {integrity: sha512-XgBPW1VNwIh3u6rIsY3+cio6Z5kw2nIFxodrM8Y4bQG+nTFaGVX56kTyZkBzDzNkrBl9xnux+iflWCVTebBhBw==}
+  /@anthropic-ai/sdk@0.5.6(encoding@0.1.13):
+    resolution: {integrity: sha512-cwztGEhWHAuVBMZi7fKdkm9RSsUDN0y860RUo9M5JsHk+MQHnMIdc7ULrvt/8q06sqqcspsBgaxUUCRwRD+cWA==}
     dependencies:
       '@types/node': 18.16.19
       '@types/node-fetch': 2.6.4
@@ -4793,7 +4796,7 @@ packages:
       weaviate-ts-client:
         optional: true
     dependencies:
-      '@anthropic-ai/sdk': 0.5.4(encoding@0.1.13)
+      '@anthropic-ai/sdk': 0.5.6(encoding@0.1.13)
       '@pinecone-database/pinecone': 0.1.6(encoding@0.1.13)
       '@supabase/supabase-js': 2.26.0(encoding@0.1.13)
       '@upstash/redis': 1.22.0(encoding@0.1.13)
@@ -6143,6 +6146,61 @@ packages:
   /prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
+    dev: true
+
+  /prettier-plugin-tailwindcss@0.4.1(prettier@2.8.8):
+    resolution: {integrity: sha512-hwn2EiJmv8M+AW4YDkbjJ6HlZCTzLyz1QlySn9sMuKV/Px0fjwldlB7tol8GzdgqtkdPtzT3iJ4UzdnYXP25Ag==}
+    engines: {node: '>=12.17.0'}
+    peerDependencies:
+      '@ianvs/prettier-plugin-sort-imports': '*'
+      '@prettier/plugin-pug': '*'
+      '@shopify/prettier-plugin-liquid': '*'
+      '@shufo/prettier-plugin-blade': '*'
+      '@trivago/prettier-plugin-sort-imports': '*'
+      prettier: ^2.2 || ^3.0
+      prettier-plugin-astro: '*'
+      prettier-plugin-css-order: '*'
+      prettier-plugin-import-sort: '*'
+      prettier-plugin-jsdoc: '*'
+      prettier-plugin-marko: '*'
+      prettier-plugin-organize-attributes: '*'
+      prettier-plugin-organize-imports: '*'
+      prettier-plugin-style-order: '*'
+      prettier-plugin-svelte: '*'
+      prettier-plugin-twig-melody: '*'
+    peerDependenciesMeta:
+      '@ianvs/prettier-plugin-sort-imports':
+        optional: true
+      '@prettier/plugin-pug':
+        optional: true
+      '@shopify/prettier-plugin-liquid':
+        optional: true
+      '@shufo/prettier-plugin-blade':
+        optional: true
+      '@trivago/prettier-plugin-sort-imports':
+        optional: true
+      prettier-plugin-astro:
+        optional: true
+      prettier-plugin-css-order:
+        optional: true
+      prettier-plugin-import-sort:
+        optional: true
+      prettier-plugin-jsdoc:
+        optional: true
+      prettier-plugin-marko:
+        optional: true
+      prettier-plugin-organize-attributes:
+        optional: true
+      prettier-plugin-organize-imports:
+        optional: true
+      prettier-plugin-style-order:
+        optional: true
+      prettier-plugin-svelte:
+        optional: true
+      prettier-plugin-twig-melody:
+        optional: true
+    dependencies:
+      prettier: 2.8.8
     dev: true
 
   /prettier@2.8.8:
