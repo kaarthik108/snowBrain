@@ -1,8 +1,23 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  images: {
-    domains: ["lh3.googleusercontent.com", "res.cloudinary.com"],
+module.exports = {
+  reactStrictMode: true,
+  experimental: {
+    serverActions: true
   },
-};
-
-module.exports = nextConfig;
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.githubusercontent.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.clerk.dev',
+      },
+    ]
+  }
+}

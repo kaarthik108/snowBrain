@@ -1,78 +1,121 @@
-import { Chat, ChatMessage } from "chat";
-import { v4 as uuidv4 } from "uuid";
+import { extractSQL } from '@/lib/utils'
+import { type Message } from 'ai'
+import { nanoid } from 'nanoid'
 
-const pythonCodeRegex = /```python([\s\S]*?)```/g;
-const sqlRegex = /```(?:sql)?\s*([\s\S]*?SELECT[\s\S]*?FROM[\s\S]*?)```/g;
+const pythonCodeRegex = /```python([\s\S]*?)```/g
+const sqlRegex = /```(?:sql)?\s*([\s\S]*?SELECT[\s\S]*?FROM[\s\S]*?)```/g
+const id = nanoid()
 
 const extractCode = (message: string, regex: RegExp) => {
-  let codeMatch;
-  let code = "";
+  let codeMatch
+  let code = ''
   while ((codeMatch = regex.exec(message)) !== null) {
-    code = codeMatch[1].trim();
+    code = codeMatch[1].trim()
   }
-  return code;
-};
+  return code
+}
 
 const extractPythonCode = (message: string): string => {
-  return extractCode(message, pythonCodeRegex);
-};
+  return extractCode(message, pythonCodeRegex)
+}
 
 const extractSqlCode = (message: string): string => {
-  return extractCode(message, sqlRegex);
-};
+  return extractCode(message, sqlRegex)
+}
 
 const fetchData = async (url: string, method: string, data: any) => {
   const response = await fetch(url, {
     method: method,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data),
-  });
+    body: JSON.stringify(data)
+  })
 
-  if (!response.ok) throw new Error("Response Error");
+  if (!response.ok) throw new Error('Response Error')
 
-  return response;
-};
+  return response
+}
 
-const readResponseBody = async (response: Response): Promise<string> => {
-  const reader = response.body?.getReader();
-  if (!reader) throw new Error("No response body");
+const snowsql = async (sqlCode: string, messages: Message[]) => {
+  const response = await fetchData('/api/snow', 'POST', {
+    query: sqlCode,
+    messages: messages
+  })
 
-  const decoder = new TextDecoder("utf-8");
-  let responseBody = "";
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    responseBody += decoder.decode(value);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
 
-  return responseBody;
-};
+  const markdownTable = await response.json()
+  return markdownTable
+}
 
-const setErrorMessage = (
-  chatList: Chat[],
-  activeChatId: string,
-  setChatList: (value: Chat[]) => void
+const sendToFastAPI = async (
+  pythonCode: string,
+  initialSqlCode: string,
+  messages: Message[]
 ) => {
-  let chatIndex = chatList.findIndex((item) => item.id === activeChatId);
-  if (chatIndex > -1) {
-    let errorMessage: ChatMessage = {
-      id: uuidv4(),
-      author: "assistant",
-      content: "An error occurred",
-    };
-    chatList[chatIndex].messages.push(errorMessage);
-    setChatList([...chatList]);
+  if (!pythonCode) {
+    return
   }
-};
+  let sqlCode = initialSqlCode
+
+  if (!sqlCode) {
+    try {
+      const response = await fetchData('/api/py', 'POST', {
+        prompt: pythonCode
+      })
+
+      const res = await response.json()
+      const text = res.text
+
+      let sqlCodeResponse: Message[] = [
+        { id: id, role: 'assistant', content: text }
+      ]
+      const sql = await extractSQL(sqlCodeResponse)
+      if (!sql) {
+        return
+      }
+      sqlCode = sql
+    } catch (error) {
+      return
+    }
+  }
+
+  try {
+    const response = await fetchData('/api/modal', 'POST', {
+      pythonCode: pythonCode,
+      sqlCode: sqlCode,
+      messages: messages
+    })
+    const data = await response.json()
+
+    return data.imageUrl
+  } catch (error) {
+    console.log(error)
+    return
+  }
+}
+
+export async function snow(
+  pythonCode: string,
+  initialSqlCode: string,
+  messages: Message[]
+) {
+  if (!pythonCode && initialSqlCode) {
+    const markdownTable = await snowsql(initialSqlCode, messages)
+    return markdownTable
+  }
+  const msg = await sendToFastAPI(pythonCode, initialSqlCode, messages)
+  return msg
+}
 
 export {
   extractCode,
   extractPythonCode,
   extractSqlCode,
   fetchData,
-  readResponseBody,
-  setErrorMessage,
-};
+  sendToFastAPI,
+  snowsql
+}

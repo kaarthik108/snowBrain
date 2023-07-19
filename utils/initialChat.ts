@@ -1,63 +1,42 @@
-import { Chat } from "chat";
+import type { Message } from 'ai'
 
-export const initialChatId = "Initial Chat";
+export const initialChatId = 'initial'
 
-export const defaultChat: Chat = {
-  id: initialChatId,
-  title: "Initial Chat",
-  messages: [
-    {
-      id: "1",
-      author: "user",
-      content: "Show me the total revenue for each product category ?",
-    },
-    {
-      id: "2",
-      author: "assistant",
-      content:
-        "To get the total revenue for each product category, we need to join the PRODUCTS, TRANSACTIONS, ORDER_DETAILS, and PAYMENTS tables. Here's an example SQL query that should work in Snowflake:\n" +
-        "```\n" +
-        "SELECT p.CATEGORY, SUM(t.PRICE * t.QUANTITY) AS TOTAL_REVENUE\n" +
-        "FROM STREAM_HACKATHON.STREAMLIT.PRODUCTS p\n" +
-        "JOIN STREAM_HACKATHON.STREAMLIT.TRANSACTIONS t ON p.PRODUCT_ID = t.PRODUCT_ID\n" +
-        "JOIN STREAM_HACKATHON.STREAMLIT.ORDER_DETAILS o ON t.ORDER_ID = o.ORDER_ID\n" +
-        "JOIN STREAM_HACKATHON.STREAMLIT.PAYMENTS pm ON o.ORDER_ID = pm.ORDER_ID\n" +
-        "GROUP BY p.CATEGORY;\n" +
-        "```\n" +
-        "This query joins the four tables on their respective keys and calculates the total revenue for each product category by multiplying the price and quantity of each transaction and summing them up. The result is grouped by category.",
-    },
-    {
-      id: "3",
-      author: "assistant",
-      content:
-        "\nCATEGORY | TOTAL_REVENUE\n--- | ---\nElectronics | 286.49\nGadgets | 140.25\nAccessories | 411.34\nAudio | 203.05\n",
-    },
-    {
-      id: "4",
-      author: "user",
-      content:
-        "Can you make some visualization on this? I want to see the total revenue for each product category.",
-    },
-    {
-      id: "5",
-      author: "assistant",
-      content:
-        "To visualize the total revenue for each product category, we can use a bar plot. Here's the Python code to create the visualization using the pandas and seaborn libraries:\n\n" +
-        "```python\n" +
-        "import pandas as pd\n" +
-        "import seaborn as sns\n" +
-        "\n" +
-        "# Assuming the query result is stored in a DataFrame named 'df'\n" +
-        "sns.barplot(x='CATEGORY', y='TOTAL_REVENUE', data=df)\n" +
-        "```\n" +
-        "Make sure to replace 'CATEGORY' and 'TOTAL_REVENUE' with the actual column names returned by the SQL query. This code will create a bar plot with the product categories on the x-axis and the total revenue on the y-axis.\n\n" +
-        "Let me know if there's anything else I can help you with!",
-    },
-    {
-      id: "6",
-      author: "assistant",
-      content:
-        "https://res.cloudinary.com/dmq9hcus4/image/upload/v1688855825/snowbrain/hacgkibu5wx7tbiuehwj.png",
-    },
-  ],
-};
+export const _defaultpayload = [
+  {
+    role: 'user',
+    content: 'hi'
+  },
+  {
+    role: 'assistant',
+    content: 'Hi there! How can I assist you today with SQL or data analysis?'
+  },
+  {
+    role: 'user',
+    content: 'Show me the total revenue for each product category.'
+  },
+  {
+    role: 'assistant',
+    content:
+      "To show the total revenue for each product category, you can use the following SQL query:\n\n```sql\nSELECT p.CATEGORY, SUM(t.QUANTITY * t.PRICE) AS total_revenue\nFROM STREAM_HACKATHON.STREAMLIT.PRODUCTS p\nJOIN STREAM_HACKATHON.STREAMLIT.TRANSACTIONS t ON p.PRODUCT_ID = t.PRODUCT_ID\nGROUP BY p.CATEGORY;\n```\n\nThis query joins the `PRODUCTS` and `TRANSACTIONS` tables on the `PRODUCT_ID` column and calculates the total revenue for each category by multiplying the quantity of each product by its price and summing them up. The result is grouped by the product category.\n\nLet me know if there's anything else I can help you with!"
+  },
+  {
+    role: 'assistant',
+    content:
+      '\nCATEGORY | TOTAL_REVENUE\n--- | ---\nElectronics | 286.49\nGadgets | 140.25\nAccessories | 411.34\nAudio | 203.05\n'
+  },
+  {
+    role: 'user',
+    content: 'Can you make some visualization on this ?'
+  },
+  {
+    role: 'assistant',
+    content:
+      "Sure! To visualize the total revenue for each product category, you can use a bar plot. Here's a Python script that uses the pandas and seaborn libraries to generate the plot:\n\n```python\nimport pandas as pd\nimport seaborn as sns\n\n# Assuming you have already executed the SQL query and stored the result in a DataFrame named df\nsns.barplot(data=df, x='CATEGORY', y='TOTAL_REVENUE')\nplt.xlabel('Product Category')\nplt.ylabel('Total Revenue')\nplt.title('Total Revenue for Each Product Category')\nplt.xticks(rotation=45)\nplt.show()\n```\n\nThis script creates a bar plot using the seaborn library, with the x-axis representing the product categories and the y-axis representing the total revenue. The plot is then customized with appropriate labels and titles.\n\nPlease note that you need to have the seaborn and pandas libraries installed in your Python environment for the script to run successfully. Let me know if you need any further assistance!"
+  },
+  {
+    role: 'assistant',
+    content:
+      'https://res.cloudinary.com/dmq9hcus4/image/upload/v1689669070/snowbrain/output_pdce81.png'
+  }
+] as Message[]
