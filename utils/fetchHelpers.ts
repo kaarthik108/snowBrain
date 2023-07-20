@@ -105,9 +105,16 @@ export async function snow(
 ) {
   if (!pythonCode && initialSqlCode) {
     const markdownTable = await snowsql(initialSqlCode, messages)
+    if (!markdownTable) {
+      return 'Error: Could not fetch data from snowflake :(, please try again.'
+    }
     return markdownTable
   }
   const msg = await sendToFastAPI(pythonCode, initialSqlCode, messages)
+  if (!msg) {
+    return 'Error: Could not generate visualization, please try again.'
+  }
+
   return msg
 }
 

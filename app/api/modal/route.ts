@@ -31,12 +31,9 @@ export async function POST(req: NextRequest): Promise<Response> {
     },
     body: JSON.stringify({ script: pythonCode, sql: sqlCode })
   })
-
+  console.log('response ---- ', response.ok)
   if (!response.ok) {
-    return NextResponse.json(
-      { error: `Script Error ${response.status}` },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: `Script Error ${response.status}` })
   }
 
   const imageData = await response.blob()

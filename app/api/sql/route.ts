@@ -51,9 +51,15 @@ export async function POST(req: Request): Promise<Response> {
     const id = json.id ?? nanoid()
     const { stream, handlers } = LangChainStream()
 
+    if (messages.length > 25) {
+      return NextResponse.json({
+        error: 'Too many messages, please use new chat..'
+      })
+    }
+
     const model = new ChatOpenAI({
-      temperature: 0.5,
-      modelName: 'gpt-3.5-turbo',
+      temperature: 0.1,
+      modelName: 'gpt-3.5-turbo-16k',
       openAIApiKey: process.env.OPENAI_API_KEY,
       streaming: true,
       maxTokens: 1000,
@@ -87,7 +93,7 @@ export async function POST(req: Request): Promise<Response> {
         memory: new BufferMemory({
           memoryKey: 'chat_history',
           humanPrefix:
-            "You are a good assistant that answers question based on the document info you have. If you don't have any information just say I don't know. Answer question with the same language of the question",
+            "You are a good assistant that answers question based on the document info you have. If you don't have any information just say I don't know.",
           inputKey: 'question',
           outputKey: 'text',
           returnMessages: true,

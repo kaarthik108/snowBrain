@@ -65,7 +65,11 @@ Follow these steps to get **snowBrain** up and running in your local environment
     You can do this by running the following command:
 
     ```bash
-    python embed/snowflake_ddl_fetcher.py
+    python3 embed/snowflake_ddl_fetcher.py
+    ```
+    Make sure to install requirements using 
+    ```bash 
+    pip3 install -r embed/requirements.txt
     ```
 
 3. **Convert DDL Documents to Vector & Upload to Pinecone**
@@ -73,7 +77,7 @@ Follow these steps to get **snowBrain** up and running in your local environment
     Use the following command to do this:
 
     ```bash
-    python embed/embed.py
+    python3 embed/embed.py
     ```
 
 4. **Install Dependencies for the Code Plugin**

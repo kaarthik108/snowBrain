@@ -19,9 +19,13 @@ export function ChatMessage({
   isLoading,
   ...props
 }: ChatMessageProps) {
-  const isImage = message
-    ? message.content?.startsWith('https://res.cloudinary.com/')
-    : false
+  const isImage = message && typeof message.content === 'string'
+    ? message.content.startsWith('https://res.cloudinary.com/')
+    : false;
+
+  const isError = message && typeof message.content === 'string'
+    ? message.content.startsWith('Error:')
+    : false;
 
   return (
     <>
@@ -43,6 +47,8 @@ export function ChatMessage({
         <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1">
           {isImage ? (
             <Image src={message.content} width={700} height={700} alt="Matplot python chart" />
+          ) : isError ? (
+            <div className="text-red-500">{message.content}</div>
           ) : (
             <MemoizedReactMarkdown
               className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"

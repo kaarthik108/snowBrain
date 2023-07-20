@@ -1,16 +1,13 @@
 import os
 import snowflake.connector
-from dataclasses import dataclass
 from typing import List
 from pydantic import BaseModel
 from langchain.chat_models import ChatOpenAI
 
-
 MODEL = "gpt-3.5-turbo-16k"
 
 
-@dataclass
-class SnowflakeConfig:
+class SnowflakeConfig(BaseModel):
     """Configuration for Snowflake Connection."""
 
     user: str
@@ -19,7 +16,7 @@ class SnowflakeConfig:
     warehouse: str
     role: str
     database: str
-    schema: str
+    schema_name: str
 
 
 class Table(BaseModel):
@@ -55,14 +52,14 @@ class DDLtoMarkdown:
             warehouse=self.config.warehouse,
             role=self.config.role,
             database=self.config.database,
-            schema=self.config.schema,
+            schema=self.config.schema_name,
         )
         self.cur = self.conn.cursor()
 
     def execute_sql(self, sql: str) -> List:
         """Execute SQL Query and return the results."""
         self.cur.execute(f"USE DATABASE {self.config.database}")
-        self.cur.execute(f"USE SCHEMA {self.config.schema}")
+        self.cur.execute(f"USE SCHEMA {self.config.schema_name}")
         self.cur.execute(sql)
         return self.cur.fetchall()
 
@@ -121,7 +118,7 @@ if __name__ == "__main__":
         warehouse=os.environ["WAREHOUSE"],
         role=os.environ["ROLE"],
         database=os.environ["DATABASE"],
-        schema=os.environ["SCHEMA"],
+        schema_name=os.environ["SCHEMA"],
     )
     ddl_to_md = DDLtoMarkdown(config)
     ddl_to_md.connect()
