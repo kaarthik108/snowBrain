@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-modal-client = "^0.49.2130"
+modal-client = "^0.55.3910"
 fastapi = "^0.95.1"
 uvicorn = "^0.22.0"
 numpy = "^1.24.3"
