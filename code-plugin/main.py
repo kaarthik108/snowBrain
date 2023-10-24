@@ -15,7 +15,7 @@ from pydantic import BaseModel
 
 
 image = modal.Image.debian_slim(python_version="3.10").pip_install(
-    "modal-client==0.55.3910",
+    "modal-client",
     "fastapi==0.95.1",
     "uvicorn==0.22.0",
     "numpy==1.24.3",
