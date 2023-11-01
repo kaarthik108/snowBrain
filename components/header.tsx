@@ -26,7 +26,7 @@ export async function Header() {
     id: user?.id,
     name: user?.firstName,
     email: user?.emailAddresses[0].emailAddress,
-    avatar_url: user?.profileImageUrl,
+    avatar_url: user?.imageUrl,
   };
 
   return (

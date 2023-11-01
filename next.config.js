@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
-  experimental: {
-    serverActions: true
-  },
   images: {
     remotePatterns: [
       {
@@ -16,7 +13,7 @@ module.exports = {
       },
       {
         protocol: 'https',
-        hostname: 'images.clerk.dev',
+        hostname: 'img.clerk.com',
       },
     ]
   }

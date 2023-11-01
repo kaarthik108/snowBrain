@@ -26,7 +26,6 @@ export const metadata: Metadata = {
     creator: "@kaarthikcodes",
   },
   metadataBase: new URL(`https://${process.env.NEXT_PUBLIC_VERCEL_URL}`),
-  themeColor: "#ffffff",
 }
 
 interface RootLayoutProps {
@@ -37,7 +36,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <Script async src="https://umami-livid-seven.vercel.app/script.js" data-website-id="b0156ebc-cb72-4891-9ce8-4b7a71c5ca0e"></Script>
+      <Script async src="https://analytics.eu.umami.is/script.js" data-website-id="1d4c8bda-652f-4ac7-9755-8982d987baa4"></Script>
       <ClerkProvider>
         <body
           className={cn(

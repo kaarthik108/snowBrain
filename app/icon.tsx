@@ -1,5 +1,5 @@
 import LogoIcon from '@/components/ui/LogoIcon'
-import { ImageResponse } from 'next/server'
+import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
