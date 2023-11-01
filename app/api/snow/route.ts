@@ -15,12 +15,12 @@ const connectionPool = snowflake.createPool(
     schema: process.env.SCHEMA
   },
   {
-    max: 100,
+    max: 10,
     min: 0
   }
 )
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {  // specify the return type
   const { getToken, userId } = auth()
   const supabaseAccessToken = await getToken({
     template: 'supabase'
@@ -35,17 +35,17 @@ export async function POST(request: NextRequest) {
 
   let result
   try {
-    const clientConnection = await connectionPool.acquire()
-    result = await new Promise((resolve, reject) => {
+    const clientConnection = await connectionPool.acquire();
+    const result: NextResponse = await new Promise((resolve, reject) => {  // specify the type of result
       clientConnection.execute({
         sqlText: query,
         complete: async (err, stmt, rows) => {
           if (err) {
             reject(
               NextResponse.json({
-                error: 'Failed to execute statement in Snowflake.'
+                error: 'Failed to execute statement in Snowflake.',
               })
-            )
+            );
           } else {
             const markdownTable = toMarkdownTable(rows as any[])
             const title = 'snowflake-results'
@@ -76,8 +76,8 @@ export async function POST(request: NextRequest) {
       })
     })
     connectionPool.release(clientConnection)
+    return result;
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return result
 }
