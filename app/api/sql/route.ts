@@ -142,6 +142,7 @@ export async function POST(req: Request): Promise<Response> {
 
     return new StreamingTextResponse(stream)
   } catch (error) {
+    console.error(error)
     return NextResponse.json(
       { error: 'Something went wrong, please try again..' },
       { status: 500 }
