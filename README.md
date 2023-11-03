@@ -109,7 +109,7 @@ Follow these steps to get **snowBrain** up and running in your local environment
     Install packages using the following command:
 
     ```bash
-    pnpm i
+    bun install
     ```
 
 7. **Run Locally**
@@ -117,11 +117,11 @@ Follow these steps to get **snowBrain** up and running in your local environment
     Test the setup locally using the following command:
 
     ```bash
-    pnpm run dev
+    bun run dev
     ```
     Test the build
     ```bash
-    pnpm run build
+    bun run build
     ```
 
 8. **Deploy to Vercel**

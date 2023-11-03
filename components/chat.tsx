@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 import { extractPythonCode, extractSqlCode, snow } from '@/utils/fetchHelpers'
 import { _defaultpayload } from '@/utils/initialChat'
 import { nanoid } from 'nanoid'
-import { useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
@@ -20,7 +20,6 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 
 export function Chat({ id, initialMessages, className }: ChatProps) {
   const { toast } = useToast();
-  const router = useRouter();
   const [pythonCode, setPythonCode] = useState('')
   const [sqlCode, setSqlCode] = useState('')
   const [isSnowLoading, setIsSnowLoading] = useState(false)
@@ -48,7 +47,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
           description: 'You do not have the necessary permissions to access this resource. Please log in and try again.',
           variant: "destructive",
         })
-        router.push('/sign-in')
+        redirect('/sign-in')
       }
     },
     onFinish(response) {
