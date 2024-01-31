@@ -2,10 +2,10 @@ import { rateLimiter } from '@/lib/rate-limiter'
 import { nanoid } from '@/lib/utils'
 import { supabaseClient } from '@/utils/supabaseClient'
 import { auth } from '@clerk/nextjs'
+import { ChatOpenAI } from '@langchain/openai'
 import { LangChainStream, Message, StreamingTextResponse } from 'ai'
 import { CallbackManager } from 'langchain/callbacks'
 import { ConversationalRetrievalQAChain } from 'langchain/chains'
-import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { OpenAI } from 'langchain/llms/openai'
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory'
 import { AIMessage, HumanMessage, SystemMessage } from 'langchain/schema'
@@ -63,7 +63,7 @@ export async function POST(req: Request): Promise<Response> {
       openAIApiKey: process.env.OPENAI_API_KEY,
       streaming: true,
       maxTokens: 2000,
-      callbacks: CallbackManager.fromHandlers(handlers)
+      callbacks: CallbackManager.fromHandlers(handlers) as any
     })
     const qamodel = new OpenAI({
       modelName: 'gpt-3.5-turbo',
@@ -82,7 +82,7 @@ export async function POST(req: Request): Promise<Response> {
       })
     )
     const chain = ConversationalRetrievalQAChain.fromLLM(
-      model,
+      model as any,
       vectorStore.asRetriever(),
       {
         qaTemplate: QA_PROMPT,
