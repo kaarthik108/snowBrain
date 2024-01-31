@@ -20,7 +20,8 @@ export async function initPinecone() {
     const index = pinecone.Index(PINECONE_INDEX_NAME)
     const vectorStore = await PineconeStore.fromExistingIndex(
       new OpenAIEmbeddings({
-        openAIApiKey: process.env.OPENAI_API_KEY ?? ''
+        openAIApiKey: process.env.OPENAI_API_KEY ?? '',
+        modelName: 'text-embedding-3-small'
       }),
       {
         pineconeIndex: index,
