@@ -58,17 +58,17 @@ export async function POST(req: Request): Promise<Response> {
     }
 
     const model = new ChatOpenAI({
-      temperature: 0.1,
-      modelName: 'gpt-3.5-turbo-16k',
+      temperature: 1,
+      modelName: 'gpt-3.5-turbo-1106',
       openAIApiKey: process.env.OPENAI_API_KEY,
       streaming: true,
-      maxTokens: 1000,
+      maxTokens: 2000,
       callbacks: CallbackManager.fromHandlers(handlers)
     })
     const qamodel = new OpenAI({
       modelName: 'gpt-3.5-turbo',
       temperature: 0.1,
-      maxTokens: 1000
+      maxTokens: 2000
     })
     const history = new ChatMessageHistory(
       messages.map((m: Message) => {

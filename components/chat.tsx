@@ -18,7 +18,7 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 }
 
 export function Chat({ id, initialMessages, className }: ChatProps) {
-  const { toast } = useToast();
+  const { toast } = useToast()
   const [pythonCode, setPythonCode] = useState('')
   const [sqlCode, setSqlCode] = useState('')
   const [isSnowLoading, setIsSnowLoading] = useState(false)
@@ -37,15 +37,16 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     initialMessages,
     id,
     body: {
-      id,
+      id
     },
     onResponse(response) {
       if (response.status === 401) {
         console.log(response)
         toast({
           title: 'Unauthorized',
-          description: 'You do not have the necessary permissions to access this resource. Please log in and try again.',
-          variant: "destructive",
+          description:
+            'You do not have the necessary permissions to access this resource. Please log in and try again.',
+          variant: 'destructive'
         })
       }
     },

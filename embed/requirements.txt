@@ -3,3 +3,6 @@ langchain
 tiktoken
 unstructured
 openai
+python-dotenv
+langchain_openai
+"unstructured[md]"

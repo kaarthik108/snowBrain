@@ -8,21 +8,21 @@ from tqdm.auto import tqdm
 from dotenv import load_dotenv
 
 import tiktoken
-import pinecone
+from pinecone import Pinecone
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import DirectoryLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_community.document_loaders import DirectoryLoader
+from langchain_openai import OpenAIEmbeddings
 
 load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 
 
-EMBEDDING_MODEL = "text-embedding-ada-002"
+EMBEDDING_MODEL = "text-embedding-3-small"
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
 PINECONE_API_KEY = os.environ["PINECONE_API_KEY"]
-PINECONE_ENVIRONMENT = os.environ["PINECONE_ENVIRONMENT"]
+# PINECONE_ENVIRONMENT = os.environ["PINECONE_ENVIRONMENT"]
 
 
 class TextProcessor:
@@ -37,8 +37,8 @@ class TextProcessor:
         self.checksum_file = checksum_file
         self.index_name = index_name
         self.batch_limit = batch_limit
-        self.pod_type = "s1.x1"
-        self.dimension = 1536
+        # self.pod_type = "s1.x1"
+        self.dimension = 512
         self.metric = "cosine"
         self.name_space = "snowbrain"
 
@@ -50,23 +50,24 @@ class TextProcessor:
         self.embed = OpenAIEmbeddings(
             model=EMBEDDING_MODEL,
             openai_api_key=OPENAI_API_KEY,
+            dimensions=self.dimension,
         )
 
-        tiktoken.encoding_for_model("gpt-3.5-turbo")
-        self.tokenizer = tiktoken.get_encoding("cl100k_base")
+        # tiktoken.encoding_for_model("gpt-3.5-turbo")
+        # self.tokenizer = tiktoken.get_encoding("cl100k_base")
 
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=400,
             chunk_overlap=0,
-            length_function=self.tiktoken_len,
+            # length_function=self.tiktoken_len,
             separators=["\n\n", "\n", " ", ""],
         )
 
         self.pinecone_init()
 
-    def tiktoken_len(self, text: str) -> int:
-        tokens = self.tokenizer.encode(text, disallowed_special=())
-        return len(tokens)
+    # def tiktoken_len(self, text: str) -> int:
+    #     tokens = self.tokenizer.encode(text, disallowed_special=())
+    #     return len(tokens)
 
     def create_checksum(self, content: str) -> str:
         return hashlib.sha256(content.encode()).hexdigest()
@@ -86,19 +87,18 @@ class TextProcessor:
 
     def pinecone_init(self) -> None:
         logging.info("Initializing Pinecone...")
-        pinecone.init(
+        pc = Pinecone(
             api_key=PINECONE_API_KEY,
-            environment=PINECONE_ENVIRONMENT,
+            # environment=PINECONE_ENVIRONMENT,
         )
-        if self.index_name not in pinecone.list_indexes():
-            logging.info("Creating index...")
-            pinecone.create_index(
-                name=self.index_name,
-                pod_type=self.pod_type,
-                metric=self.metric,
-                dimension=self.dimension,
-            )
-        self.index = pinecone.Index(index_name=self.index_name)
+        # if self.index_name not in pinecone.list_indexes():
+        #     logging.info("Creating index...")
+        #     pinecone.create_index(
+        #         name=self.index_name,
+        #         metric=self.metric,
+        #         dimension=self.dimension,
+        #     )
+        self.index = pc.Index(self.index_name)
 
     def process(self) -> None:
         logging.info("Loading data...")
